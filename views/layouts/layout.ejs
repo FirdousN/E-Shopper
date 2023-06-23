@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E shop</title>
+
+  <%    if (locals.admin) { %>
+  <%- include('../partials/admin/admin-head.ejs') %>
+  <% } else{%>
+  <%- include('../partials/user/user-head.ejs') %>
+  <% } %>
+
+
+</head>
+
+<body>
+
+  <!-- header -->
+  <% if (locals.noShow) {%>
+
+  <% } else if (locals.admin) { %>
+  <%- include('../partials/admin/admin-header.ejs') %>
+  <% } else{%>
+  <%- include('../partials/user/user-header.ejs') %>
+  <% } %>
+
+
+
+  <!-- body -->
+  <%-body %>
+
+  <!-- footer -->
+  <% if (locals.noShow) {%>
+
+  <% } else if (locals.admin) { %>
+  <%- include('../partials/admin/admin-footer.ejs') %>
+  <% } else{%>
+  <%- include('../partials/user/user-footer.ejs') %>
+  <% } %>
+
+  <!-- script -->
+  <% if (locals.admin) { %>
+  <%- include('../partials/admin/admin-script.ejs') %>
+  <% } else{%>
+  <%- include('../partials/user/user-script.ejs') %>
+  <% } %>
+
+</body>
+
+</html>

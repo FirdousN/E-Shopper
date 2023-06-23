@@ -1,0 +1,87 @@
+<body>
+    <div class="card-body">
+        <div class="header mb-3">
+            <h5 class="card-title text-dark">Categories</h5>
+        </div>
+
+        <div class="card">
+            <div class="m-sm-4">
+
+                <div class="card-header">
+                    <h5 class="card-title text-primary">Add Category</h5>
+                </div>
+                <% if (locals.Error) { %>
+                    <div class="error-message" style="color: red; text-align: center;">
+                      <%= locals.Error %>
+                    </div>
+                  <% } %>
+                <form action="/admin/add-category" method="post" >
+                    <div class="mb-4">
+                        <label class="form-label">Choose a category</label>
+                        <input class="form-control form-control-lg" type="text" name="category"
+                            placeholder="Choose a category" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="genderSelect">Gender</label>
+                        <select class="form-control" id="genderSelect" name="gender">
+                            <option selected>Choose...</option>
+                            <option>Men</option>
+                            <option>Women</option>
+                            <option>Baby's</option>
+                            <option>Unisex</option>
+                        </select>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label">Enter a Sub-category</label>
+                        <input class="form-control form-control-lg" type="text" name="subcategory"
+                            placeholder="Enter a Sub-category" required />
+                    </div>
+                    <button type="submit" class="btn btn-lg btn-primary">Add Category</button>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</body>
+
+
+<script>
+//***********************GENDER SELECTION*********************************************************////    
+    $(document).ready(function() {
+      // Listen for changes in the select element
+      $('#genderSelect').change(function() {
+        // Get the selected option value
+        var selectedOption = $(this).val();
+        
+        // Log the selected option to the console
+        console.log('Selected Gender:', selectedOption);
+      });
+    });
+
+//***********************GENDER SELECTION*********************************************************////    
+
+    function validatePrice() {
+        const regPrice = /^[1-9][0-9]*$/;
+        const price = document.getElementById('price').value
+        if (!regPrice.test(price)) {
+            document.getElementById('price-error').innerHTML = 'price should be greater than zero'
+            return false
+        } else {
+            document.getElementById('price-error').innerHTML = ''
+            return true
+        }
+    }
+
+    function validateQuantity() {
+        const regQuantity = /^[1-9][0-9]*$/
+        const quantity = document.getElementById('quantity').value
+        if (!regQuantity.test(quantity)) {
+            document.getElementById('quantity-error').innerHTML = 'quantity should be greater than zero'
+            return false
+        } else {
+            document.getElementById('quantity-error').innerHTML = ''
+            return true
+        }
+    }
+
+</script>

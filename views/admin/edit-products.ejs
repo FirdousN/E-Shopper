@@ -1,0 +1,92 @@
+<!-- <form action="/admin/edit-products/productId" method="POST" enctype="multipart/form-data"> -->
+    <div class="card-header">
+        <h5 class="card-title mb-0">Edit Product</h5>
+    </div>
+    <form action="/admin/edit-products/<%= product._id %>" method="POST" >
+
+    <div class="mb-3">
+        <label for="product-name" class="form-label">Product Name</label>
+        <input type="text" required value="<%= product.productName  %>" name="productName" class="form-control" id="name" aria-describedby="emailHelp">
+    </div>
+    <div class="mb-3">
+        <label for="description" class="form-label">Description</label>
+        <input type="text" required value="<%= product.description  %>" name="description" class="form-control" id="description">
+    </div>
+    <div class="mb-3">
+        <label for="price" class="form-label">Price</label>
+        <input type="text" required value="<%= product.productPrice  %>" name="productPrice" class="form-control" id="price" onkeyup="return validatePrice()">
+        <span id="price-error" style="color: red; font-size: 12px; margin-top: 5px;"></span>
+    </div>
+    
+    <!-- <div class="mb-3">
+        <label class="form-label">Product Category</label>
+        <select class="form-control" name="category">
+            <option value="category ">Category </option>
+            <option value="subcategory" selected>Sub-Category </option>
+        </select>
+    </div> -->
+    <div class="mb-3">
+        <label class="form-label">Choose a category</label>
+
+        <select class="form-control" type="text" name="category">
+            <% categories.forEach((categories) => { %>
+            <option><%= categories.category %></option>
+            <% }) %>
+        </select>
+    </div>
+    <!-- quantity***************************** -->
+    <!-- <div class="mb-3">
+        <label for="quantity" class="form-label">Quantity</label>
+        <input type="text" required value="Product Quantity" name="quantity" class="form-control" id="quantity" onkeyup="return validateQuantity()">
+        <span id="quantity-error" style="color: red; font-size: 12px; margin-top: 5px;"></span>
+    </div> -->
+    <div class="mb-3">
+        <label for="productImage" class="form-label">Upload product images</label>
+        <div class="input-group">
+            <input type="file" class="form-control" id="productImage" name="productImage" multiple/>
+        </div>
+    </div>
+    <button type="submit" id="productId" class="btn btn-primary">Submit</button>
+</form>
+
+<script>
+    const inputFile = document.getElementById('testImage');
+    const previewImage = document.getElementById('previewImage');
+
+    inputFile.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        const reader = new FileReader();
+
+        reader.onload = () => {
+            previewImage.src = reader.result;
+        };
+
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+    });
+
+    function validatePrice() {
+        const regPrice = /^[1-9][0-9]*$/;
+        const price = document.getElementById('price').value
+        if (!regPrice.test(price)) {
+            document.getElementById('price-error').innerHTML = 'Price should be greater than zero';
+            return false;
+        } else {
+            document.getElementById('price-error').innerHTML = '';
+            return true;
+        }
+    }
+
+    function validateQuantity() {
+        const regQuantity = /^[0-9][0-9]*$/;
+        const quantity = document.getElementById('quantity').value;
+        if (!regQuantity.test(quantity)) {
+            document.getElementById('quantity-error').innerHTML = 'Quantity cannot be a negative value';
+            return false;
+        } else {
+            document.getElementById('quantity-error').innerHTML = '';
+            return true;
+        }
+    }
+</script>

@@ -1,0 +1,42 @@
+<div class="row">
+    <div class="container-fluid h-100 ">
+        <div class="card flex-fill">
+            <div style="float: right">
+                <a href="/admin/add-coupon"><button type="button" class="btn-sm btn-success ">Add Coupon</button></a>
+            </div>
+
+            <div class="card-header">
+                <h5 class="card-title ">Coupons </h5>
+            </div>
+            <table id="userTable" class="table table-hover my-0">
+                <thead>
+                    <tr>
+                        <th>Sl/No.</th>
+                        <th>Coupon Name</th>
+                        <th>Coupon Code</th>
+                        <th>Coupon Discount</th>
+                        <th>Expiry Date</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                    <% coupons.forEach((coupon, index) => { %>
+                <tbody>
+                    <tr>
+                        <th scope="row"><%= index + 1 %></th>
+                        <td><%= coupon.name %></td>
+                        <td><%= coupon.code %></td>
+                        <td><%= coupon.discount %></td>
+                        <td><%= coupon.expiryDate.toLocaleDateString() %></td>
+                        <td>
+                            <a href="/admin/edit-coupon/<%= coupon._id %>">
+                                <button class="btn-sm btn-success">Edit Category</button>
+                            </a>
+                        </td>
+                    </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

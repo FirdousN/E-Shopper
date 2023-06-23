@@ -1,0 +1,39 @@
+<div class="row">
+    <div class="container-fluid h-100 ">
+        <div class="card flex-fill">
+            <div style="float: right">
+                <a href="/admin/add-category"><button type="button" class="btn-sm btn-success ">Add Category</button></a>
+            </div>
+            
+            <div class="card-header">
+                <h5 class="card-title ">Users List</h5>
+            </div>
+            <table id="userTable" class="table table-hover my-0">
+                <thead>
+
+                    <tr>
+                        <th>Sl.No</th>
+                        <th>Category </th>
+                        <th class="d-none d-md-table-cell">Genter</th>
+                        <th>Sub-category</th>
+                        <th class="d-none d-md-table-cell">Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% catagories.forEach((category, index) => { %>
+                    <tr>
+                        <th scope="row"><%= index + 1 %></th>
+                        <td><%= category.category %></td>
+                        <td><%= category.gender %></td>
+                        <td><%= category.subcategory %></td>
+                        <td>
+                            
+                            <a href="/admin/edit-category/<%= category._id %>"><button  class="btn-sm btn-success ">Edit Category</button></a>
+                        </td>
+                    </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+        <!-- latest project -->
+    </div>

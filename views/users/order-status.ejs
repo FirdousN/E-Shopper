@@ -1,0 +1,92 @@
+<!-- Page Header Start -->
+<div class="container-fluid bg-secondary mb-5">
+    <div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 300px">
+        <h1 class="font-weight-semi-bold text-uppercase mb-3">Order Details</h1>
+        <div class="d-inline-flex">
+            <p class="m-0"><a href="">Home</a></p>
+            <p class="m-0 px-2">-</p>
+            <p class="m-0">Your Orders</p>
+        </div>
+    </div>
+</div>
+<!-- Page Header End -->
+<div class="container">
+    <div class="card flex-fill">
+        <!-- latest project -->
+        <div class="card-header">
+            <h5 class="card-title mb-0">Order status</h5>
+        </div>
+
+        <table class="table table-hover my-0">
+            <thead>
+                <tr>
+                    <th scope="col">Date</th>
+                    <th scope="col">Address</th>
+                    <th scope="col">Pincode</th>
+                    <th scope="col">Mobile</th>
+                    <th scope="col">Amount</th>
+                    <th scope="col">Payment</th>
+                    <th scope="col">Status</th>
+
+                </tr>
+            </thead>
+            
+            <% orders.forEach((order) => { %>
+            <tbody>
+                <tr>
+                    <td><%= order.createdAt.toLocaleDateString() %></td>
+                    <td><%= order.deliveryDetails[0].addresses %></td>
+                    <td> <%= order.deliveryDetails[0].pinCode %> </td>
+                    <td> <%= order.user.mobile %></td>
+                    <td> $<%= order.totalAmount %> </td>
+                    <td>
+
+                            <% if (order.paymentMethod === 'COD') { %>
+                            <span class="text-success">COD</span>
+                            <% } else { %>
+                            <span class="text-success">Online</span>
+                            <% } %>
+
+                        </td>
+                    <td class="col-md-2">
+                        
+                        <a href='/detail?orderId=<%= order._id %>'>
+                            <button type="button" class="btn btn-sm btn-primary">View details</button>
+                          </a>                        
+                    </td>
+                </tr>
+            </tbody>
+            <% }) %>
+
+        </table>
+    </div>
+
+</div>
+
+
+<script>
+    // Assuming you have jQuery included
+    $(document).on('click', '.delete-btn', function (event) {
+        event.preventDefault();
+
+        const productId = $(this).data('product-id');
+
+        // Display the confirmation dialog
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'This action cannot be undone!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // If the user confirms the deletion, redirect to the delete route
+                window.location.href = `/admin/delete-product?${productId}`;
+            }
+        });
+    });
+
+
+// ******************************

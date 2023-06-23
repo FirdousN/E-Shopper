@@ -1,0 +1,80 @@
+<!-- <form action="/admin/edit-products/productId" method="POST" enctype="multipart/form-data"> -->
+    <div class="card-header">
+        <h5 class="card-title mb-0">Edit Category</h5>
+    </div>
+    <form action="/admin/edit-category/<%= category._id %>" method="POST" >
+
+    <div class="mb-3">
+        <label for="product-name" class="form-label">Category</label>
+        <input type="text" required value="<%= category.category  %>" name="category" class="form-control" id="name" aria-describedby="emailHelp">
+    </div>
+    <div class="mb-3">
+        <label for="description" class="form-label">Sub-category</label>
+        <input type="text" required value="<%= category.subcategory  %>" name="subcategory" class="form-control" id="description">
+    </div>
+    
+    <div class="mb-3">
+        <label class="form-label">Gender</label>
+        <select class="form-control" name="gender">
+            <option value="Men">Men </option>
+            <option value="Women" selected>Women</option>
+            <option value="Unisex" selected>Boys</option>
+            <option value="Unisex" selected>Girls</option>
+            <option value="Unisex" selected>Unisex</option>
+        </select>
+    </div>
+    <!-- quantity***************************** -->
+    <!-- <div class="mb-3">
+        <label for="quantity" class="form-label">Quantity</label>
+        <input type="text" required value="Product Quantity" name="quantity" class="form-control" id="quantity" onkeyup="return validateQuantity()">
+        <span id="quantity-error" style="color: red; font-size: 12px; margin-top: 5px;"></span>
+    </div> -->
+    <!-- <div class="mb-3">
+        <label for="images">Images</label>
+        <input type="file" name="testImage" id="testImage" multiple="multiple">
+        <img src="/images/product-image.jpg" id="previewImage" alt="" style="height: 4rem;">
+    </div> -->
+    <button type="submit" id="categoryId" class="btn btn-primary">Submit</button>
+</form>
+
+<script>
+    const inputFile = document.getElementById('testImage');
+    const previewImage = document.getElementById('previewImage');
+
+    inputFile.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        const reader = new FileReader();
+
+        reader.onload = () => {
+            previewImage.src = reader.result;
+        };
+
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+    });
+
+    function validatePrice() {
+        const regPrice = /^[1-9][0-9]*$/;
+        const price = document.getElementById('price').value
+        if (!regPrice.test(price)) {
+            document.getElementById('price-error').innerHTML = 'Price should be greater than zero';
+            return false;
+        } else {
+            document.getElementById('price-error').innerHTML = '';
+            return true;
+        }
+    }
+
+    function validateQuantity() {
+        const regQuantity = /^[0-9][0-9]*$/;
+        const quantity = document.getElementById('quantity').value;
+        if (!regQuantity.test(quantity)) {
+            document.getElementById('quantity-error').innerHTML = 'Quantity cannot be a negative value';
+            return false;
+        } else {
+            document.getElementById('quantity-error').innerHTML = '';
+            return true;
+        }
+    }
+</script>

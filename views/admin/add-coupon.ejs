@@ -1,0 +1,51 @@
+<body>
+  <div class="card-body">
+      
+
+      <div class="card">
+          <div class="m-sm-4">
+
+              <div class="card-header">
+                  <h5 class="card-title text-primary">Add Category</h5>
+              </div>
+              <% if (locals.Error) { %>
+                  <div class="error-message" style="color: red; text-align: center;">
+                    <%= locals.Error %>
+                  </div>
+                <% } %>
+                <form action="/admin/add-coupon" method="post">
+                  <div class="mb-3">
+                    <label for="code" class="form-label">Coupon Name:</label>
+                    <input type="text" class="form-control" id="name" name="name" required>
+                  </div>
+                  <!-- <div class="mb-3">
+                    <label for="code" class="form-label">Coupon Code:</label>
+                    <input type="text" class="form-control" id="code" name="code" required>
+                  </div> -->
+                  <div class="mb-3">
+                    <label for="discount" class="form-label">Discount:</label>
+                    <input type="text" class="form-control" id="discount" name="discount" inputmode="numeric"  oninput="this.value = this.value.replace(/[^0-9! @#$%^&*]/g, '')">
+                  </div>
+                  
+                  
+                  <!-- <div class="mb-3">
+                    <label for="startDate" class="form-label">Start Date:</label>
+                    <input type="date" class="form-control" id="startDate" name="startDate" required>
+                  </div> -->
+                  <div class="mb-3">
+                    <label for="expiryDate" class="form-label">Expiry Date:</label>
+                    <input type="date" class="form-control" id="expiryDate" name="expiryDate" required>
+                  </div>
+                  <button type="submit" class="btn btn-primary">Create Coupon</button>
+                </form>
+
+          </div>
+      </div>
+  </div>
+</body>
+
+
+
+
+
+

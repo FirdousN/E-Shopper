@@ -1,0 +1,183 @@
+<!-- Page Header Start -->
+<div class="container-fluid bg-secondary mb-5">
+    <div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 300px">
+        <h1 class="font-weight-semi-bold text-uppercase mb-3">Shopping Cart</h1>
+        <div class="d-inline-flex">
+            <p class="m-0"><a href="">Home</a></p>
+            <p class="m-0 px-2">-</p>
+            <p class="m-0">Shopping Cart</p>
+        </div>
+    </div>
+</div>
+<!-- Page Header End -->
+
+<div class="container">
+    <% if (products.length > 0) { %>
+
+    <div class="row">
+        <div class=" col-md-8">
+            <div class="cart-table">
+                <table class="table ">
+                    <thead>
+                        <tr>
+
+                            <!-- <th scope="col">#</th> -->
+                            <th>Product</th>
+                            <th>Name</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <% products.forEach((product ) => { %>
+                    <tbody>
+                        <div>
+                            <tr id="<%= product.slug %>">
+                                <td class="image-container">
+                                    <img src="/uploads/images/<%= product.image %>" alt="Image"
+                                        style="max-width: 100px; max-height: 100px;">
+                                </td>
+                                <td class="product-name"><%= product.slug%></td>
+                                
+                                <td class="product-quantity">
+                                    <div class="input-group quantity mr-3" style="width: 130px;">
+                                        <div class="input-group-btn">
+                                            <button
+                                                onclick="changeQuantity('<%= product.slug %>', '<%= product.slug %>', -1)"
+                                                class="btn btn-primary btn-minus">
+                                                <i class="fa fa-minus"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control bg-secondary text-center"
+                                            value="<%= product.quantity %>">
+                                        <div class="input-group-btn">
+                                            <button
+                                                onclick="changeQuantity('<%= product.slug %>', '<%= product.slug %>', 1)"
+                                                class="btn btn-primary btn-plus">
+                                                <i class="fa fa-plus"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="product-price">$<%= product.price %></td>
+
+                                <td class="product-action">
+                                    <!-- <button class="btn btn-danger" >Remove</button> -->
+
+                                    <button onclick="removeProduct('<%= product.slug %>')" class="btn btn-danger"><i
+                                            class=" text-primary mr-1"></i>Remove</button>
+                                </td>
+                            </tr>
+                        </div>
+                    </tbody>
+                    <% }) %>
+
+
+                    <tfoot>
+                        <tr>
+                            <td colspan="4" class="text-right"><strong>Total:</strong></td>
+                            <td>$<%= total %></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Cart Summary</h5>
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <td>Subtotal:</td>
+                                <td>$<%=total %></td>
+                            </tr>
+                            <!-- <tr>
+                                <td>Tax:</td>
+                                <td>$3.00</td>
+                            </tr> -->
+
+                        </tbody>
+                    </table>
+                    <div class="text-right">
+                        <a href="/checkout" class="btn btn-primary">Checkout</a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <% } else { %>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="alert alert-info" role="alert">
+                Your cart is empty.
+            </div>
+        </div>
+    </div>
+    <% } %>
+
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+<!-- <script>
+    function changeQuantity(cartId,proId,count){
+        $.ajax({
+            url:'/change-product-quantity/',
+            data:{
+                cart:cartId,
+                product:proId,
+                count:count,
+            },
+            method:'post',
+            success:(response)=>{
+                alert(response)
+            }
+        })
+    }
+</script> -->
+<script>
+
+
+    function changeQuantity(cartId, proSlug, count) {
+        $.ajax({
+            url: '/change-product-quantity/' + cartId + '/' + proSlug,
+            type: 'post',
+            data: { count: count },
+            success: function (response) {
+                alert(response);
+                // Refresh the page or update the cart UI as needed
+            },
+            error: function (error) {
+                alert('Error updating product quantity');
+            }
+        });
+    }
+
+    function removeProduct(proSlug) {
+        console.log(proSlug, '//////////////////');
+        $.ajax({
+            url: '/remove-cart-product/' + proSlug,
+            type: 'delete',
+            success: function (response) {
+                alert(response);
+                console.log(response, '🤣🤣🤣');
+                if (response.removeProduct) {
+
+                    $('#' + proSlug).remove()
+                }
+                // Refresh the page or update the cart UI as needed
+            },
+            error: function (error) {
+                alert('Error updating product quantity');
+            }
+
+        })
+    }
+</script>

@@ -1,0 +1,98 @@
+<body>
+    <div class="card-body">
+        <div class="header mb-3">
+            <h5 class="card-title text-dark">Add Products</h5>
+        </div>
+        <div class="card cl-r-5">
+            <div class="m-sm-5 ">
+
+                <form action="/admin/add-products" method="post" enctype="multipart/form-data">
+
+                    <div class="mb-3">
+                        <label class="form-label">Enter Product name</label>
+                        <input class="form-control form-control-lg" type="text" name="productName"
+                            placeholder="Enter Product name" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Enter product price</label>
+                        <input class="form-control form-control-lg" type="number" name="productPrice"
+                            placeholder="Enter Product price" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Enter Product Quantity</label>
+                    <input class="form-control form-control-lg" type="number" name="stockQuantity"
+                            placeholder="Enter Product Quantity" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="textAreaExample">Description</label>
+                        <textarea type="text" name="description" class="form-control" id="textAreaExample1"
+                            rows="4"></textarea>
+
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Choose a category</label>
+
+                        <select class="form-control" type="text" name="category">
+                            <% categories.forEach((categories) => { %>
+                            <option><%= categories.category %></option>
+                            <% }) %>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Choose a sub-category</label>
+                        <select class="form-control" type="text" name="subcategory">
+                            <% categories.forEach((categories) => { %>
+                            <option><%= categories.subcategory %></option>
+                            <% }) %>
+                            
+                        </select>
+
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="productImage" class="form-label">Upload product images</label>
+                        <div class="input-group">
+                            <input type="file" class="form-control" id="productImage" name="productImage" multiple/>
+                        </div>
+                    </div>
+
+                    <div class="text-center mt-3">
+                        <button type="submit" class="btn btn-lg btn-primary">Add Product</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</body>
+
+
+<script>
+
+
+    function validatePrice() {
+        const regPrice = /^[1-9][0-9]*$/;
+        const price = document.getElementById('price').value
+        if (!regPrice.test(price)) {
+            document.getElementById('price-error').innerHTML = 'price should be greater than zero'
+            return false
+        } else {
+            document.getElementById('price-error').innerHTML = ''
+            return true
+        }
+    }
+
+    function validateQuantity() {
+        const regQuantity = /^[1-9][0-9]*$/
+        const quantity = document.getElementById('quantity').value
+        if (!regQuantity.test(quantity)) {
+            document.getElementById('quantity-error').innerHTML = 'quantity should be greater than zero'
+            return false
+        } else {
+            document.getElementById('quantity-error').innerHTML = ''
+            return true
+        }
+    }
+
+</script>

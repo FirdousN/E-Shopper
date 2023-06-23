@@ -1,0 +1,135 @@
+
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="/login/font/icomoon/style.css">
+
+    <link rel="stylesheet" href="/login/css/owl.carousel.min.css">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="/login/css/bootstrap.min.css">
+
+    <!-- Style -->
+    <link rel="stylesheet" href="/login/css/style.css">
+
+    <style>
+      .btn-login {
+        background-color: #2470b2;
+      }
+
+      .btn-login:hover {
+        background-color: rgb(245, 245, 245);
+      }
+
+      .content {
+        background-image: url('../../../login/image/h1_hero.jpg.webp');
+        background-repeat: no-repeat;
+        background-size: cover;
+      }
+    </style>
+
+    <title>Login</title>
+  </head>
+
+  <body>
+    
+    <!-- Otp login page -->
+<div class="container">
+    <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+        <div class="card border-0 shadow rounded-3 my-5 custom-login-bg">
+            <div class="card-body p-4 p-sm-5">
+
+              <div class="mb-4">
+                <h3>Login with phone</h3>
+              </div>
+              <div>
+                <form action="/generate-otp" method="post" id="login-form">
+                  <!--  -->
+                  
+                  <!-- // -->
+                  <div class="form-group">
+                    <label for="phonenumber">Enter Phone Number:</label>
+                    <input type="text" class="form-control" placeholder="Enter phone number" id="phonenumber" name="phonenumber" pattern="[0-9]{10}" title="Please enter a 10-digit number" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10)" required>
+                   
+                </div>
+                <!--  -->
+                 <br>
+                      <button type="submit" class="btn btn-block btn-login">Send OTP</button>
+                   <br>
+                </form>
+              </div>
+
+              <form action="#" method="post">
+
+                <span class="d-block text-left my-4 text-muted">&mdash; or login with &mdash;</span>
+
+                <div class="social-login">
+                  <a href="#" class="facebook">
+                    <span class="icon-facebook mr-3"></span>
+                  </a>
+                  <a href="#" class="twitter">
+                    <span class="icon-twitter mr-3"></span>
+                  </a>
+                  <a href="#" class="google">
+                    <span class="icon-google mr-3"></span>
+                  </a>
+                </div>
+              </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <script>
+      var otpValues = []; 
+
+function setMobileNumber() {
+ const mobileNumber = document.getElementById("phonenumber").value;
+
+ document.getElementById("phonenumber-input").value = mobileNumber;
+ 
+ const otp = document.getElementById('otp1').value +
+           document.getElementById('otp2').value +
+           document.getElementById('otp3').value +
+           document.getElementById('otp4').value +
+           document.getElementById('otp5').value +
+           document.getElementById('otp6').value;
+           console.log(otp);
+document.getElementById('otpId').value = otp;
+}
+
+     $(document).ready(function () {
+      // initialize empty array to store OTP values
+       $('input[type="text"]').on('input keydown', function (e) {
+         var $this = $(this);
+         if (e.keyCode == 8 && !$this.val()) {
+           $this.prev('input[type="text"]').focus(); // move cursor to previous input field if backspace is pressed and field is empty
+           otpValues.pop(); // remove last value from array if backspace is pressed and field is empty
+         } else if ($this.val()) {
+           $this.next('input[type="text"]').focus(); // move cursor to next input field
+           otpValues.push($this.val()); // store entered value in array
+         }
+       });
+     });
+     function abc() {
+       otpValues = otpValues.join('')
+      document.getElementById('otpId').value = otpValues
+       
+     }
+   </script>
+
+
+
+
+   <script src="/login/js/jquery-3.3.1.min.js"></script>
+   <script src="/login/js/popper.min.js"></script>
+   <script src="/login/js/bootstrap.min.js"></script>
+   <script src="/login/js/main.js"></script>
+ </body>
+
+ 
+
+<!-- </html> -->
