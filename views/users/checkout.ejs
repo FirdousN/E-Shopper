@@ -158,20 +158,32 @@
 
             <div class="col-lg-4">
 
+                <!-- Apply Coupon -->
+                <div class="card border-secondary mb-5">
+                    <div class="card-header bg-secondary border-0">
+                        <h4 class="font-weight-semi-bold m-0">APPLY COUPON</h4>
+                    </div>
+                    <div class="cart-body">
+                        <div class="input-group d-flex justify-content-center align-items-center">
+                            <input type="text" class="form-control" id="couponId" name="couponCode"
+                                placeholder="Enter coupon code">
+                            <div class="input-group-append">
+                                <div class="d-flex justify-content-center align-items-center">
+                                    <button class="btn btn-primary rounded-0" type="button" id="apply-coupon-btn"
+                                        onclick="applyCoupon()">Apply</button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- <div id="message"></div> Added this element -->
+                    </div>
+                </div>
                 <!-- Order Total -->
-
                 <div class="card border-secondary mb-5">
                     <div class="card-header bg-secondary border-0">
                         <h4 class="font-weight-semi-bold m-0">Order Total</h4>
                     </div>
 
                     <div class="card-body">
-
-                        <!-- Display the discount amount -->
-                        <div class="d-flex justify-content-between mb-3 pt-1">
-                            <h6 class="font-weight-medium">Discount</h6>
-                            <h6 class="font-weight-medium" id="couponDiscount">$0</h6>
-                        </div>
 
                         <h5 class="font-weight-medium mb-3">Products</h5>
                         <!-- how many products in cart checkout -->
@@ -189,10 +201,11 @@
                                 <h6 class="font-weight-medium">Subtotal</h6>
                                 <h5 class="font-weight-bold" id="subTotal">$<%= total %></h5>
                             </div>
-                            <!-- <div class="d-flex justify-content-between">
-                            <h6 class="font-weight-medium">Shipping</h6>
-                            <h6 class="font-weight-medium">$10</h6>
-                        </div> -->
+                            <!-- Display the discount amount -->
+                            <div class="d-flex justify-content-between mb-3 pt-1">
+                                <h6 class="font-weight-medium">Discount</h6>
+                                <h6 class="font-weight-medium" id="couponDiscount">$0</h6>
+                            </div>
                     </div>
                     <div class="card-footer border-secondary bg-transparent">
                         <div class="d-flex justify-content-between mt-2">
@@ -201,25 +214,6 @@
                         </div>
                     </div>
 
-                    <!-- Apply Coupon -->
-                    <div class="card border-secondary mb-5">
-                        <div class="card-header bg-secondary border-0">
-                            <h4 class="font-weight-semi-bold m-0">APPLY COUPON</h4>
-                        </div>
-                        <div class="cart-body">
-                            <div class="input-group d-flex justify-content-center align-items-center">
-                                <input type="text" class="form-control" id="couponId" name="couponCode"
-                                    placeholder="Enter coupon code">
-                                <div class="input-group-append">
-                                    <div class="d-flex justify-content-center align-items-center">
-                                        <button class="btn btn-primary rounded-0" type="button" id="apply-coupon-btn"
-                                            onclick="applyCoupon()">Apply</button>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- <div id="message"></div> Added this element -->
-                        </div>
-                    </div>
 
                 </div>
 
@@ -312,7 +306,7 @@
 
 
         if (couponInput.length === 0) {
-            message.html ("Enter coupon code");
+            message.html("Enter coupon code");
 
         } else {
             $.ajax({
@@ -348,8 +342,8 @@
 
                         // Update the content of the #couponDiscount element with the discounted amount
                         if (response.discountAmount) {
-                            $("#couponDiscount").html = (`₹${response.discountAmount}`);
-                            // document.getElementById("taxWithTotal").html = `₹${response.cartTotal - response.discountAmount}`;
+                            $("#couponDiscount").html(`₹${response.discountAmount}`);
+                            $("#totalAmount").html(`₹${response.cartTotal - response.discountAmount}`);
                         } else {
                             $("#discountAmount").html = ("$0");
                         }
@@ -402,9 +396,9 @@
             "order_id": order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
             "handler":
                 function handleRazorpayResponse(response) {
-                    alert(response.razorpay_payment_id);
-                    alert(response.razorpay_order_id);
-                    alert(response.razorpay_signature);
+                    // alert(response.razorpay_payment_id);
+                    // alert(response.razorpay_order_id);
+                    // alert(response.razorpay_signature);
 
                     verifyPayment(response, order)
                 },

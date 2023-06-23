@@ -1,3 +1,4 @@
+require('dotenv').config();
 const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
@@ -54,7 +55,7 @@ app.use(nocache());
 
 // session handling
 app.use(session({
-  secret:'key',
+  secret : process.env.cookieSecret,
   saveUninitialized: false,
   cookie: {
     maxAge: 1000 * 60 * 60 * 24 * 10, // 10 days
