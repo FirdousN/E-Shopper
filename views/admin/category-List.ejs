@@ -2,17 +2,19 @@
     <div class="container-fluid h-100 ">
         <div class="card flex-fill">
             <div style="float: right">
-                <a href="/admin/add-category"><button type="button" class="btn-sm btn-success ">Add Category</button></a>
+                <a href="/admin/add-category"><button type="button" class="btn-sm btn-success ">Add
+                        Category</button></a>
             </div>
-            
+
             <div class="card-header">
                 <h5 class="card-title ">Users List</h5>
             </div>
-            <table id="userTable" class="table table-hover my-0">
+            <table id="categoryTable" class="table table-hover my-0">
                 <thead>
 
                     <tr>
                         <th>Sl.No</th>
+                        <th>Image</th>
                         <th>Category </th>
                         <th class="d-none d-md-table-cell">Genter</th>
                         <th>Sub-category</th>
@@ -23,12 +25,16 @@
                     <% catagories.forEach((category, index) => { %>
                     <tr>
                         <th scope="row"><%= index + 1 %></th>
+                        <td class="image-container">
+                            <img src="/uploads/images/<%= category.image %>" alt="Image"
+                                style="max-width: 100px; max-height: 100px;">
+                        </td>
                         <td><%= category.category %></td>
                         <td><%= category.gender %></td>
                         <td><%= category.subcategory %></td>
                         <td>
-                            
-                            <a href="/admin/edit-category/<%= category._id %>"><button  class="btn-sm btn-success ">Edit Category</button></a>
+                            <a href="/admin/edit-category/<%= category._id %>"><button class="btn-sm btn-success ">Edit
+                                    Category</button></a>
                         </td>
                     </tr>
                     <% }) %>
@@ -37,3 +43,12 @@
         </div>
         <!-- latest project -->
     </div>
+
+    <!-- DataTables JavaScript -->
+    <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#categoryTable').DataTable();
+        });
+    </script>

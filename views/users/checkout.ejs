@@ -147,7 +147,7 @@
 
                             <!-- <div class="card-footer border-secondary bg-transparent">
                         <button type="submit" class="btn btn-lg btn-block btn-primary font-weight-bold my-3 py-3">Place Order</button>
-                    </div> -->
+                         </div> -->
                         </div>
                     </div>
 
@@ -217,6 +217,7 @@
 
                 </div>
 
+                <!-- PAYMENT METHOD -->
                 <div class="card border-secondary mb-5">
                     <div class="card-header bg-secondary border-0">
                         <h4 class="font-weight-semi-bold m-0">Payment</h4>
@@ -236,7 +237,24 @@
                                 <label class="custom-control-label" for="online">Online </label>
                             </div>
                         </div>
-
+                        <% if (wallet) { %>
+                            <div class="form-group">
+                                <div class="custom-control custom-radio">
+                                    <input type="radio" class="custom-control-input" name="paymentMethod" id="wallet"
+                                        value="WALLET">
+                                    <label class="custom-control-label" for="wallet">Wallet ($ <%= wallet.balance %>) </label>
+                                </div>
+                            </div>
+                        <% } else { %>
+                            <div class="form-group">
+                                <div class="custom-control custom-radio">
+                                    <input type="radio" class="custom-control-input" name="paymentMethod" id="wallet"
+                                        value="WALLET">
+                                    <label class="custom-control-label" for="wallet">Wallet ($ 0) </label>
+                                </div>
+                            </div>
+                        <% } %>
+                        
                     </div>
                     <div class="card-footer border-secondary bg-transparent">
                         <button type="submit" class="btn btn-lg btn-block btn-primary font-weight-bold my-3 py-3">

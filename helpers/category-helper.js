@@ -1,25 +1,32 @@
 // const bcrypt = require('bcrypt');
 const categoryModel = require('../models/category-model');
+var multer = require('../config/multer');
+const slugify = require('slugify');
+const ordersModel = require('../models/order-model')
 
 module.exports = {
-    addCategory: async (categoryData) => {
+    addCategory: async (categoryData, images) => {
+        console.log('lkjlkjlkljkljkljljkljkljl');
         try {
-            //    const categoryExist = await categoryModel.find({ category:categoryData.category })
-               const categoryExist = await categoryModel.findOne({ category: categoryData.category.toLowerCase() })
+            const lowerCaseCategory = categoryData.category.toLowerCase();
+            const categoryExist = await categoryModel.findOne({ category: { $regex: new RegExp(`^${lowerCaseCategory}$`, 'i') } })
 
-            console.log(categoryExist.category, '👁️‍🗨️👁️‍🗨️👁️‍🗨️');
+            console.log(categoryExist, '👁️‍🗨️👁️‍🗨️👁️‍🗨️');
 
-            if (categoryExist.length) {
+            if (categoryExist) {
+                console.log('0000000000000000');
                 throw new Error('Category already exists')
             } else {
                 console.log("else case");
-                const categories = new categoryModel({
+                const newCategory = new categoryModel({
                     category: categoryData.category,
                     gender: categoryData.gender,
-                    subcategory: categoryData.subcategory
+                    subcategory: categoryData.subcategory,
+                    image: images,
+                    slug: categoryData.slug,
                 })
-                await categories.save()
-                // .then(resolve())
+
+                await newCategory.save()
                 // .catch(reject())
 
             }
@@ -28,7 +35,7 @@ module.exports = {
         }
     },
 
-    editCategory: async (categoryId, data) => {
+    editCategory: async (categoryId, data, images) => {
         try {
             await categoryModel.updateOne({ _id: new Object(categoryId) }, {
                 $set: {
@@ -36,13 +43,50 @@ module.exports = {
                     // status: data.status,
                     gender: data.gender,
                     subcategory: data.subcategory,
-
+                    image: images,
                 }
             }).catch((error) => {
                 console.log(error.message);
             })
         } catch (error) {
             throw error;
+        }
+    },
+
+    deliverCategory: async (req, res) => {
+        try {
+            console.log('000000000002');
+
+            // Use the aggregation pipeline to calculate the required values directly from the database
+            const orders = await ordersModel.aggregate([
+                {
+                    $match: {
+                        'products.deliveryStatus': 'payed'
+                    } // Add any filters if needed
+                },
+                {
+                    $unwind: "$products"
+                },
+                {
+                    $group: {
+                        _id: "$products.category",
+                        count: { $sum: 1 }
+                    }
+                },
+                {
+                    $project: {
+                      categoryName: "$_id",
+                      count: 1,
+                      _id: 0
+                    }
+                  }
+              
+            ]);
+
+            console.log('👻', orders, '👻', '000000000002');
+            return orders;
+        } catch (error) {
+            console.log(error.message);
         }
     }
 

@@ -21,7 +21,11 @@ let categorySchema= new Schema({
         type:String,
         required:true
     },
-    // image:[]
+    image:[],
+    
+    slug: {
+        type: String,
+        unique: true },
 
 })
 

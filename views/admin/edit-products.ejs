@@ -2,7 +2,7 @@
     <div class="card-header">
         <h5 class="card-title mb-0">Edit Product</h5>
     </div>
-    <form action="/admin/edit-products/<%= product._id %>" method="POST" >
+    <form action="/admin/edit-products/<%= product._id %>" method="post" enctype="multipart/form-data">
 
     <div class="mb-3">
         <label for="product-name" class="form-label">Product Name</label>
@@ -17,6 +17,12 @@
         <input type="text" required value="<%= product.productPrice  %>" name="productPrice" class="form-control" id="price" onkeyup="return validatePrice()">
         <span id="price-error" style="color: red; font-size: 12px; margin-top: 5px;"></span>
     </div>
+    <div class="mb-3">
+        <label for="price" class="form-label">Offer Price</label>
+        <input type="text" required  value="<%= product.offerPrice %>" name="offerPrice" class="form-control" id="offerPrice" onkeyup="return validatePrice()">
+        <span id="price-error" style="color: red; font-size: 12px; margin-top: 5px;"></span>
+    </div>
+    
     
     <!-- <div class="mb-3">
         <label class="form-label">Product Category</label>
@@ -40,6 +46,13 @@
         <input type="text" required value="Product Quantity" name="quantity" class="form-control" id="quantity" onkeyup="return validateQuantity()">
         <span id="quantity-error" style="color: red; font-size: 12px; margin-top: 5px;"></span>
     </div> -->
+
+    <td class="image-container">
+        <% product.image.forEach((image) => { %>
+          <img src="/uploads/images/<%= image %>" alt="Image" style="max-width: 100px; max-height: 100px;">
+        <% }) %>
+      </td>
+
     <div class="mb-3">
         <label for="productImage" class="form-label">Upload product images</label>
         <div class="input-group">

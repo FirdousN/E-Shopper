@@ -1,0 +1,53 @@
+<!-- Page Header Start -->
+<div class="container-fluid bg-secondary mb-5">
+    <div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 300px">
+        <h1 class="font-weight-semi-bold text-uppercase mb-3">Edit Address</h1>
+        <div class="d-inline-flex">
+            <p class="m-0"><a href="">Home</a></p>
+            <p class="m-0 px-2">-</p>
+            <p class="m-0">Edit Address</p>
+        </div>
+    </div>
+</div>
+<!-- Page Header End -->
+
+<div class="container">
+    <div class="card mt-4">
+      
+      <div class="card-body">
+        <!-- USER ADDRESS EDIT FORM -->
+        <form action="/edit-address" method="POST">
+          <input type="hidden" name="addressId" value="<%= address[0].addresses._id %>">
+          
+          <div class="form-group">
+            <label for="addresses">Address</label>
+            <input type="text" class="form-control" id="addresses" name="addresses" value="<%= address[0].addresses.addresses %>" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="city">City</label>
+            <input type="text" class="form-control" id="city" name="city" value="<%= address[0].addresses.city %>" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="state">State</label>
+            <input type="text" class="form-control" id="state" name="state" value="<%= address[0].addresses.state %>"  required>
+          </div>
+          
+          <div class="form-group">
+            <label for="country">Country</label>
+            <input type="text" class="form-control" id="country" name="country" value="<%= address[0].addresses.country %>" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="postalCode">Postal Code</label>
+            <input type="text" class="form-control" id="postalCode" name="pincode" value="<%= address[0].addresses.pincode %>" required>
+          </div>
+          
+          <button type="submit" class="btn btn-primary">Save Address</button>
+        </form>
+        <!-- USER ADDRESS EDIT FORM -->
+      </div>
+    </div>
+  </div>
+  

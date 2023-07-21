@@ -1,0 +1,44 @@
+<!-- Page Header Start -->
+<div class="container-fluid bg-secondary mb-5">
+    <div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 300px">
+        <h1 class="font-weight-semi-bold text-uppercase mb-3">User Profile</h1>
+        <div class="d-inline-flex">
+            <p class="m-0"><a href="">Home</a></p>
+            <p class="m-0 px-2">-</p>
+            <p class="m-0">User Profile</p>
+        </div>
+    </div>
+</div>
+<!-- Page Header End -->
+<!-- user_profile.ejs -->
+
+<!-- User Profile Page -->
+<div class="container">
+  
+  <div class="row">
+    <div class="col-md-6">
+      <h3>Personal Information</h3>
+      <p><strong>Name:</strong> <%= user.name %></p>
+      <p><strong>Email:</strong> <%= user.email %></p>
+      <p><strong>Mobile:</strong> <%= user.mobile %></p>
+    </div>
+    <div class="col-md-6">
+      <h3>Address Information</h3>
+      <% if (user.addresses.length > 0) { %>
+    
+          <div class="address">
+            <p><strong>Address:</strong> <%= user.addresses[0].addresses%></p>
+            <p><strong>City:</strong> <%= user.addresses[0].city %></p>
+            <p><strong>State:</strong> <%= user.addresses[0].state %></p>
+            <p><strong>Country:</strong> <%= user.addresses[0].country %></p>
+            <p><strong>Pincode:</strong> <%= user.addresses[0].pincode %></p>
+          </div>
+       
+      <% } else { %>
+        <p>No addresses found.</p>
+      <% } %>
+    </div>
+  </div>
+</div>
+<!-- End User Profile Page -->
+

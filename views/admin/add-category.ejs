@@ -10,12 +10,8 @@
                 <div class="card-header">
                     <h5 class="card-title text-primary">Add Category</h5>
                 </div>
-                <% if (locals.Error) { %>
-                    <div class="error-message" style="color: red; text-align: center;">
-                      <%= locals.Error %>
-                    </div>
-                  <% } %>
-                <form action="/admin/add-category" method="post" >
+
+                <form action="/admin/add-category" method="post" enctype="multipart/form-data">
                     <div class="mb-4">
                         <label class="form-label">Choose a category</label>
                         <input class="form-control form-control-lg" type="text" name="category"
@@ -36,7 +32,22 @@
                         <input class="form-control form-control-lg" type="text" name="subcategory"
                             placeholder="Enter a Sub-category" required />
                     </div>
-                    <button type="submit" class="btn btn-lg btn-primary">Add Category</button>
+                    <!-- Add and edit images -->
+                    <div class="mb-3">
+                        <label for="categoryImage" class="form-label">Upload Category images</label>
+                        <div class="input-group">
+                            <input type="file" class="form-control" id="categoryImage" name="categoryImage" multiple />
+                        </div>
+                    </div>
+                    <% if (locals.error) { %>
+                        <div class="error-message text-danger" style=" text-align: center;">
+                            <%= locals.error %>
+                        </div>
+                        <% } %>
+                    <div class="d-flex justify-content-center">
+                        <button type="submit" class="btn btn-lg btn-primary">Add Category</button>
+                    </div>
+                    
                 </form>
 
             </div>
@@ -46,19 +57,19 @@
 
 
 <script>
-//***********************GENDER SELECTION*********************************************************////    
-    $(document).ready(function() {
-      // Listen for changes in the select element
-      $('#genderSelect').change(function() {
-        // Get the selected option value
-        var selectedOption = $(this).val();
-        
-        // Log the selected option to the console
-        console.log('Selected Gender:', selectedOption);
-      });
+    //***********************GENDER SELECTION*********************************************************////    
+    $(document).ready(function () {
+        // Listen for changes in the select element
+        $('#genderSelect').change(function () {
+            // Get the selected option value
+            var selectedOption = $(this).val();
+
+            // Log the selected option to the console
+            console.log('Selected Gender:', selectedOption);
+        });
     });
 
-//***********************GENDER SELECTION*********************************************************////    
+    //***********************GENDER SELECTION*********************************************************////    
 
     function validatePrice() {
         const regPrice = /^[1-9][0-9]*$/;

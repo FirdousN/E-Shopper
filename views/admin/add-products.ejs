@@ -41,13 +41,8 @@
                     
                     <div class="mb-3">
                         <label class="form-label">Choose a sub-category</label>
-                        <select class="form-control" type="text" name="subcategory">
-                            <% categories.forEach((categories) => { %>
-                            <option><%= categories.subcategory %></option>
-                            <% }) %>
-                            
-                        </select>
-
+                        <input class="form-control form-control-lg" type="text" name="subcategory"
+                        placeholder="Enter Product subcategory" required />
                     </div>
 
                     <div class="mb-3">

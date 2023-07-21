@@ -8,7 +8,7 @@
             <div class="card-header">
                 <h5 class="card-title ">Coupons </h5>
             </div>
-            <table id="userTable" class="table table-hover my-0">
+            <table id="couponTable" class="table table-hover my-0">
                 <thead>
                     <tr>
                         <th>Sl/No.</th>
@@ -20,7 +20,7 @@
                     </tr>
                 </thead>
 
-                    <% coupons.forEach((coupon, index) => { %>
+                <% coupons.forEach((coupon, index) => { %>
                 <tbody>
                     <tr>
                         <th scope="row"><%= index + 1 %></th>
@@ -30,7 +30,7 @@
                         <td><%= coupon.expiryDate.toLocaleDateString() %></td>
                         <td>
                             <a href="/admin/edit-coupon/<%= coupon._id %>">
-                                <button class="btn-sm btn-success">Edit Category</button>
+                                <button class="btn-sm btn-success">Edit Coupon</button>
                             </a>
                         </td>
                     </tr>
@@ -40,3 +40,10 @@
         </div>
     </div>
 </div>
+
+<script>
+    $(document).ready(function () {
+        $('#couponTable').DataTable();
+    });
+
+</script>

@@ -35,11 +35,11 @@
                         <div>
                             <tr id="<%= product.slug %>">
                                 <td class="image-container">
-                                    <img src="/uploads/images/<%= product.image %>" alt="Image"
+                                    <img src="/uploads/images/<%= product.image[0] %>" alt="Image"
                                         style="max-width: 100px; max-height: 100px;">
                                 </td>
                                 <td class="product-name"><%= product.slug%></td>
-                                
+
                                 <td class="product-quantity">
                                     <div class="input-group quantity mr-3" style="width: 130px;">
                                         <div class="input-group-btn">
@@ -61,7 +61,7 @@
                                     </div>
                                 </td>
 
-                                <td class="product-price">$<%= product.price %></td>
+                                <td class="product-price">$<%= product.price  %></td>
 
                                 <td class="product-action">
                                     <!-- <button class="btn btn-danger" >Remove</button> -->
@@ -78,7 +78,7 @@
                     <tfoot>
                         <tr>
                             <td colspan="4" class="text-right"><strong>Total:</strong></td>
-                            <td>$<%= total %></td>
+                            <td id="totalAmountId">$<%= total %></td>
                         </tr>
                     </tfoot>
                 </table>
@@ -93,7 +93,7 @@
                         <tbody>
                             <tr>
                                 <td>Subtotal:</td>
-                                <td>$<%=total %></td>
+                                <td id="subTotalId">$<%= total %></td>
                             </tr>
                             <!-- <tr>
                                 <td>Tax:</td>
@@ -111,7 +111,7 @@
         </div>
     </div>
     <% } else { %>
-    <div class="row">
+    <div id="emptyCart" class="row">
         <div class="col-md-12">
             <div class="alert alert-info" role="alert">
                 Your cart is empty.
@@ -151,8 +151,14 @@
             type: 'post',
             data: { count: count },
             success: function (response) {
-                alert(response);
-                // Refresh the page or update the cart UI as needed
+                // alert(response);
+                console.log(response.total, "", response.message);
+                document.getElementById('totalAmountId').innerHTML = response.total
+                document.getElementById('subTotalId').innerHTML = response.total
+                if (response.removeProduct) {
+
+                    removeProduct(proSlug)
+                }                // Refresh the page or update the cart UI as needed
             },
             error: function (error) {
                 alert('Error updating product quantity');
@@ -166,11 +172,20 @@
             url: '/remove-cart-product/' + proSlug,
             type: 'delete',
             success: function (response) {
-                alert(response);
+                // alert(response);
                 console.log(response, '🤣🤣🤣');
                 if (response.removeProduct) {
 
                     $('#' + proSlug).remove()
+                }
+
+                document.getElementById('totalAmountId').innerHTML = response.total
+                document.getElementById('subTotalId').innerHTML = response.total
+                console.log(response.cartCount);
+                document.getElementById('cart-count').innerHTML = response.cartCount;
+
+                if (response.total == 0) {
+                    location.reload()
                 }
                 // Refresh the page or update the cart UI as needed
             },

@@ -4,34 +4,38 @@ const categoryModel = require('../models/category-model');
 var multer = require('../config/multer');
 const { ObjectId } = require('mongodb');
 const slugify = require('slugify');
+const orderModel = require('../models/order-model');
 
 
 module.exports = {
+    
 
     addProduct: (productData, images) => {
-        console.log(productData, "add product ,helper");
+        try {
+            console.log(productData, "add product ,helper");
 
-        return new Promise((resolve, reject) => {
-            // const slug = slugify(productData.productName, {lower: true})
-            const newProduct = new productModel({
-                productName: productData.productName,
-                productPrice: productData.productPrice,
-                description: productData.description,
-                category: productData.category,
-                subcategory: productData.subcategory,
-                stockQuantity: productData.stockQuantity,
-                image: images,
-                slug: productData.slug,
-            });
+            return new Promise(async (resolve, reject) => {
+                // const slug = slugify(productData.productName, {lower: true})
+                const newProduct = new productModel({
+                    productName: productData.productName,
+                    productPrice: productData.productPrice,
+                    description: productData.description,
+                    category: productData.category,
+                    subcategory: productData.subcategory,
+                    stockQuantity: productData.stockQuantity,
+                    image: images,
+                    slug: productData.slug,
+                });
 
 
-            newProduct.save().then(() => {
-                resolve()
-            })
-                .catch(() => {
-                    reject()
+                await newProduct.save().then(() => {
+                    resolve()
                 })
-        })
+
+            })
+        } catch (error) {
+            console.log(error.message);
+        }
 
     },
 
@@ -52,9 +56,10 @@ module.exports = {
             })
         })
     },
-    findProduct: async (productId) => {
+    findProduct: async (proSlug) => {
         try {
-            const products = await productModel.findById(productId)
+            console.log(proSlug, '👻👻');
+            const products = await productModel.findOne({ slug: proSlug })
             if (!products) {
                 // productModel.deleteOne({_id:productId})
                 return false; // or throw error if needed
@@ -67,7 +72,7 @@ module.exports = {
         }
 
     },
-    editProducts: async (productId, data) => {
+    editProducts: async (productId, data, images) => {
         try {
             await productModel.updateOne({ _id: new ObjectId(productId) }, {
                 $set: {
@@ -76,18 +81,20 @@ module.exports = {
                     description: data.description,
                     category: data.category,
                     subcategory: data.subcategory,
-
+                    image: images,
+                    offerPrice:data.offerPrice,
                 }
             }).catch((error) => {
                 console.log(error.message);
             })
 
         } catch (error) {
+            console.log(error.message);
             throw error;
         }
     },
 
-    DeleteProductId: async (productId) => {
+    deleteProductById: async (productId) => {
         try {
             const products = await productModel.findById(productId)
             if (!products) {
@@ -100,6 +107,8 @@ module.exports = {
 
             return true
         } catch (error) {
+            console.error(error); // Add this line to log the error
+            console.log(error.message);
             throw error;
         }
 
@@ -132,4 +141,21 @@ module.exports = {
             })
         })
     },
+
+    categoryOfProduct:async(categoryName)=>{
+        try {
+            console.log(categoryName,'categoryOfProduct of category');
+            const products = await productModel.aggregate([
+                {
+                  $match: {
+                    category: categoryName
+                  }
+                }
+              ]);
+
+              return products
+        } catch (error) {
+            console.log(error.message);
+        }
+    }
 }

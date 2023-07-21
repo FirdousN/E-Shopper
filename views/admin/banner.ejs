@@ -1,0 +1,40 @@
+<div class="container">
+    <h2>Admin Banners</h2>
+    <a href="/banners/create" class="btn btn-primary mb-3">Add Banner</a>
+
+    <% banners.forEach((banner) => { %>
+    <div class="carousel-inner">
+
+        <div class="card bg-dark text-white" style="position: relative;">
+            <img class="img-fluid" src="/uploads/images/<%= banner.image[0] %>" alt="Banner Image">
+            <div class="card-img-overlay d-flex flex-column align-items-center justify-content-center" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0;">
+              <h5 class="text-light text-uppercase font-weight-medium mb-3"><%= banner.offer %></h5>
+              <p class="display-4 text-white font-weight-semi-bold mb-4"><%= banner.description %></p>
+              <a href="<%= banner.link %>" class="btn btn-light py-2 px-3">Shop Now</a>
+            </div>
+          </div>
+    </div>
+    <div class="card mb-3">
+        <div class="card-body">
+            <h5 class="card-title"><%= banner.title %></h5>
+            <p class="card-text"><%= banner.description %></p>
+            
+            <!-- Edit Banner -->
+            <!-- <button class="btn btn-primary editBannerButton" data-banner-id="<%= banner._id %>">Edit Banner</button> -->
+            <!-- <button class="third" data-banner-id="<%= banner._id %>">Third Alert</button> -->
+
+            <a href="/admin/edit-banner/<%= banner._id %>" class="btn btn-primary">Edit Banner</a>
+
+            <% if (banner.isActive) { %>
+            <a href="/banners/block/<%= banner._id %>" class="btn btn-danger">Block</a>
+            <% } else { %>
+            <a href="/banners/unblock/<%= banner._id %>" class="btn btn-success">Unblock</a>
+            <% } %>
+        </div>
+    </div>
+    <% }) %>
+</div>
+
+
+
+  

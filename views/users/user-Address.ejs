@@ -1,0 +1,103 @@
+<!-- Page Header Start -->
+<div class="container-fluid bg-secondary mb-5">
+    <div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 300px">
+        <h1 class="font-weight-semi-bold text-uppercase mb-3">Your Address</h1>
+        <div class="d-inline-flex">
+            <p class="m-0"><a href="">Home</a></p>
+            <p class="m-0 px-2">-</p>
+            <p class="m-0">Your Address</p>
+        </div>
+    </div>
+</div>
+<!-- Page Header End -->
+
+<!--Addresses start -->
+<div class="col-lg-9">
+    <div class="card bg-light mb-3" style="max-width: 18rem;">
+        <div class="card-header">Add Address</div>
+        <div class="card-body">
+            <a href="/add-userAddress" class="add-address-button">
+                <i class="fas fa-plus"></i>
+            </a>
+        </div>
+    </div>
+
+    <div class="d-flex flex-wrap justify-content-center">
+        <% if (user.addresses.length > 0) { %>
+            <% user.addresses.forEach(function(address) { %>
+                <div class="card bg-light mb-3 mx-2" style="max-width: 18rem;">
+                    <div class="card-header">Home Address</div>
+                    <div class="card-body">
+                        <p class="card-text">
+                            <%= address.addresses %><br>
+                            <%= address.street %><br>
+                            <%= address.city %><br>
+                            <%= address.state %><br>
+                            <%= address.pincode %><br>
+                            <%= address.country %><br>
+                            <%= user.mobile %>
+                        </p>
+                        <div class="d-flex justify-content-between">
+                            <a href="/edit-address/<%= address._id %>">Edit</a>
+                            <a href="#" onclick="deleteAddress('<%= address._id %>')">Remove</a>
+                        </div>
+                    </div>
+                </div>
+            <% }); %>
+        <% } else { %>
+            <div class="card bg-light mb-3" style="max-width: 18rem;">
+                <div class="card-body">
+                    <h5 class="card-title">No Address Found</h5>
+                    <p class="card-text">Please add an address to proceed.</p>
+                    <button class="btn btn-primary" id="addAddressBtn">Add Address</button>
+                </div>
+            </div>
+        <% } %>
+    </div>
+</div>
+
+
+<style>
+    .add-address-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 225px;
+  height: 100px;
+  /* background-color: #c08a92;
+  color: #fff; */
+  border-radius: 50%;
+  font-size: 40px;
+  text-decoration: none;
+}
+
+.add-address-button:hover {
+  /* background-color: #e8bdb9; */
+  text-decoration: none;
+}
+
+</style>
+
+<script>
+    function deleteAddress(addressId) {
+    fetch(`/remove-address/${addressId}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => {
+        if (response.ok) {
+            // Address successfully deleted, you can handle the response here
+            console.log('Address deleted successfully');
+        } else {
+            // Handle the error response if necessary
+            console.log('Failed to delete address');
+        }
+    })
+    .catch(error => {
+        console.log(error.message);
+    });
+}
+
+</script>

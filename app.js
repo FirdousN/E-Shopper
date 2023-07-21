@@ -36,21 +36,12 @@ app.set('layout','layouts/layout');
 
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static('public'));
 app.use(expressLayouts);
 app.use(nocache());
-
-
-// Connect to MongoDB using Mongoose
-// mongoose.connect('mongodb://127.0.0.1:27017/ecommerce', {
-//   useNewUrlParser: true,
-//   useUnifiedTopology: true,
-// })
-//   .then(() => console.log('Database connected2'))
-//   .catch((err) => console.log('Connection error:', err));
 
 
 // session handling

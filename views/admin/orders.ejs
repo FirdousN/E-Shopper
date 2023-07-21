@@ -5,94 +5,42 @@
                 <h5 class="card-title">Orders</h5>
             </div>
 
-            <table class="table">
+            <table class="table" id="orderTable">
                 <thead>
                     <tr>
-                        <th>Order ID</th>
-                        <th>Product Name</th>
+                        <th># Order ID</th>
+                        <th>User Address</th>
                         <th>Customer Name</th>
                         <th>Order Date</th>
-                        <th>Payment Status</th>
+                       
                         <th>Total Amount</th>
-                        <th>Order Status</th>
-                        <th>Action</th>
+                        <th>paymentMethod</th>
+                        <th>Details</th>
                     </tr>
                 </thead>
-                c<tbody>
+                <tbody>
                     <% orders.forEach((order) => { %>
+
                     <tr>
-                        <td><%= order._id %></td>
-                        <td><%= order.products[0].slug %></td>
+                        <td>#<%= order._id %></td>
+                        <td><%= order.deliveryDetails[0].addresses %></td>
                         <td><%= order.user.name %></td>
                         <td><%= order.createdAt.toLocaleDateString() %></td>
-                        <td>
-                            <% if (order.status === 'canceled') { %>
-                            <span class="btn btn-danger"><%= order.status %></span>
-                            <% } else if (order.status === 'shipped') { %>
-                            <span class="btn btn-primary"><%= order.status %></span>
-                            <% } else if (order.status === 'deliver') { %>
-                            <span class="btn btn-success"><%= order.status %></span>
-                            <% } else if (order.status === 'processing') { %>
-                            <span class="btn btn-warning"><%= order.status %></span>
-                            <% } else if (order.status === 'Order placed') { %>
-                            <span class="btn btn-info"><%= order.status %></span>
-                            <% } else if (order.status === 'pending') { %>
-                            <span class="btn btn-secondary"><%= order.status %></span>
-                            <% } %>
-                        </td>
+                        
                         <td>$<%= order.totalAmount %></td>
                         <td>
-
                             <% if (order.paymentMethod === 'COD') { %>
                             <span class="text-success">COD</span>
-
                             <% } else { %>
-                            <span class="text-success">Online</span>
+                            <span class="text-success">ONLINE</span>
                             <% } %>
                         </td>
+                       
                         <td>
-                            <div class="dropdown">
-
-                                <% if (order.status === 'canceled' || order.status === 'pending') { %>
-                                <span class="btn btn-secondary"><%= order.status %></span>
-
-                                <% } else { %>
-                                <button class="btn btn-info dropdown-toggle" type="button"
-                                    id="orderActionsDropdown<%= order._id %>" data-bs-toggle="dropdown"
-                                    aria-expanded="false">
-                                    Actions
-                                </button>
-                                <% } %>
-                                <ul class="dropdown-menu" aria-labelledby="orderActionsDropdown<%= order._id %>">
-
-
-                                    <% if (order.status === 'canceled' || order.status === 'pending') { %>
-                                    <li><a class="dropdown-item" onclick="statusChange('<%= order._id %>' ,'canceled')"
-                                            value="canceled">Canceled</a></li>
-                                    <% } else { %>
-                                    <% if (order.status !== 'Canceled') { %>
-                                    <li><a class="dropdown-item" onclick="statusChange('<%= order._id %>' ,'canceled')"
-                                            value="canceled">Canceled</a></li>
-                                    <% } %>
-                                    <% if (order.status !== 'Shipped') { %>
-                                    <li><a class="dropdown-item" onclick="statusChange('<%= order._id %>' ,'shipped')"
-                                            value="shipped">Shipped</a></li>
-                                    <% } %>
-                                    <% if (order.status !== 'Delivered') { %>
-                                    <li><a class="dropdown-item" onclick="statusChange('<%= order._id %>' ,'deliver')"
-                                            value="deliver">Deliver</a></li>
-                                    <% } %>
-                                    <% if (order.status !== 'processing') { %>
-                                    <li><a class="dropdown-item"
-                                            onclick="statusChange('<%= order._id %>' ,'processing')"
-                                            value="processing">Processing</a></li>
-                                    <% } %>
-                                    <% } %>
-
-                                </ul>
-                            </div>
+                            <a href="/admin/product-details/<%= order._id %>" class="btn btn-primary">Details</a>
                         </td>
                     </tr>
+
                     <% }) %>
                 </tbody>
             </table>
@@ -100,7 +48,15 @@
     </div>
 </div>
 
+<!-- DataTables JavaScript -->
+<script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+
 <script>
+    // JQuery table
+    $(document).ready(function () {
+        $('#orderTable').DataTable();
+    });
+
 
     function statusChange(orderId, value) {
         console.log(orderId),

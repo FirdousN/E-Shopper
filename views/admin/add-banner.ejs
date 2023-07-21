@@ -1,0 +1,49 @@
+<div class="card-body">
+  <div class="header mb-3">
+      <h5 class="card-title text-dark">Banner</h5>
+  </div>
+
+  <div class="card">
+      <div class="m-sm-4">
+
+          <div class="card-header">
+              <h5 class="card-title text-primary">Add Category</h5>
+          </div>
+      <form action="/admin/add-banner" method="POST" enctype="multipart/form-data">
+        <div class="mb-4">
+          <label for="title" class="form-label">BannerName:</label>
+          <input type="text" id="bannerName" name="bannerName" class="form-control form-control-xs " required>
+        </div>
+        <div class="mb-3">
+          <label for="productImage" class="form-label">Upload Banner images</label>
+          <div class="input-group">
+            <input type="file" class="form-control" id="bannerImage" name="bannerImage" multiple/>
+          </div>
+       </div>
+       <div class="mb-3">
+        <label for="offer" class="form-label ">Offer</label>
+        <input type="text" class="form-control" id="offer" name="offer">
+      </div>
+        <div class="mb-4">
+          <label for="description" class="form-label">Description:</label>
+          <textarea id="description" name="description" class="form-control form-control-xs " required></textarea>
+        </div>
+        <div class="mb-4">
+          <label for="link" class="form-label">Link:</label>
+          <input type="text" id="link" name="link" class="form-control form-control-xs " required>
+        </div>
+        <div class="mb-4">
+          <div class="form-check">
+            <input type="checkbox" id="isActive" name="isActive" class="form-check-input" checked>
+            <label for="isActive" class="form-check-label">Active</label>
+          </div>
+        </div>
+        <div class="mb-4">
+          <button type="submit" class="btn btn-primary">Create Banner</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+

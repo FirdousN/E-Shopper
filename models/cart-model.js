@@ -26,6 +26,9 @@ const cartSchema = new Schema({
                 type: String,
                 unique: true
             },
+            category:{
+                type:String
+            },
             // size: {
             //     type: String,
             //     required: true
@@ -35,13 +38,13 @@ const cartSchema = new Schema({
             //     type: Number,
             //     required: true
             // },
-            // orderStatus: {
-            //     type: String,
-            // }
-            // ,
-            // deliveryStatus: {
-            //     type: String,
-            // }
+            orderStatus: {
+                type: String,
+            },
+
+            deliveryStatus: {
+                type: String,
+            }
         }
 
     ]

@@ -1,11 +1,12 @@
 var express = require('express');
 var router = express.Router();
 const { body } = require('express-validator');
-const{getLogin, postLogin, getDashbord, getLogout, getUsersList ,blockUser ,insertUser,loadRegister}=require('../controllers/adminController');
+const{getLogin, postLogin, getDashboard, getLogout, getUsersList ,blockUser ,insertUser,loadRegister}=require('../controllers/adminController');
 const{ postAddProducts,getAddProducts,getProducts, getEditProducts, postEditProducts, postDeleteProduct , postForm, getForm }=require('../controllers/productController');
 const{postEditCategory,getEditCategory, getAddCategory, postAddCategory, getCategoryList  }=require('../controllers/categoryController');
-const { getOrders ,postStatus} = require('../controllers/ordersController');
+const {getChart,postSalesReport,getSalesReport, getOrders ,postStatus, getProductDetails} = require('../controllers/ordersController');
 const{getCoupons, getAddCoupon , postAddCoupon} = require('../controllers/couponController')
+const{postEditBanner,getEditBanner,postAddBanner,getAddBanner,getBanner} = require ('../controllers/bannerController')
 
 const { isValidObjectId } = require('mongoose');
 // Middleware for handling invalid URLs
@@ -19,22 +20,23 @@ const isValidId = (req, res, next) => {
   }
   next();
 };
-// const { route } = require('./users');
 
 // let multer1=require("../config/multer")
-const upload = require('../config/multer')
+const upload = require('../config/multer');
+const Banner = require('../models/banner-model');
+
 const verifyAdmin=(req,res,next)=>{
   if(req.session.admin){
       next()
   }else{
-      res.redirect('/admin-login')
+      res.redirect('/admin/admin-login')
   }
 }
 
 /* GET home page. */
 
 // admin dashboard
-router.get('/',getDashbord)
+router.get('/',getDashboard)
 
 // admin login
 router.get("/admin-login",getLogin)
@@ -47,30 +49,23 @@ router.get('/logout',getLogout)
 // ***************************************USERS******************************************
 
 // Admin userManagement
-router.get('/users-List', getUsersList)
+router.get('/users-List',verifyAdmin, getUsersList)
 
-
-router.put('/users-List/:id',blockUser)
-
+router.put('/users-List/:id',verifyAdmin,blockUser)
 
 // ***************************************PRODUCTS******************************************
 
-
-
-router.get('/products-List',getProducts)
-
+router.get('/products-List',verifyAdmin,getProducts)
 // admin products add
-router.get('/add-products',getAddProducts)
-
-router.post('/add-products', upload.array('productImage',4),postAddProducts)
+router.get('/add-products',verifyAdmin,getAddProducts)
+router.post('/add-products', upload.array('productImage',4),verifyAdmin,postAddProducts)
 
 // admin products edit
-router.get('/edit-products/:id',isValidId, getEditProducts)
-
-router.post('/edit-products/:id',isValidId, postEditProducts,)
+router.get('/edit-products/:slug',verifyAdmin, getEditProducts)
+router.post('/edit-products/:id', isValidId, upload.array('productImage', 4),verifyAdmin, postEditProducts)
 
 // admin products delete
-router.get('/delete-products/:id',isValidId, postDeleteProduct)
+router.post('/delete-products/:id',isValidId, postDeleteProduct)
 
 // ***************************************PRODUCTS******************************************
 
@@ -79,31 +74,51 @@ router.get('/add-form',getForm)
 // router.post('/add-from',multer1.array( 'productImage',4),postForm)
 
 //*******************category************************//
-router.get('/category-List',getCategoryList)
+router.get('/category-List',verifyAdmin,getCategoryList)
 
-router.get('/add-category', getAddCategory)
+router.get('/add-category',verifyAdmin, getAddCategory)
 
-router.post('/add-category',postAddCategory)
+
+router.post('/add-category',upload.array('categoryImage',4),verifyAdmin,postAddCategory)
 
 router.get('/edit-category/:id',getEditCategory)
 
-router.post('/edit-category/:id',postEditCategory)
+router.post('/edit-category/:id',upload.array('categoryImage',4),verifyAdmin,postEditCategory)
 //*******************category************************//
 
 
 /***********Order Management**************************/
-router.get('/orders',getOrders)
+router.get('/orders',verifyAdmin,getOrders)
 
+router.post('/statusChange/:proSlug/:orderId',verifyAdmin,postStatus)
 
-router.post('/statusChange/:orderId',postStatus)
+router.get('/product-details/:orderId',verifyAdmin,getProductDetails)
+
+router.get('/sales-report',getSalesReport)
+
+router.post('/sales-report', postSalesReport);
 
 /***********Coupon Management**************************/
 
-router.get('/coupons',getCoupons)
+router.get('/coupons',verifyAdmin,getCoupons)
 
-router.get('/add-coupon',getAddCoupon)
+router.get('/add-coupon',verifyAdmin,getAddCoupon)
 
-router.post('/add-coupon',postAddCoupon)
+router.post('/add-coupon',verifyAdmin,postAddCoupon)
 
+router.get('/chart-chartjs',getChart)
 
+/******************** Banner **********************/
+
+router.get('/banner',getBanner);
+
+router.get('/add-banner',getAddBanner)
+
+router.post('/add-banner', upload.array('bannerImage', 1), postAddBanner);
+
+router.get('/edit-banner/:id',getEditBanner)
+
+router.post('/edit-banner/:id', upload.array('bannerImage', 1), postEditBanner);
+
+/******************************* */
 module.exports = router;

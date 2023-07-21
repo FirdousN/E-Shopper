@@ -3,19 +3,106 @@ const bcrypt = require("bcrypt");
 const adminHelper = require('../helpers/admin-helper');
 const session = require('express-session');
 const adminModel = require('../models/admin-model');
-// const productModel = require('../models/product-model');
-
+const ordersModel = require('../models/order-model');
+const userModel = require("../models/userModel");
+const { ObjectId } = require('mongodb');
+const categoryModel = require('../models/category-model');
+const ordersHelper = require("../helpers/orders-helper");
+const categoryHelper = require("../helpers/category-helper");
 
 
 module.exports = {
 
-    getDashbord: async (req, res) => {
-        if (req.session.admin) {
-            res.render('admin/dashbord', { admin: true })
-        } else {
-            res.redirect('/admin/admin-login')
-        }
+    getDashboard: async (req, res) => {
+        try {
+            if (req.session.admin) {
+                console.log('getDashboard');
+                const users = await userModel.find();
+                const orders = await ordersModel.find({})
+                    .populate({
+                        path: 'products.item',
+                        model: 'Product'
+                    }).exec();
+                console.log(orders, '👻👻👻👻👻');
 
+                // Total Sales of each orders.
+                const totalSales = orders.reduce((accumulator, order) => {
+                    order.products.forEach((product) => {
+                        if (product.deliveryStatus === 'payed' && product.orderStatus === 'deliver') {
+                            accumulator = accumulator + product.quantity
+                        }
+                    })
+                    return accumulator;
+                }, 0);
+                console.log(totalSales, '👻👻');
+
+                // Total ordered products of each order 
+                const totalOrders = orders.reduce((accumulator, order) => {
+                    order.products.forEach((product) => {
+
+                        accumulator = accumulator + product.quantity
+
+                    })
+                    return accumulator;
+                }, 0);
+                console.log(totalOrders, '👻👻');
+
+                //Total payed  in total orders of products
+                const totalPayed = orders.reduce((accumulator, order) => {
+                    order.products.forEach((product) => {
+                        if (product.deliveryStatus === 'payed') {
+                            accumulator = accumulator + product.price * product.quantity;
+                        }
+                    });
+                    return accumulator;
+                }, 0);
+
+                console.log(totalPayed, '👻totalPayed👻');
+
+                // const totalCancelled = orders.reduce((accumulator, order) => {
+                //     order.products.forEach((product) => {
+                //         if (product.orderStatus === 'cancel') {
+                //             accumulator += 1;
+                //         }
+                //     });
+                //     return accumulator;
+                // }, 0);
+                // console.log(totalCancelled, '👻👻');
+                const monthlyRevenue = await adminHelper.calculateMonthlyRevenue(orders);
+                const AnnualRevenues = await adminHelper.calculateAnnualRevenue(orders);
+
+
+                let categories = await categoryModel.find()
+                let deliverCategory = await categoryHelper.deliverCategory()
+                console.log(deliverCategory,'👻👻deliverCategory👻👻');
+                // const categoryData = await adminHelper.categoryOrderData(orders, categories);
+
+                const startOfYear = new Date(new Date().getFullYear(), 0, 1); // start of the year
+                const endOfYear = new Date(new Date().getFullYear(), 11, 31); // end of the year
+              
+                console.log('❤️❤️', monthlyRevenue, '❤️❤️', AnnualRevenues, '❤️❤️');
+                console.log('❤️❤️', categories, '❤️❤️');
+                
+                
+                res.render('admin/dashboard',{
+                    totalSales,
+                    totalPayed, 
+                    orders, 
+                    totalOrders, 
+                    users, 
+                    admin: true ,
+                    monthlyRevenue,
+                    categories,
+                    AnnualRevenues,
+                    deliverCategory
+                });
+            
+            } else {
+                res.redirect('/admin/admin-login')
+            }
+        } catch (error) {
+            console.log(error.message);
+        }
     },
 
     getLogin: (req, res) => {
@@ -31,23 +118,27 @@ module.exports = {
 
     postLogin: (req, res) => {
         try {
-        console.log(req.body);
-        adminHelper.adminLogin(req.body)
-            .then((response) => {
-                req.session.admin = response.admin;
-                res.redirect('/admin')
-            })
-            }catch(error){
-                console.log("Incorrect Email or Password...!!!");
-                let errorMessage = 'Incorrect Email or Password....!!!';
-                res.redirect('/admin/admin-login?error=' + errorMessage);
-            }
-        
+            console.log(req.body);
+            adminHelper.adminLogin(req.body)
+                .then((response) => {
+                    req.session.admin = response.admin;
+                    res.redirect('/admin')
+                })
+        } catch (error) {
+            console.log("Incorrect Email or Password...!!!");
+            let errorMessage = 'Incorrect Email or Password....!!!';
+            res.redirect('/admin/admin-login?error=' + errorMessage);
+        }
+
     },
 
     getLogout: (req, res) => {
-        req.session.destroy(); // Destroy the session
-        res.redirect('/admin-login')
+        try {
+            req.session.destroy(); // Destroy the session
+            res.redirect('/admin-login')
+        } catch (error) {
+            console.log(error.message);
+        }
     },
 
     getUsersList: async (req, res) => {
@@ -56,7 +147,7 @@ module.exports = {
             res.render('admin/users-List', { admin: true, users })
         } catch (error) {
             console.error(error)
-            res.render('admin/erro-view', { admin: true, error: 'An error occurred' })
+            res.render('admin/error-view', { admin: true, error: 'An error occurred' })
         }
 
     },
@@ -88,39 +179,9 @@ module.exports = {
     //         res.render('admin/error-view', {admin:true , error:'An error occurred'})
     //     }
     // },
-
-    // insertUser: async (req, res) => {
-    //     try {
-    //         const user = new User({
-    //             name: req.body.name,
-    //             email: req.body.email,
-    //             mobile: req.body.mobile,
-    //             image: req.file.filname,
-    //             is_admin: 0,
-    //         });
-    //         const userData = await user.save();
-
-    //         if (userData) {
-    //             res.render('admin/registration', { message: "Your registration has been successfully" })
-    //         } else {
-    //             res.render('admin/registration', { message: "Your registration has been failed" })
-    //         }
-
-    //     } catch (error) {
-    //         console.log(error.message)
-    //     }
-    // },
-
-    // loadRegister: async (req, res) => {
-    //     try {
-    //         res.render('admin/registration', { admin: true })
-
-    //     } catch (error) {
-    //         console.log(error.message);
-    //     }
-    // },
-    ///**********************Admin products************************* */ 
    
+    ///**********************Admin products************************* */ 
+
 
 
 }

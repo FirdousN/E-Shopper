@@ -18,7 +18,7 @@
             <!-- Price Start -->
             <div class="border-bottom mb-4 pb-4">
                 <h5 class="font-weight-semi-bold mb-4">Filter by price</h5>
-                <form>
+                <form id="priceFilterForm">
                     <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
                         <input type="checkbox" class="custom-control-input" checked id="price-all">
                         <label class="custom-control-label" for="price-all">All Price</label>
@@ -54,7 +54,7 @@
             <!-- Price End -->
 
             <!-- Color Start -->
-            <div class="border-bottom mb-4 pb-4">
+            <!-- <div class="border-bottom mb-4 pb-4">
                 <h5 class="font-weight-semi-bold mb-4">Filter by color</h5>
                 <form>
                     <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
@@ -88,11 +88,11 @@
                         <span class="badge border font-weight-normal">168</span>
                     </div>
                 </form>
-            </div>
+            </div> -->
             <!-- Color End -->
 
             <!-- Size Start -->
-            <div class="mb-5">
+            <!-- <div class="mb-5">
                 <h5 class="font-weight-semi-bold mb-4">Filter by size</h5>
                 <form>
                     <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
@@ -126,7 +126,7 @@
                         <span class="badge border font-weight-normal">168</span>
                     </div>
                 </form>
-            </div>
+            </div> -->
             <!-- Size End -->
         </div>
         <!-- Shop Sidebar End -->
@@ -134,7 +134,7 @@
 
         <!-- Shop Product Start -->
         <div class="col-lg-9 col-md-12">
-            <div class="row pb-3">
+            <div class="row pb-3" id="productRow">
                 <div class="col-12 pb-1">
                     <div class="d-flex align-items-center justify-content-between mb-4">
                         <form action="">
@@ -161,32 +161,42 @@
                     </div>
                 </div>
                 <!-- Add product for shopping -->
-                <% products.forEach((products ) => { %>
-                <div class="col-lg-4 col-md-6 col-sm-12 pb-1">
-                    <div class="card product-item border-0 mb-4">
-                        <div
-                            class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
-                            <img class="img-fluid w-100" src="/uploads/images/<%= products.image %>" alt="Image">
-                        </div>
-                        <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
-                            <h6 class="text-truncate mb-3"><%= products.productName %></h6>
-                            <div class="d-flex justify-content-center">
-                                <h6>$<%= products.productPrice %></h6>
-                                <h6 class="text-muted ml-2"><del>$<%= products.productPrice%></del></h6>
+                <% if (products.length === 0 ) { %>
+                    <!-- <div id="emptyCart" class="row"> -->
+                        <div class="col-md-12 text-center">
+                            <div class="alert alert-info" role="alert">
+                                That category product is not existed.
                             </div>
                         </div>
-                        <div class="card-footer d-flex justify-content-between bg-light border">
-                            <a href='/detail?id=<%= products.slug %>' class="btn btn-sm text-dark p-0"><i
-                                    class="fas fa-eye text-primary mr-1"></i>View Detail</a>
-                            
-                            <button onclick="addToCart('<%= products.slug %>')"
-                                class="btn btn-sm text-dark p-0 add-to-cart-button">
-                                <i class="fas fa-shopping-cart text-primary mr-1"></i> Add To Cart
-                            </button>
+                    <!-- </div> -->
+                <% } %>
+                <% products.forEach((product) => { %>
+                    <div class="col-lg-4 col-md-6 col-sm-12 pb-1">
+                        <div class="card product-item border-0 mb-4">
+                            <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0"
+                                style="height: 250px;">
+                                <img class="img-fluid h-90 w-100 object-fit-cover" src="/uploads/images/<%= product.image[0] %>"
+                                    alt="Image">
+                            </div>
+                            <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
+                                <h6 class="text-truncate mb-3"><%= product.productName %></h6>
+                                <div class="d-flex justify-content-center">
+                                    <h6>$<%= product.productPrice %></h6>
+                                    <h6 class="text-muted ml-2"><del>$<%= product.productPrice%></del></h6>
+                                </div>
+                            </div>
+                            <div class="card-footer d-flex justify-content-between bg-light border">
+                                <a href='/detail?id=<%= product.slug %>' class="btn btn-sm text-dark p-0">
+                                    <i class="fas fa-eye text-primary mr-1"></i> View Detail
+                                </a>
+                                <button onclick="addToCart('<%= product.slug %>')" class="btn btn-sm text-dark p-0 add-to-cart-button">
+                                    <i class="fas fa-shopping-cart text-primary mr-1"></i> Add To Cart
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <% }) %>
+                    <% }) %>
+                    
                 <!-- Shop Product Start -->
                 <div class="col-12 pb-1">
                     <nav aria-label="Page navigation">
@@ -223,10 +233,57 @@
             method: 'get',
             success: (response) => {
                 // alert(response)
+                // $('#cart-count').text(response.count);
+                document.getElementById('cart-count').innerHTML = response.cartCount;
             },
             error: (xhr, status, error) => {
                 console.log(xhr.responseText);
             }
         });
     }
+    
 </script>
+
+<script>
+    // Function to handle the filter and fetch products
+    function applyFilters() {
+        const priceFilters = []; // Array to store selected price filters
+        const categoryFilters = []; // Array to store selected category filters
+
+        // Get selected price filters
+        $('#priceFilterForm input:checked').each(function () {
+            priceFilters.push($(this).attr('id'));
+        });
+
+        // Get selected category filters
+        $('#categoryFilterForm input:checked').each(function () {
+            categoryFilters.push($(this).attr('id'));
+        });
+
+        // AJAX call to fetch filtered products
+        $.ajax({
+            url: '/getFilteredProducts',
+            method: 'POST',
+            data: {
+                priceFilters: priceFilters,
+                categoryFilters: categoryFilters
+            },
+            success: (response) => {
+                // Replace the productRow div content with the new filtered products
+                $('#productRow').html(response);
+            },
+            error: (xhr, status, error) => {
+                console.log(xhr.responseText);
+            }
+        });
+    }
+
+    // Handle filter form submission and fetch filtered products
+    $('#priceFilterForm input, #categoryFilterForm input').on('change', function () {
+        applyFilters();
+    });
+
+    // Load all products initially (on page load)
+    applyFilters();
+</script>
+

@@ -8,7 +8,7 @@
         <div style="float: right">
             <a href="/admin/add-products"><button type="button" class="btn-sm btn-success ">Add Product</button></a>
         </div>
-        <table class="table table-hover my-0">
+        <table class="table table-hover my-0" id="productTable" >
             <thead>
                 <tr>
                     <th scope="col" >No.</th >
@@ -32,14 +32,20 @@
                         <td ><%= products.description %></td>
                         <td><%= products.subcategory %></td>     
                         <td class="image-container">
-                            <img src="/uploads/images/<%= products.image %>" alt="Image" style="max-width: 100px; max-height: 100px;">
+                            <img src="/uploads/images/<%= products.image[0] %>" alt="Image" style="max-width: 100px; max-height: 100px;">
                         </td>
                         <td><%= products.stockQuantity %></td>
-                        <td><%= products.productPrice %></td>
-                        <td><%= products.deleted %></td>
+                       
+                        <% if (products.offerPrice >0) { %>
+                            <td><%= products.productPrice-products.offerPrice %></td>
+                        <% } else {%>
+                            <td><%= products.productPrice %></td>
+                        <% } %> 
+
+                        <td class="product-delete-cell"><%= products.deleted %></td>
                         <td class="col-md-2">
                             <!-- <div class="d-flex justify-content-between"> -->
-                                <a href="/admin/edit-products/<%= products._id %>" class="mr-2">
+                                <a href="/admin/edit-products/<%= products.slug %>" class="mr-2">
                                     <button type="button" class="btn btn-sm btn-success">Edit</button>
                                 </a>
                                 <a href="/admin/delete-products/<%= products._id %>" class="delete-btn" data-product-id="<%= products._id%>">
@@ -56,30 +62,57 @@
     <!-- latest project -->
 </div>
 
-
 <script>
-// // Assuming you have jQuery included
-// $(document).on('click', '.delete-btn', function(event) {
-//   event.preventDefault();
+    $(document).ready(function() {
+  $('#productTable').DataTable({ responsive: true }).destroy();
+});
 
-//   const productId = $(this).data('product-id');
+$(document).on('click', '.delete-btn', function(event) {
+  event.preventDefault();
 
-//   // Display the confirmation dialog
-//   Swal.fire({
-//     title: 'Are you sure?',
-//     text: 'This action cannot be undone!',
-//     icon: 'warning',
-//     showCancelButton: true,
-//     confirmButtonColor: '#d33',
-//     cancelButtonColor: '#3085d6',
-//     confirmButtonText: 'Yes, delete it!'
-//   }).then((result) => {
-//     if (result.isConfirmed) {
-//       // If the user confirms the deletion, redirect to the delete route
-//       window.location.href = `/admin/delete-products?${productId}`;
-//     }
-//   });
-// });
+  const deleteButton = $(this);
+  const productId = deleteButton.data('product-id');
+  const productDeleteCell = deleteButton.closest('tr').find('.product-delete-cell');
+
+  // Display a confirmation dialog using a library like SweetAlert
+  swal.fire({
+    title: 'Are you sure?',
+    text: 'This action cannot be undone!',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#d33',
+    cancelButtonColor: '#3085d6',
+    confirmButtonText: 'Yes, delete it!'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      // If the user confirms the deletion, send a request to the server to delete the product
+      $.ajax({
+        url: `/admin/delete-products/${productId}`,
+        method: 'POST',
+        success: function(response) {
+          // Handle the response if needed
+          if (response.success) {
+            // Update the delete status for the specific row
+            productDeleteCell.text('true');
+
+            // Display a success message
+            swal.fire({
+              icon: 'success',
+              title: 'Success',
+              text: 'Product deleted successfully',
+            });
+
+            // Optionally, perform any additional actions after successful deletion
+          }
+        },
+        error: function(error) {
+          console.error(error);
+          // Handle the error if needed
+        }
+      });
+    }
+  });
+});
 
 
 // ******************************
@@ -121,3 +154,4 @@
         }
     }
 </script>
+

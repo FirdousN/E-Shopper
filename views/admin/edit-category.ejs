@@ -2,7 +2,7 @@
     <div class="card-header">
         <h5 class="card-title mb-0">Edit Category</h5>
     </div>
-    <form action="/admin/edit-category/<%= category._id %>" method="POST" >
+    <form action="/admin/edit-category/<%= category._id %>" method="POST" enctype="multipart/form-data" >
 
     <div class="mb-3">
         <label for="product-name" class="form-label">Category</label>
@@ -34,6 +34,12 @@
         <input type="file" name="testImage" id="testImage" multiple="multiple">
         <img src="/images/product-image.jpg" id="previewImage" alt="" style="height: 4rem;">
     </div> -->
+    <div class="mb-3">
+        <label for="categoryImage" class="form-label">Upload Category images</label>
+        <div class="input-group">
+            <input type="file" class="form-control" id="categoryImage" name="categoryImage" multiple/>
+        </div>
+    </div>
     <button type="submit" id="categoryId" class="btn btn-primary">Submit</button>
 </form>
 

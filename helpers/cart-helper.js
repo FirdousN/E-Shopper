@@ -28,7 +28,9 @@ module.exports = {
                 price: product.productPrice,
                 item: proId,
                 quantity: 1,
-
+                category:product.category,
+                orderStatus:'processing',
+                deliveryStatus:'not shipped'
             }
             return new Promise(async (resolve, reject) => {
                 let userCart = await cartModel.findOne({ userId });
@@ -121,13 +123,20 @@ module.exports = {
     getCartCount: (userId) => {
         try {
             return new Promise(async (resolve, reject) => {
-                let count = 0;
                 let cart = await cartModel.findOne({ userId })
+                let count = 0;
+
                 if (cart) {
                     count = cart.products.length
+                    // count = cart.products.reduce(
+                    //     (acc , products)=> acc + products.quantity,
+                    //     0
+                    // )
+                }else{
+                    count += 1
                 }
-                resolve(count)
 
+                resolve(count)
             })
         } catch (error) {
             console.log(error.message);
@@ -138,36 +147,41 @@ module.exports = {
     changeProductQuantity: async (proSlug, userId, count) => {
         try {
 
+            
             console.log(userId, 'testing user id ❤️');
             console.log(proSlug, 'testing product id ❤️');
 
             const cart = await cartModel.findOne({ userId });
 
             if (!cart) {
-                throw new Error('Cart not found');
+                throw new Error('Cart not found❤️');
             }
             const product = cart.products.find((item) => item.slug === proSlug);
             if (!product) {
                 throw new Error('Product not found in cart');
             }
             console.log(product.quantity);
-            
+            let resultCount;
             const quantity = product.quantity;
             if (count == -1 && quantity == 1) {
+                resultCount=parseInt(count)+parseInt(product.quantity)
                 await cartModel.updateOne(
                     { _id: cart._id, 'products._id': product._id.toString() },
                     { $pull: { products: { _id: product._id } } }
                 );
-                return Promise.resolve({ removeProduct: true })
+                return Promise.resolve({ removeProduct: true ,resultCount:resultCount,price:product.price })
 
             } else {
-                await cartModel.updateOne(
+                resultCount=parseInt(count)+parseInt(product.quantity)
+
+                let updatedCart  = await cartModel.updateOne(
                     { _id: cart._id, 'products._id': product._id.toString() },
                     { $inc: { 'products.$.quantity': count } }
                 );
+                console.log(updatedCart,"updatedCartLLLLL");
             }
 
-            return Promise.resolve();
+            return Promise.resolve({resultCount:resultCount,price:product.price});
         } catch (error) {
             console.log(error.message);
             return Promise.reject(error);
@@ -194,12 +208,14 @@ module.exports = {
         return Promise.resolve({ removeProduct: true })
 
     },
-    getTotalAmount: (product) => {
+    getTotalAmount: (pro,product) => {
         return new Promise(async (resolve, reject) => {
             try {
                 let total = 0;
+                console.log(pro,'🌹pro🌹');
+                
                 for (let i = 0; i < product.length; i++) {
-                    total += product[i].price * product[i].quantity;
+                    total += product[i].price * product[i].quantity -pro[i].offerPrice ;
 
                 }
 
@@ -232,6 +248,16 @@ module.exports = {
 
                 // let userId = order.userId;
                 let status = paymentMethod === 'COD' ? 'placed' : 'pending'
+                 // Assign products directly, as it is already an array
+                if (paymentMethod === 'ONLINE' || paymentMethod === 'WALLET' || paymentMethod === 'COD') {
+                    for (let i = 0; i < products.length; i++) {
+                        products[i].deliveryStatus = 'pending';
+                    }
+                } else {
+                    for (let i = 0; i < products.length; i++) {
+                        products[i].deliveryStatus = 'pending';
+                    }
+                }
                 // console.log(order.paymentMethod);
                 // if (order.paymentMethod === 'COD'){
                 let orderObj = {
@@ -248,7 +274,7 @@ module.exports = {
                     status: status,
                     totalAmount: total,
                 }
-
+                console.log(orderObj,'after add order details');
                 await orderModel.create(orderObj).then(async (response) => {
                     await cartModel.deleteOne({ userId })
                     console.log('💸💸💸', response,'💸💸💸');
@@ -301,9 +327,9 @@ module.exports = {
     getUserAddress: async (userData, userId) => {
         try {
             const user = await userModel.findOne({ _id: userId });
-            let address = user.addresses;
-            console.log('Address Exist:', user, '😷😷user:😷😷');
-            console.log('Address Exist:', address, '😷😷Address Exist:😷😷');
+            let order = user.addresses;
+            console.log('order Exist:', user, '😷😷user:😷😷');
+            console.log('order Exist:', order, '😷😷Address Exist:😷😷');
 
             if(userData.addressRadio === 'newAddress'){
                 const newAddress = {
@@ -322,11 +348,11 @@ module.exports = {
                     console.log(error.message);
                 });
 
-                address = [newAddress]; // Update the address variable
-                return address;
+                order = [newAddress]; // Update the order variable
+                return order;
             }else{
                 let result
-                address.forEach(addr => {
+                order.forEach(addr => {
                     if(addr._id.equals(userData.addressRadio)){
                         result = addr
                     }
@@ -334,13 +360,13 @@ module.exports = {
                 return result
             }
 
-            if (!address || !address.length) {
-                console.log('❤️ Address does not exist❤️');
+            if (!order || !order.length) {
+                console.log('❤️ order does not exist❤️');
                 if (!userData.addresses.length || !userData.pinCode.length || !userData.country.length || !userData.state.length || !userData.city.length) {
-                    console.log('😷😷 empty address field , fill address properly 😷😷😷');
+                    console.log('😷😷 empty order field , fill order properly 😷😷😷');
 
                 } else {
-                    console.log('second else case no empty address field ❤️❤️❤️❤️❤️❤️');
+                    console.log('second else case no empty order field ❤️❤️❤️❤️❤️❤️');
                     const newAddress = {
                         addresses: userData.addresses,
                         pincode: userData.pinCode,
@@ -356,14 +382,14 @@ module.exports = {
                         console.log(error.message);
                     });
 
-                    address = [newAddress]; // Update the address variable
+                    order = [newAddress]; // Update the order variable
                 }
 
             }
 
-            console.log('Updated Address:', address, '😊😊');
+            console.log('Updated order:', order, '😊😊');
 
-            return address;
+            return order;
 
 
         } catch (error) {

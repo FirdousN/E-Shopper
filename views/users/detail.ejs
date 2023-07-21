@@ -18,12 +18,15 @@
 
     <div class="row px-xl-5">
         <div class="col-lg-5 pb-5">
+
             <div id="product-carousel" class="carousel slide" data-ride="carousel">
                 <div class="carousel-inner border">
-
-                    <div class="carousel-item active">
-                        <img class="w-100 h-100" src="/uploads/images/<%= products.image %>" alt="Image">
+                    
+                    <% products.image.forEach((image, index) => { %>
+                    <div class="carousel-item <%= index === 0 ? 'active' : '' %>">
+                        <img class="w-100 h-100" src="/uploads/images/<%= image %>" alt="Image">
                     </div>
+                    <% }) %>
 
                 </div>
                 <a class="carousel-control-prev" href="#product-carousel" data-slide="prev">
@@ -50,8 +53,14 @@
                 </div>
                 <small class="pt-1">(50 Reviews)</small>
             </div>
-            <!-- price -->
-            <h3 class="font-weight-semi-bold mb-4">$<%= products.productPrice %></h3>
+            <% if (products.offerPrice > 0) { %>
+                <h3 class="font-weight-semi-bold mb-4">$<%= products.productPrice - products.offerPrice %></h3>
+                <p class="text-muted">Discounted Price</p>
+                <h6 class="font-weight-semi-bold mb-4">$<%= products.productPrice %></h6>
+                <p class="text-muted">Original Price</p>
+            <% } else { %>
+                <h3 class="font-weight-semi-bold mb-4">$<%= products.productPrice %></h3>
+            <% } %>
             <!-- description -->
             <p class="mb-4"><%= products.description %></p>
 
@@ -106,19 +115,24 @@
                 </form>
             </div>
             <div class="d-flex align-items-center mb-4 pt-2">
-                <div class="input-group quantity mr-3" style="width: 130px;">
+                <!-- <div class="input-group quantity mr-3" style="width: 130px;">
                     <div class="input-group-btn">
-                        <button class="btn btn-primary btn-minus">
+                        <button
+                            onclick="changeQuantity('<%#products.slug %>', '<%#products.slug %>', -1)"
+                            class="btn btn-primary btn-minus">
                             <i class="fa fa-minus"></i>
                         </button>
                     </div>
-                    <input type="text" class="form-control bg-secondary text-center" value="1">
+                    <input type="text" class="form-control bg-secondary text-center"
+                        value="<%#products.quantity %>">
                     <div class="input-group-btn">
-                        <button class="btn btn-primary btn-plus">
+                        <button
+                            onclick="changeQuantity('<%#products.slug %>', '<%#products.slug %>', 1)"
+                            class="btn btn-primary btn-plus">
                             <i class="fa fa-plus"></i>
                         </button>
                     </div>
-                </div>
+                </div> -->
                 <a href='/add-to-cart/<%= products.slug%>' class="btn btn-primary px-3"><i
                         class="fa fa-shopping-cart mr-1"></i>Add To Cart</a>
 
@@ -310,3 +324,78 @@
     </div>
 </div>
 <!-- Products End -->
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+<!-- <script>
+    function changeQuantity(cartId,proId,count){
+        $.ajax({
+            url:'/change-product-quantity/',
+            data:{
+                cart:cartId,
+                product:proId,
+                count:count,
+            },
+            method:'post',
+            success:(response)=>{
+                alert(response)
+            }
+        })
+    }
+</script> -->
+<!-- <script>
+
+
+    function changeQuantity(cartId, proSlug, count) {
+        $.ajax({
+            url: '/change-product-quantity/' + cartId + '/' + proSlug,
+            type: 'post',
+            data: { count: count },
+            success: function (response) {
+                // alert(response);
+                console.log(response.total, "", response.message);
+                document.getElementById('totalAmountId').innerHTML = response.total
+                document.getElementById('subTotalId').innerHTML = response.total
+                if (response.removeProduct) {
+
+                    removeProduct(proSlug)
+                }                // Refresh the page or update the cart UI as needed
+            },
+            error: function (error) {
+                alert('Error updating product quantity');
+            }
+        });
+    }
+
+    function removeProduct(proSlug) {
+        console.log(proSlug, '//////////////////');
+        $.ajax({
+            url: '/remove-cart-product/' + proSlug,
+            type: 'delete',
+            success: function (response) {
+                // alert(response);
+                console.log(response, '🤣🤣🤣');
+                if (response.removeProduct) {
+
+                    $('#' + proSlug).remove()
+                }
+
+                document.getElementById('totalAmountId').innerHTML = response.total
+                document.getElementById('subTotalId').innerHTML = response.total
+                console.log(response.cartCount);
+                document.getElementById('cart-count').innerHTML = response.cartCount;
+
+                if (response.total == 0) {
+                    location.reload()
+                }
+                // Refresh the page or update the cart UI as needed
+            },
+            error: function (error) {
+                alert('Error updating product quantity');
+            }
+
+        })
+    }
+</script> -->

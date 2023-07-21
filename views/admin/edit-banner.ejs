@@ -1,0 +1,52 @@
+<div class="card-body">
+    <div class="header mb-3">
+        <h5 class="card-title text-dark">Banner</h5>
+    </div>
+
+    <div class="card">
+        <div class="m-sm-4">
+            <form action="/admin/edit-banner/<%= banner._id %>" method="post" enctype="multipart/form-data">
+
+                <div class="card-header">
+                    <h5 class="card-title text-primary">Edit Banner</h5>
+                </div>
+
+                <td class="image-container">
+                    <% banner.image.forEach((image) => { %>
+                    <img src="/uploads/images/<%= image %>" alt="Image">
+                    <% }) %>
+                </td>
+                <div class="mb-3">
+                    <label for="bannerImage" class="form-label">Upload Banner Image:</label>
+                    <div class="input-group">
+                        <input type="file" class="form-control" id="bannerImage" name="bannerImage" multiple />
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <label for="bannerName" class="form-label">Banner Name:</label>
+                    <input type="text" id="bannerName" name="bannerName" class="form-control form-control-xs"
+                        value="<%= banner.title %>" required>
+                </div>
+                <div class="mb-3">
+                    <label for="offer" class="form-label">Offer:</label>
+                    <input type="text" class="form-control" id="offer" name="offer" value="<%= banner.offer %>">
+                </div>
+                <div class="mb-4">
+                    <label for="description" class="form-label">Description:</label>
+                    <textarea id="description" name="description" class="form-control form-control-xs"
+                        required><%= banner.description %></textarea>
+                </div>
+                <div class="mb-4">
+                    <label for="link" class="form-label">Link:</label>
+                    <input type="text" id="link" name="link" class="form-control form-control-xs"
+                        value="<%= banner.link %>" required>
+                </div>
+
+                <div class="mb-4">
+                    <button type="submit" id="updateBannerButton" class="btn btn-primary">Update Banner</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>

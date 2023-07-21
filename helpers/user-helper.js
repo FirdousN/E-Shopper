@@ -4,7 +4,7 @@ const db = require('../config/connection')
 const bcrypt = require('bcrypt');
 const twilioFunctions = require("../config/twilio");
 const { generateOTP } = require("../config/twilio");
-const { getLogout } = require('../controllers/userController');
+/* const { getLogout } = require('../controllers/userController'); */
 const { ObjectId } = require('mongodb');
 
 
@@ -73,6 +73,7 @@ module.exports = {
 
 
   userLogin: (userData) => {
+    console.log('11111111110');
     return new Promise(async (resolve, reject) => {
       let user = await userModel.findOne({ email: userData.email });
       if (!userData || !userData.email) {
@@ -111,6 +112,7 @@ module.exports = {
     });
   },
 
+
   // otp
   generateOtp: (body) => {
     console.log("Mobile No.//////////inController", body);
@@ -124,7 +126,8 @@ module.exports = {
           resolve({ status: true, body: body });
         } else {
           console.log("No User Found!");
-          resolve({ status: false });
+         
+          resolve({ status: false  });
         }
       } catch (err) {
         console.error(err);

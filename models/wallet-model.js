@@ -11,7 +11,7 @@ const walletSchema = new mongoose.Schema({
     },
     updateAt: {
         type: Date,
-        required: true,
+        // required: true,
     },
     createdAt: {
         type: Date,

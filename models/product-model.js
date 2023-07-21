@@ -11,7 +11,10 @@ const productSchema = new Schema({
   stockQuantity:Number,
   product_stock: Number,
   product_size:Array,
-  
+  offerPrice:{
+    type:Number,
+    default:0,
+  },
   image:[],
   deleted:{
     type:Boolean,
@@ -25,6 +28,7 @@ const productSchema = new Schema({
   slug: {
     type: String,
     unique: true },
+    
 });
 
 // productSchema.pre('save', function (next) {
