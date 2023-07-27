@@ -6,7 +6,7 @@
           <div class="m-sm-4">
 
               <div class="card-header">
-                  <h5 class="card-title text-primary">Add Category</h5>
+                  <h5 class="card-title text-primary">Add Coupon</h5>
               </div>
               <% if (locals.Error) { %>
                   <div class="error-message" style="color: red; text-align: center;">
@@ -15,29 +15,59 @@
                 <% } %>
                 <form action="/admin/add-coupon" method="post">
                   <div class="mb-3">
-                    <label for="code" class="form-label">Coupon Name:</label>
-                    <input type="text" class="form-control" id="name" name="name" required>
+                    <label for="name" class="form-label">Coupon Name (Max 10 Characters):</label>
+                    <input type="text" class="form-control" id="name" name="name" required maxlength="10">
                   </div>
+                
                   <!-- <div class="mb-3">
-                    <label for="code" class="form-label">Coupon Code:</label>
-                    <input type="text" class="form-control" id="code" name="code" required>
+                    <label class="form-label">Discount Type:</label>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="discountType" id="percentage" value="percentage" required>
+                      <label class="form-check-label" for="percentage">Percentage Off</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="discountType" id="fixedAmount" value="fixedAmount">
+                      <label class="form-check-label" for="fixedAmount">Fixed Amount Off</label>
+                    </div>
                   </div> -->
+                
                   <div class="mb-3">
-                    <label for="discount" class="form-label">Discount:</label>
-                    <input type="text" class="form-control" id="discount" name="discount" inputmode="numeric"  oninput="this.value = this.value.replace(/[^0-9! @#$%^&*]/g, '')">
+                    <label for="discount" class="form-label">Discount Value:</label>
+                    <input type="text" class="form-control" id="discount" name="discount" inputmode="numeric" value="Enter discount price" required>
                   </div>
-                  
-                  
-                  <!-- <div class="mb-3">
-                    <label for="startDate" class="form-label">Start Date:</label>
-                    <input type="date" class="form-control" id="startDate" name="startDate" required>
-                  </div> -->
+                
                   <div class="mb-3">
                     <label for="expiryDate" class="form-label">Expiry Date:</label>
                     <input type="date" class="form-control" id="expiryDate" name="expiryDate" required>
                   </div>
+                
+                  <div class="btn-group">
+                    <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      Select Categories
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                      <% for( let i = 0; i < categories.length; i++ ) { %>
+                        <div class="form-check dropdown-item">
+                          <input class="form-check-input" type="checkbox" value="" id="flexCheck<%= categories[i].category %>" name="categories">
+                          <label class="form-check-label" for="flexCheck<%= categories[i].category %>">
+                            <%= categories[i].category %>
+                          </label>
+                        </div>
+                      <% } %>
+                    
+                      
+                    </div>
+                  </div>
+                  
+                
+                  <div class="mb-3">
+                    <label for="minPrice" class="form-label">Minimum Order Price to Apply Coupon:</label>
+                    <input type="text" class="form-control" id="minPrice" name="minPrice" inputmode="numeric" required>
+                  </div>
+                
                   <button type="submit" class="btn btn-primary">Create Coupon</button>
                 </form>
+                
 
           </div>
       </div>

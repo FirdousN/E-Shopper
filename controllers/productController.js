@@ -11,9 +11,11 @@ module.exports = {
 
     getProducts: async (req, res) => {
         try {
+            let admin = req.session.admin;
+
             let products = await productModel.find()
             // console.log(image.file);
-            res.render('admin/products-List', { admin: true, products })
+            res.render('admin/products-List', {admin, admin: true, products })
         } catch (error) {
             console.log(error.message);
         }
@@ -22,6 +24,8 @@ module.exports = {
     getAddProducts: (req, res) => {
         // console.log(req.body.category)
         try {
+            let admin = req.session.admin;
+
             categoryModel.find().then((categories) => {
                 console.log(categories);
                 const viewsData = {
@@ -29,7 +33,7 @@ module.exports = {
                     pageTile: " Edit Product"
                 };
                 // let catagories =categoryModel.find()
-                res.render('admin/add-products', { categories, admin: true })
+                res.render('admin/add-products', {admin ,categories, admin: true })
 
             })
         } catch (error) {
@@ -41,19 +45,21 @@ module.exports = {
     postAddProducts: async (req, res) => {
         try {
             console.log(req.body, 'body')
-
-            const files = req.files
+    
+            const files = req.files;
             const images = files.map((file) => {
-                return file.filename
-            })
-
+                return file.filename;
+            });
+            let category_id = req.body.category_id; // Access the selected category_id from req.body
+            
+            console.log(category_id,'000000000000001🧛🏻');
             let productData = req.body;
-            productData.slug = slugify(productData.productName, { lower: true })
-
-            productHelpers.addProduct(productData, images).then(() => {
-                res.redirect('/admin/add-products')
-            })
-
+            productData.slug = slugify(productData.productName, { lower: true });
+    
+            productHelpers.addProduct(productData, category_id, images).then(() => {
+                res.redirect('/admin/add-products');
+            });
+    
         } catch (error) {
             console.log(error.message);
             if (error.message === 'Product already exists') {
@@ -67,11 +73,12 @@ module.exports = {
     getEditProducts: async (req, res) => {
         console.log('get edit products');
         try {
+            let admin = req.session.admin;
             const proSlug = req.params.slug
             const product = await productHelpers.findProduct(proSlug)
             const categories = await categoryModel.find()
             console.log(product);
-            res.render('admin/edit-products', { admin: true, product, categories })
+            res.render('admin/edit-products', {admin , admin: true, product, categories })
         } catch {
             res.redirect('/admin/products')
         }
@@ -80,7 +87,7 @@ module.exports = {
     postEditProducts: (req, res) => {
         try {
             console.log(req.body, 'postEditProducts sample');
-            console.log(req.params.id);
+            // console.log(req.params.id);
 
             let files = req.files;
             const productId = req.params.id
@@ -94,7 +101,7 @@ module.exports = {
                 })
 
             }
-            console.log('🌹🌹', req.body, '🌹🌹', productId, '🌹🌹', images, '🌹🌹');
+            // console.log('🌹🌹', req.body, '🌹🌹', productId, '🌹🌹', images, '🌹🌹');
 
             productHelpers.editProducts(productId, req.body, images).then((resolve) => {
 
@@ -111,20 +118,14 @@ module.exports = {
     postDeleteProduct: async (req, res, next) => {
         try {
             const productId = req.params.id; // Update the parameter name to `id`
-            console.log(productId, 'kkkkkk');
+            console.log(productId, 'productId');
 
             const product = await productModel.findById(productId);
             if (!product) {
                 return res.status(404).json({ error: 'Product not found' });
             }
-
             await productHelpers.deleteProductById(productId); // Update the function name to `deleteProductById`
 
-            //   swal.fire({
-            //     icon: 'success',
-            //     title: 'Success',
-            //     text: 'Product deleted successfully',
-            //   });
             res.status(200).json({ success: true });
 
             // res.redirect('/admin/products-List');
@@ -134,13 +135,4 @@ module.exports = {
         }
     },
 
-    getForm: (req, res) => {
-        res.render('admin/add-form', { admin: true })
-    },
-
-    postForm: (req, res) => {
-        console.log(req.body);
-        console.log(req.file);
-        return res.redirect('/add-form')
-    }
 }

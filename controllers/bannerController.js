@@ -10,9 +10,10 @@ module.exports = {
     
     getBanner:async(req,res)=>{
         try {
+            let admin = req.session.admin;
             let banners = await bannerHelper.findBanner()
             console.log(banners,'00000000000');
-            res.render('admin/banner',{banners,admin: true})
+            res.render('admin/banner',{admin ,banners,admin: true})
         } catch (error) {
             console.log(error.message);
         }
@@ -20,7 +21,8 @@ module.exports = {
 
     getAddBanner:async(req,res)=>{
         try {
-            res.render('admin/add-banner',{admin:true})
+            let admin = req.session.admin;
+            res.render('admin/add-banner',{admin,admin:true})
         } catch (error) {
             console.log(error.length);
         }
@@ -54,11 +56,12 @@ module.exports = {
       },
       getEditBanner:async (req,res)=>{
         try {
+            let admin = req.session.admin;
             let bannerId = req.params.id;
             console.log(bannerId,'❤️❤️');
             const banner = await bannerModel.findById({_id:bannerId});
 
-            res.render('admin/edit-banner',{banner, admin: true})
+            res.render('admin/edit-banner',{admin,banner, admin: true})
         } catch (error) {
             console.log(error.message);
         }

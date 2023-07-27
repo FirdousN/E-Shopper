@@ -28,16 +28,20 @@
                     <td id="<%= user._id %>status">
                         <%= user.status %>
                     </td>
+                    
                     <td>
-                        <% if (user.status) { %>
-                        <button type="button" data-value="<%= user._id %>" class="btn btn-danger blockButton"
-                            id="<%= user._id %>blockBtn">Block </button>
-
+                        <% if (user.teamName === 'Super Admin') { %>
+                            <span class="btn btn-info"><%= user.teamName %></span>
                         <% } else { %>
 
-                        <button type="button" data-value="<%= user._id %>" class="btn btn-success blockButton"
-                            id="<%= user._id %>unBlockBtn">Unblock </button>
-
+                            <% if (user.status) { %>
+                            <button type="button" data-value="<%= user._id %>" class="btn btn-danger blockButton"
+                                id="<%= user._id %>blockBtn">Block </button>
+                            <% } else { %>
+                            <button type="button" data-value="<%= user._id %>" class="btn btn-success blockButton"
+                                id="<%= user._id %>unBlockBtn">Unblock </button>
+                            <% } %>
+                            
                         <% } %>
                     </td>
                     <!-- block and Unblock user -->

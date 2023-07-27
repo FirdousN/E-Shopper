@@ -54,10 +54,11 @@
                 <small class="pt-1">(50 Reviews)</small>
             </div>
             <% if (products.offerPrice > 0) { %>
-                <h3 class="font-weight-semi-bold mb-4">$<%= products.productPrice - products.offerPrice %></h3>
                 <p class="text-muted">Discounted Price</p>
-                <h6 class="font-weight-semi-bold mb-4">$<%= products.productPrice %></h6>
+                <h6 class="text-muted mb-4"><del>$<%= products.productPrice %></h6></del></h6>
                 <p class="text-muted">Original Price</p>
+                <h3 class="font-weight-semi-bold mb-4">$<%= products.productPrice - products.offerPrice %></h3>
+
             <% } else { %>
                 <h3 class="font-weight-semi-bold mb-4">$<%= products.productPrice %></h3>
             <% } %>

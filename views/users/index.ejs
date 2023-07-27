@@ -61,76 +61,31 @@
 <!-- Featured End -->
 
 
-<!-- Categories Start -->
 <div class="container pt-5">
     <div class="row px-xl-5 pb-3">
-
         <!-- CATEGORY LIST IN HOME PAGE -->
-        <% categories.forEach((category ) => { %>
+        <% categories.forEach((category) => { %>
+            <a href="/category/<%= category.category %>"></a>
+                <div class="col-lg-4 col-md-6 col-sm-12 pb-4">
+                    <div class="cat-item d-flex flex-column border mb-4 p-3" style="height: 100%;">
+                        <p class="text-right mb-3">15 Products</p>
+                        <a href="" class="cat-img position-relative overflow-hidden mb-3" style="max-height: 60%;">
+                            <img class="img-fluid h-100 w-100 object-fit-cover" src="/uploads/images/<%= category.image %>" alt="Image">
+                        </a>
+                        <h5 class="font-weight-semi-bold m-0">
+                            <a href="/category/<%= category.category %>"><%= category.category %></a>
+                        </h5>
+                    </div>
+                </div>
+            </a>
 
-        <div class="col-lg-4 col-sm-12 pb-1">
-            <div class="cat-item d-flex flex-column border mb-4" style="padding: 20px;">
-                <p class="text-right">15 Products</p>
-                <a href="" class="cat-img position-relative overflow-hidden mb-3">
-                    <img class="img-fluid" src="/uploads/images/<%= category.image %>" alt="Image"
-                        style="max-width: 300px; max-height: 250px;">
-                </a>
-                <h5 class="font-weight-semi-bold m-0"><a href="/category/<%= category.category %>"><%= category.category %></a></h5>
-            </div>
-        </div>
         <% }) %>
-
+            
         <!-- CATEGORY LIST IN HOME PAGE -->
-
-
-        <!-- <div class="col-lg-4 col-sm-12 pb-1">
-            <div class="cat-item d-flex flex-column border mb-4" style="padding: 20px;">
-                <p class="text-right">15 Products</p>
-                <a href="" class="cat-img position-relative overflow-hidden mb-3">
-                    <img class="img-fluid" src="/images/cat-2.jpg" alt="">
-                </a>
-                <h5 class="font-weight-semi-bold m-0">Women's dresses</h5>
-            </div>
-        </div>
-        <div class="col-lg-4 col-sm-12 pb-1">
-            <div class="cat-item d-flex flex-column border mb-4" style="padding: 20px;">
-                <p class="text-right">15 Products</p>
-                <a href="" class="cat-img position-relative overflow-hidden mb-3">
-                    <img class="img-fluid" src="/images/cat-3.jpg" alt="">
-                </a>
-                <h5 class="font-weight-semi-bold m-0">Baby's dresses</h5>
-            </div>
-        </div> -->
-
-        <!-- <div class="col-lg-4 col-sm-12 pb-1">
-            <div class="cat-item d-flex flex-column border mb-4" style="padding: 20px;">
-                <p class="text-right">15 Products</p>
-                <a href="" class="cat-img position-relative overflow-hidden mb-3">
-                    <img class="img-fluid" src="/images/cat-4.jpg" alt="">
-                </a>
-                <h5 class="font-weight-semi-bold m-0">Accerssories</h5>
-            </div>
-        </div>
-        <div class="col-lg-4 col-sm-12 pb-1">
-            <div class="cat-item d-flex flex-column border mb-4" style="padding: 20px;">
-                <p class="text-right">15 Products</p>
-                <a href="" class="cat-img position-relative overflow-hidden mb-3">
-                    <img class="img-fluid" src="/images/cat-5.jpg" alt="">
-                </a>
-                <h5 class="font-weight-semi-bold m-0">Bags</h5>
-            </div>
-        </div>
-        <div class="col-lg-4 col-sm-12 pb-1">
-            <div class="cat-item d-flex flex-column border mb-4" style="padding: 20px;">
-                <p class="text-right">15 Products</p>
-                <a href="" class="cat-img position-relative overflow-hidden mb-3">
-                    <img class="img-fluid" src="/images/cat-6.jpg" alt="">
-                </a>
-                <h5 class="font-weight-semi-bold m-0">Shoes</h5>
-            </div>
-        </div> -->
     </div>
 </div>
+
+
 <!-- Categories End -->
 
 

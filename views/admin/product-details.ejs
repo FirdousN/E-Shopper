@@ -30,7 +30,7 @@
 
                             <% if (products.orderStatus === 'cancel') { %>
                             <span class="btn btn-danger"><%= products.orderStatus %></span>
-                            <% } else if (products.orderStatus === 'shipped') { %>
+                            <% } else if (products.orderStatus === 'shipped' ) { %>
                             <span class="btn btn-primary"><%= products.orderStatus %></span>
                             <% } else if (products.orderStatus === 'deliver') { %>
                             <span class="btn btn-success"><%= products.orderStatus %></span>
@@ -83,12 +83,12 @@
                                           <a class="dropdown-item" onclick="statusChange('<%= products.slug %>', '<%= orderData._id %>', 'canceled')" value="canceled">canceled</a>
                                         </li>
                                       <% } else { %>
-                                        <% if (products.orderStatus !== 'canceled') { %>
+                                        <% if (products.orderStatus != 'cancel') { %>
                                           <li>
                                             <a class="dropdown-item" onclick="statusChange('<%= products.slug %>', '<%= orderData._id %>', 'canceled')" value="canceled">canceled</a>
                                           </li>
                                         <% } %>
-                                        <% if (products.orderStatus !== 'order-placed' && products.orderStatus != 'deliver') { %>
+                                        <% if (products.orderStatus === 'order-placed' && products.orderStatus != 'deliver') { %>
                                           <li>
                                             <a class="dropdown-item" onclick="statusChange('<%= products.slug %>', '<%= orderData._id %>', 'order-placed')" value="order-placed">Order Placed</a>
                                           </li>

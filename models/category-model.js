@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 
 
 let categorySchema= new Schema({
-
+    
     category:{
         type:String,
         unique: true,

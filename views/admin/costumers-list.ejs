@@ -1,0 +1,91 @@
+<div class="row">
+
+    <div class="container-fluid h-100 ">
+        <div class="card flex-fill">
+            <!-- latest project -->
+            <div class="card-header">
+                <h5 class="card-title ">Users List</h5>
+            </div>
+            <table id="userTable" class="table table-hover my-0">
+                <thead>
+                    <tr>
+                        <th>Sl.No</th>
+                        <th>Name</th>
+                        <th class="d-none d-md-table-cell">Email</th>
+                        <th class="d-none d-md-table-cell">Phone number</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <% users.forEach((user, index) => { %>
+                <tr>
+                    <td><%= index + 1 %></td>
+                    <td><%= user.name %></td>
+                    <td class="d-none d-md-table-cell"><%= user.email %></td>
+                    <td class="d-none d-md-table-cell"><%= user.mobile %></td>
+
+                    <!-- block and Unblock user start -->
+                    <td id="<%= user._id %>status">
+                        <%= user.status %>
+                    </td>
+                    <td>
+                            <% if (user.status) { %>
+                            <button type="button" data-value="<%= user._id %>" class="btn btn-danger blockButton"
+                                id="<%= user._id %>blockBtn">Block </button>
+                            <% } else { %>
+                            <button type="button" data-value="<%= user._id %>" class="btn btn-success blockButton"
+                                id="<%= user._id %>unBlockBtn">Unblock </button>
+                            <% } %>
+                        
+                    </td>
+                    <!-- block and Unblock user end -->
+                </tr>
+                <% }) %>
+                <!-- .....  -->
+            </table>
+        </div>
+        <!-- latest project -->
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#userTable').DataTable();
+        });
+
+
+        $(document).ready(function () {
+            // Initialize DataTable
+            $('#userTable').DataTable({ responsive: true });
+        });
+
+        $(".blockButton").click(function () {
+            const userId = $(this).data("value");
+            console.log('userId=', userId);
+            const confirmation = confirm('Are you sure you want to toggle this user?');
+            if (confirmation) {
+                $.ajax({
+                    type: "put",
+                    url: "/admin/users-List/" + userId,
+                })
+                    .done((res) => {
+                        if (res) {
+                            $(`#${userId}unBlockBtn`).removeClass('btn-success').addClass('btn-danger').html('Block User')
+                            $(`#${userId}blockBtn`).removeClass('btn-success').addClass('btn-danger').html('Block User')
+                            $(`#${userId}status`).html(res)
+                        }
+                        else {
+                            $(`#${userId}blockBtn`).removeClass('btn-danger').addClass('btn-success').html('Unblock User')
+                            $(`#${userId}unBlockBtn`).removeClass('btn-danger').addClass('btn-success').html('Unblock User')
+                            $(`#${userId}status`).html('false')
+
+                        }
+                    })
+                    .fail((err) => {
+                        console.log(err.responseJSON.error);
+                    });
+            }
+        });
+
+    </script>

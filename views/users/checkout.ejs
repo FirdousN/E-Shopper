@@ -242,7 +242,8 @@
                                 <div class="custom-control custom-radio">
                                     <input type="radio" class="custom-control-input" name="paymentMethod" id="wallet"
                                         value="WALLET">
-                                    <label class="custom-control-label" for="wallet">Wallet ($ <%= wallet.balance %>) </label>
+                                    <label class="custom-control-label" for="wallet" id="apply-wallet"
+                                    onclick="applyWallet()">Wallet ($ <%= wallet.balance %>) </label>
                                 </div>
                             </div>
                         <% } else { %>
@@ -300,6 +301,11 @@
     //     });
     // });
     // AJAX function to apply the coupon code
+    
+    function applyWallet(){
+        let walletInput = $("#wallet");
+        
+    }
 
     function applyCoupon() {
 

@@ -81,7 +81,7 @@
                         <% if (product[0].products.orderStatus === 'deliver') { %>
                         <div class="d-flex justify-content-end ">
                             <!-- <button class="btn btn-outline-secondary btn-sm" type="button"
-                                onclick="location.href='/invoice/?orderId=<%= orders._id %>&productId= <%= product[0].products.slug %>'">
+                                onclick="location.href='/invoice/?orderId=<%# orders._id %>&productId= <%# product[0].products.slug %>'">
                                 Invoice</button> -->
                             <a href="/invoice/<%= orders._id %>/<%= product[0].products.slug %>/"
                                 class="btn btn-primary">Download Invoice</a>

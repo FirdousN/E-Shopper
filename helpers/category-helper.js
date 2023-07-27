@@ -37,12 +37,21 @@ module.exports = {
 
     editCategory: async (categoryId, data, images) => {
         try {
+            if (!images || images.length === 0) {
+                const category = await categoryModel.findOne({ _id: new Object(categoryId) });
+                // Check if the category exists and has an image
+                if (category && category.image) {
+                    // Assign the existing image to the 'images' variable
+                    images = category.image;
+                } 
+            }
+            console.log(data,'🧛🏻');
             await categoryModel.updateOne({ _id: new Object(categoryId) }, {
                 $set: {
                     category: data.category,
                     // status: data.status,
                     gender: data.gender,
-                    subcategory: data.subcategory,
+                    subcategory_id: data.subcategory,
                     image: images,
                 }
             }).catch((error) => {

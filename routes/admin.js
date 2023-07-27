@@ -1,8 +1,8 @@
 var express = require('express');
 var router = express.Router();
 const { body } = require('express-validator');
-const{getLogin, postLogin, getDashboard, getLogout, getUsersList ,blockUser ,insertUser,loadRegister}=require('../controllers/adminController');
-const{ postAddProducts,getAddProducts,getProducts, getEditProducts, postEditProducts, postDeleteProduct , postForm, getForm }=require('../controllers/productController');
+const{postSignup,getSignup,getLogin, postLogin, getDashboard, getLogout, getUsersList ,blockUser,getCostumers }=require('../controllers/adminController');
+const{ postAddProducts,getAddProducts,getProducts, getEditProducts, postEditProducts, postDeleteProduct }=require('../controllers/productController');
 const{postEditCategory,getEditCategory, getAddCategory, postAddCategory, getCategoryList  }=require('../controllers/categoryController');
 const {getChart,postSalesReport,getSalesReport, getOrders ,postStatus, getProductDetails} = require('../controllers/ordersController');
 const{getCoupons, getAddCoupon , postAddCoupon} = require('../controllers/couponController')
@@ -43,35 +43,40 @@ router.get("/admin-login",getLogin)
 
 router.post('/admin-login',postLogin)
 
+// admin signup
+router.get("/admin-signup",getSignup)
+
+router.post("/admin-signup",postSignup)
+
 // admin Logout
 router.get('/logout',getLogout)
 
-// ***************************************USERS******************************************
+// ***************************************USERS & Costumers******************************************
 
 // Admin userManagement
 router.get('/users-List',verifyAdmin, getUsersList)
 
 router.put('/users-List/:id',verifyAdmin,blockUser)
 
-// ***************************************PRODUCTS******************************************
+router.get('/costumers-list',verifyAdmin,getCostumers)
 
+// ***************************************PRODUCTS******************************************
 router.get('/products-List',verifyAdmin,getProducts)
+
 // admin products add
 router.get('/add-products',verifyAdmin,getAddProducts)
+
 router.post('/add-products', upload.array('productImage',4),verifyAdmin,postAddProducts)
 
 // admin products edit
 router.get('/edit-products/:slug',verifyAdmin, getEditProducts)
+
 router.post('/edit-products/:id', isValidId, upload.array('productImage', 4),verifyAdmin, postEditProducts)
 
 // admin products delete
 router.post('/delete-products/:id',isValidId, postDeleteProduct)
 
 // ***************************************PRODUCTS******************************************
-
-router.get('/add-form',getForm)
-
-// router.post('/add-from',multer1.array( 'productImage',4),postForm)
 
 //*******************category************************//
 router.get('/category-List',verifyAdmin,getCategoryList)

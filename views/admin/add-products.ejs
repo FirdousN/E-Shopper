@@ -33,8 +33,9 @@
                         <label class="form-label">Choose a category</label>
 
                         <select class="form-control" type="text" name="category">
-                            <% categories.forEach((categories) => { %>
-                            <option><%= categories.category %></option>
+                            <% categories.forEach((category) => { %>
+                                <option value="<%= category.category %>"><%= category.category %></option>
+                                <input type="text" name="category_id" id="category_id" value="<%= category._id %>" hidden>
                             <% }) %>
                         </select>
                     </div>

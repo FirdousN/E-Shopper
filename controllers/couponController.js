@@ -1,14 +1,17 @@
 const mongoose = require("mongoose");
 const couponModel = require('../models/coupon-model');
 const productModel = require('../models/product-model');
-const couponHelper = require('../helpers/coupon-helper')
+const couponHelper = require('../helpers/coupon-helper');
+const categoryModel = require("../models/category-model");
 
 module.exports = {
     getCoupons: async (req, res) => {
         try {
+            let admin = req.session.admin;
+
             let coupons = await couponModel.find();
             console.log(coupons, '💸🌹 coupons 🌹💸');
-            res.render('admin/coupons', { admin: true, coupons });
+            res.render('admin/coupons', { admin ,admin: true, coupons });
         } catch (error) {
             console.log(error.message);
         }
@@ -16,7 +19,11 @@ module.exports = {
 
     getAddCoupon: async (req, res) => {
         try {
-            res.render('admin/add-coupon', { admin: true });
+            let admin = req.session.admin;
+            let categories =await categoryModel.find()
+
+            console.log(categories[0].category);
+            res.render('admin/add-coupon', { admin,categories,admin: true });
 
         } catch (error) {
             console.log(error.message);

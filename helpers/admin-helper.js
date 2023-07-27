@@ -70,25 +70,25 @@ module.exports = {
             const startYear = 2022;
             const endYear = 2027;
             const annualRevenue = new Array(endYear - startYear + 1).fill(0);
-        
+
             orders.forEach((order) => {
                 order.products.forEach((product) => {
-                  if (product.deliveryStatus === 'payed') {
-                    const year = order.createdAt.getFullYear();
-                    if (year >= startYear && year <= endYear) {
-                      annualRevenue[year - startYear] += product.price * product.quantity;
+                    if (product.deliveryStatus === 'payed') {
+                        const year = order.createdAt.getFullYear();
+                        if (year >= startYear && year <= endYear) {
+                            annualRevenue[year - startYear] += product.price * product.quantity;
+                        }
                     }
-                  }
                 });
             });
-        
-          console.log(annualRevenue, 'Annual Revenue');
-          return annualRevenue;
+
+            console.log(annualRevenue, 'Annual Revenue');
+            return annualRevenue;
         } catch (error) {
-          console.log(error.message);
+            console.log(error.message);
         }
-      },
-  
+    },
+
     calculateMonthlyRevenue: async (orders) => {
         try {
             const monthlyRevenue = new Array(12).fill(0);
@@ -112,6 +112,55 @@ module.exports = {
             console.log(error.message);
         }
     },
+
+    createAdmin: async (adminData) => {
+        try {
+            if (adminData.mobile.length !== 10) {
+                throw new Error('Phone number must be 10 digits long');
+            }
+
+            const emailExist = await adminModel.findOne({ email: adminData.email });
+            const numberExist = await adminModel.findOne({ mobile: adminData.mobile });
+
+            const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/;
+            if (!passwordRegex.test(adminData.password)) {
+                throw new Error('Password must contain at least 8 characters, including uppercase and lowercase letters, numbers, and special characters');
+            }
+
+            if (emailExist || numberExist) {
+                throw new Error('Email and mobile number already exist');
+            } else if (emailExist) {
+                throw new Error('Email already exists');
+            } else if (numberExist) {
+                throw new Error('Mobile number already exists');
+            }
+
+            adminData.password = await bcrypt.hash(adminData.password, 10);
+            const newAdminDbDocument = new adminModel({
+                name: adminData.name,
+                teamName: adminData.teamName,
+                mobile: adminData.mobile,
+                password: adminData.password,
+                email: adminData.email
+            });
+
+            const newAdmin = await newAdminDbDocument.save();
+            const response = {
+                status: true,
+                message: 'Admin account created successfully.'
+            };
+
+            return response;
+        } catch (error) {
+            console.log(error.message);
+            const response = {
+                status: false,
+                message: error.message
+            };
+            return response;
+        }
+    },
+
     adminLogin: (adminData) => {
         return new Promise(async (resolve, reject) => {
             let admin = await adminModel.findOne({ email: adminData.email })
@@ -148,16 +197,21 @@ module.exports = {
         });
     },
 
-    getAllUsers: () => {
-        return new Promise((resolve, reject) => {
-            userModel.find()
-                .then(user => {
-                    resolve(user);
-                })
-                .catch(error => {
-                    reject(error);
-                });
-        });
+    getAllUsers:async() => {
+        try {
+            return new Promise(async(resolve, reject) => {
+                await adminModel.find()
+                    .then(user => {
+                        resolve(user);
+                    })
+                    .catch(error => {
+                        reject(error);
+                    });
+            });
+        } catch (error) {
+            console.log(error.message);
+        }
+        
     },
 
     blockUser: async (id) => {
@@ -182,36 +236,5 @@ module.exports = {
     //       throw new Error(error);
     //     }
     //   },
-
-
-    // signup method model
-
-    // adminLogin:(adminData)=>{
-    //     return new Promise(async (resolve, reject)=>{
-    //         try{
-    //             const emailExist = await adminModel.findOne({ email:userData.email})
-
-    //             if(emailExist){
-    //                 reject('Email is already exists ')
-    //             }else{
-    //                 userData.password = await bcrypt.hash(adminData.password, 10)
-    //                 const newAdminDbDocument = new adminModel({
-    //                     name: userData.name,
-    //                     password: userData.password,
-    //                     email: userData.email
-    //                 })
-    //                 newAdminDbDocument.save().then((newAdminDbDocument)=>{
-    //                     const response={}
-    //                     response.status = true
-    //                     resolve(response)
-    //                 }).catch((error)=>{
-    //                     reject('Error save user document:' + error)
-    //                 })
-    //             }
-    //         } catch(error){
-    //             reject('Error checking existing email :' + error)
-    //         }
-    //     })
-    // }
 
 };

@@ -28,7 +28,7 @@ module.exports = {
             throw error;
         }
     },
-    findBanner:async()=>{
+    findBanner: async () => {
         try {
             let banners = await bannerModel.find();
             console.log(banners);
@@ -37,15 +37,22 @@ module.exports = {
             console.log(error.message);
         }
     },
-    editBanner:async( bannerId, updatedData , images)=>{
+    editBanner: async (bannerId, updatedData, images) => {
         try {
-            console.log(bannerId, updatedData , images,'❤️❤️');
-            
-                await bannerModel.findByIdAndUpdate(
-                    { _id: bannerId },
-                    { $set: { updatedData, image: images } }
-                );
-    
+            console.log(bannerId, updatedData, images, '❤️❤️');
+            if (!images || images.length === 0) {
+                const banner = await bannerModel.findOne({ _id: bannerId });
+                // Check if the banner exists and has an image
+                if (banner && banner.image) {
+                    // Assign the existing image to the 'images' variable
+                    images = [banner.image];
+                } 
+            }
+            await bannerModel.findByIdAndUpdate(
+                { _id: bannerId },
+                { $set: { updatedData, image: images } }
+            );
+
         } catch (error) {
             console.log(error.message);
         }

@@ -16,12 +16,19 @@
                     <img src="/uploads/images/<%= image %>" alt="Image">
                     <% }) %>
                 </td>
+                <div class="image-names">
+                    <% banner.image.forEach((image) => { %>
+                      <div><%= image %></div>
+                    <% }) %>
+                  </div>
                 <div class="mb-3">
                     <label for="bannerImage" class="form-label">Upload Banner Image:</label>
                     <div class="input-group">
-                        <input type="file" class="form-control" id="bannerImage" name="bannerImage" multiple />
+                      <input type="file" class="form-control" id="bannerImage" name="bannerImage" multiple />
                     </div>
-                </div>
+                  </div>
+                  
+                  
                 <div class="mb-4">
                     <label for="bannerName" class="form-label">Banner Name:</label>
                     <input type="text" id="bannerName" name="bannerName" class="form-control form-control-xs"

@@ -12,15 +12,16 @@ module.exports = {
 
 
   doSignup: async (userData) => {
-    console.log(userData.password, 'password checking');
-
-    // Check if phone number has a minimum and maximum length of 10 digits
-    if (userData.mobile.length !== 10) {
-      console.log(userData.mobile);
-      throw new Error('Phone number must be 10 digits long');
-    }
-
+    
     try {
+      console.log(userData.password, 'password checking');
+
+      // Check if phone number has a minimum and maximum length of 10 digits
+      if (userData.mobile.length !== 10) {
+        console.log(userData.mobile);
+        throw new Error('Phone number must be 10 digits long');
+      }
+
       console.log(userData);
       const emailExist = await userModel.findOne({ email: userData.email });
       const numberExist = await userModel.findOne({ mobile: userData.mobile });
@@ -136,6 +137,21 @@ module.exports = {
     });
   },
   
- 
+  getAllCostumers:async() => {
+    try {
+        return new Promise(async(resolve, reject) => {
+            await userModel.find()
+                .then(user => {
+                    resolve(user);
+                })
+                .catch(error => {
+                    reject(error);
+                });
+        });
+    } catch (error) {
+        console.log(error.message);
+    }
+    
+},
 
 }

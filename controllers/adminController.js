@@ -9,12 +9,16 @@ const { ObjectId } = require('mongodb');
 const categoryModel = require('../models/category-model');
 const ordersHelper = require("../helpers/orders-helper");
 const categoryHelper = require("../helpers/category-helper");
+const userHelper = require("../helpers/user-helper");
 
 
 module.exports = {
 
     getDashboard: async (req, res) => {
         try {
+
+            let admin = req.session.admin;
+
             if (req.session.admin) {
                 console.log('getDashboard');
                 const users = await userModel.find();
@@ -74,29 +78,30 @@ module.exports = {
 
                 let categories = await categoryModel.find()
                 let deliverCategory = await categoryHelper.deliverCategory()
-                console.log(deliverCategory,'👻👻deliverCategory👻👻');
+                console.log(deliverCategory, '👻👻deliverCategory👻👻');
                 // const categoryData = await adminHelper.categoryOrderData(orders, categories);
 
                 const startOfYear = new Date(new Date().getFullYear(), 0, 1); // start of the year
                 const endOfYear = new Date(new Date().getFullYear(), 11, 31); // end of the year
-              
+
                 console.log('❤️❤️', monthlyRevenue, '❤️❤️', AnnualRevenues, '❤️❤️');
                 console.log('❤️❤️', categories, '❤️❤️');
-                
-                
-                res.render('admin/dashboard',{
+
+                console.log(admin, 'admin');
+                res.render('admin/dashboard', {
                     totalSales,
-                    totalPayed, 
-                    orders, 
-                    totalOrders, 
-                    users, 
-                    admin: true ,
+                    totalPayed,
+                    orders,
+                    totalOrders,
+                    users,
+                    admin: true,
                     monthlyRevenue,
                     categories,
                     AnnualRevenues,
-                    deliverCategory
+                    deliverCategory,
+                    admin,
                 });
-            
+
             } else {
                 res.redirect('/admin/admin-login')
             }
@@ -105,31 +110,79 @@ module.exports = {
         }
     },
 
-    getLogin: (req, res) => {
-        if (req.session.admin) {
-            res.redirect('/admin')
-        } else {
-            const errorMessage = req.query.error;
-            res.render('admin/admin-Login', { error: errorMessage, noShow: true, admin: true })
+    getSignup: async (req, res) => {
+        try {
+            let admin = req.session.admin
+            let error = req.query.error
+            let successMessage = req.flash('success');
+            let errorMessage = req.flash('error');
+            res.render('admin/admin-signup', {admin, error, successMessage, errorMessage, admin: true });
+        } catch (error) {
+            console.log(error.message);
+            res.status(500).send('Internal Server Error');
         }
-        console.log("get admin-login ")
+    },
+
+    postSignup: async (req, res) => {
+        try {
+            let AdminData = req.body;
+        console.log(AdminData, 'AdminData');
+
+        let newAdmin = await adminHelper.createAdmin(AdminData);
+
+        if (newAdmin.status) {
+            req.flash('success', 'Admin created successfully!');
+            res.render('admin/admin-signup', { successMessage: req.flash('success'), admin: true });
+        } else {
+            if (newAdmin.message.includes('Password must contain')) {
+                // Password validation error
+                req.flash('error', newAdmin.message);
+                res.render('admin/admin-signup', { errorMessage: req.flash('error'), admin: true });
+            } else {
+                req.flash('error', newAdmin.message);
+                res.redirect('/admin/admin-signup');
+            }
+        }
+        } catch (error) {
+            console.log(error.message, '🧛🏻');
+            req.flash('error', 'Internal Server Error');
+            res.redirect('/admin/admin-signup');
+        }
+    },
+    
+
+    getLogin: (req, res) => {
+        try {
+            console.log("get admin-login ")
+
+            if (req.session.admin) {
+                res.redirect('/admin')
+            } else {
+                const errorMessage = req.query.error;
+                res.render('admin/admin-Login', { error: errorMessage, noShow: true, admin: true })
+            }
+        } catch (error) {
+            console.log(error.message);
+        }
 
     },
 
-    postLogin: (req, res) => {
+    postLogin:async(req, res) => {
         try {
             console.log(req.body);
-            adminHelper.adminLogin(req.body)
+            await adminHelper.adminLogin(req.body)
                 .then((response) => {
                     req.session.admin = response.admin;
                     res.redirect('/admin')
                 })
+                .catch((error) => {
+                    console.log("Incorrect Email or Password...!!!");
+                    let errorMessage = 'Incorrect Email or Password....!!!';
+                    res.redirect('/admin/admin-login?error=' + errorMessage);
+                });
         } catch (error) {
-            console.log("Incorrect Email or Password...!!!");
-            let errorMessage = 'Incorrect Email or Password....!!!';
-            res.redirect('/admin/admin-login?error=' + errorMessage);
+            console.log(error.message);
         }
-
     },
 
     getLogout: (req, res) => {
@@ -143,8 +196,11 @@ module.exports = {
 
     getUsersList: async (req, res) => {
         try {
+            let admin = req.session.admin;
+
             const users = await adminHelper.getAllUsers()
-            res.render('admin/users-List', { admin: true, users })
+            console.log(users,'0000001');
+            res.render('admin/users-List', { admin, admin: true, users })
         } catch (error) {
             console.error(error)
             res.render('admin/error-view', { admin: true, error: 'An error occurred' })
@@ -153,7 +209,7 @@ module.exports = {
     },
 
     blockUser: async (req, res, next) => {
-
+        
         try {
             const id = req.params.id;
 
@@ -179,8 +235,20 @@ module.exports = {
     //         res.render('admin/error-view', {admin:true , error:'An error occurred'})
     //     }
     // },
-   
-    ///**********************Admin products************************* */ 
+
+    ///**********************Admin side Costumer list ************************* */ 
+
+    getCostumers:async(req,res)=>{
+        try {
+            let admin = req.session.admin;
+
+            const users = await userHelper.getAllCostumers()
+            console.log(users,'0000001');
+            res.render('admin/costumers-list', { admin, admin: true, users })
+        } catch (error) {
+            console.log(error.message);
+        }
+    }
 
 
 

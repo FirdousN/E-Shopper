@@ -7,7 +7,6 @@ const slugify = require('slugify');
 const walletModel = require("../models/wallet-model");
 const productHelpers = require("../helpers/product-helpers");
 const productModel = require ("../models/product-model")
-const invoiceModel = require("../models/invoice-model");
 const userHelper = require("../helpers/user-helper");
 const userModel = require("../models/userModel");
 const jsPDF = require('jspdf');
@@ -79,6 +78,7 @@ module.exports = {
 
   getProductStatus: async (req, res) => {
     try {
+      
       let proSlug = req.params.slug;
       let orderId = req.params._id;
       let user = req.session.user;
@@ -103,45 +103,6 @@ module.exports = {
       console.log(error.message);
     }
   },
-
-  // getInvoice: async (req, res) => {
-  //   try {
-  //     let orderId = req.params.orderId;
-
-  //     let proSlug = req.params.proSlug;
-  //     console.log(orderId, proSlug, '1111111110000000');
-
-  //     // Get the order details first
-  //     let orders = await ordersHelper.productDetails(orderId);
-
-  //     // Now that we have 'orders', let's get other required data
-  //     let product = await ordersHelper.orderProducts(orderId, proSlug);
-
-  //     if (!product || product.length === 0) {
-  //         return res.status(404).render('users/error', { errorMessage: 'Product not found' });
-  //     }
-
-  //     let user = await userModel.findById(product[0].userId);
-  //     let userName = user ? user.name : 'Unknown User';
-
-  //     console.log('🌹🌹🌹', product, '🌹🌹🌹');
-  //     product.forEach((products) => {
-  //         console.log('0111111111000000000',products.products, '0111111111000000000');
-  //     });
-
-  //     res.render('users/invoice', {
-  //         userName,
-  //         product,
-  //         orders,
-  //         noShow: true,
-  //         other:true,
-  //     });
-
-  // } catch (error) {
-  //     console.log(error.message);
-  //     res.status(500).render('users/error', { errorMessage: 'Internal Server Error' });
-  // }
-  // },
 
   getCheckOut: async (req, res) => {
     try {
@@ -193,7 +154,9 @@ module.exports = {
 
       let products = await cartHelper.getCartProductList(userId);
       // let deliveryStatus = "placed";
-      let totalPrice = await cartHelper.getTotalAmount(products)
+      let pro = await productModel.find()
+      console.log(pro,'000001');
+      let totalPrice = await cartHelper.getTotalAmount(pro,products)
 
       let orderData = req.body;
       console.log(orderData, '🌹🌹🌹🌹🌹🌹🌹🌹🌹🌹👻👻');
@@ -223,7 +186,7 @@ module.exports = {
 
     try {
       console.log('getOrders in controllers');
-
+      let admin = req.session.admin;
 
       let orderData = await ordersModel.find()
       console.log('🥶🥶🥶', orderData, '🥶🥶🥶');
@@ -238,31 +201,24 @@ module.exports = {
         totalProductsCount += orders[i].products[i];
 
       }
-      res.render('admin/orders', { admin: true, orders, totalProductsCount })
+      res.render('admin/orders', {admin , admin: true, orders, totalProductsCount })
 
     } catch (error) {
       console.log(error.message);
     }
-    // try {
-    //     const orders = await ordersHelper.getUserOrders();
-    //     res.render('admin/orders', { orders });
-    //   } catch (error) {
-    //     console.log(error.message);
-    //     res.status(500).send('Error occurred while fetching orders.');
-    //   }
+   
   },
 
   getProductDetails: async (req, res) => {
     try {
       console.log('getOrders in controllers');
+      let admin = req.session.admin;
 
       const orderId = req.params.orderId;
-
       let orderData = await ordersModel.findOne({ _id: orderId })
-
       console.log('🥶🥶🥶', orderData, '🥶🥶🥶');
 
-      res.render('admin/product-details', { admin: true, orderData })
+      res.render('admin/product-details', {admin , admin: true, orderData })
     } catch (error) {
       console.log(error.message);
     }
@@ -272,7 +228,6 @@ module.exports = {
     try {
       const orderId = req.body.orderId;
       const action = req.body.action;
-
       // Update the order status based on the action using helpers
       await ordersHelper.updateOrderStatus(orderId, action);
 
@@ -325,7 +280,6 @@ module.exports = {
     }
 
   },
-
 
   getSuccessPage: (req, res) => {
     res.render('users/success-page', { layout: false })
@@ -391,8 +345,9 @@ module.exports = {
       } else {
         orders = orders;
       }
+      let admin = req.session.admin;
 
-      res.render('admin/sales-report', { orders, admin: true })
+      res.render('admin/sales-report', { admin ,orders, admin: true })
     } catch (error) {
       console.log(error.message);
     }
@@ -520,7 +475,8 @@ module.exports = {
   },
   getChart: async (req, res) => {
     try {
-      res.render('admin/chart-chartjs', { admin: true })
+      let admin = req.session.admin;
+      res.render('admin/chart-chartjs', {admin, admin: true })
     } catch (error) {
       console.log(error.message);
     }

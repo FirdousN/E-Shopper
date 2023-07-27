@@ -1,10 +1,9 @@
 // Download the helper library from https://www.twilio.com/docs/node/install
 // Set environment variables for your credentials
 // Read more at http://twil.io/secure
-const accountSid = process.env.accountSid;
-const authToken = process.env.authToken;
-const verifySid = process.env.verifySid;
-
+const accountSid = process.env.TWILIO_ACCOUNT_SID;
+const authToken = process.env.TWILIO_AUTH_TOKEN;
+const verifySid = process.env.TWILIO_VERIFY_SID;
 const client = require("twilio")(accountSid, authToken);
 
 // client.verify.v2
@@ -31,12 +30,12 @@ let lastRequestTime = 0;
 
 
 const generateOTP = async (phonenumber) => {
-/*   const currentTime = Date.now();
+  const currentTime = Date.now();
   if (currentTime - lastRequestTime < rateLimitTime) {
     console.log("Rat limit exceeded. Please wait before making another request.")
     return;
   }
-  lastRequestTime = currentTime; */
+  lastRequestTime = currentTime; 
 
 /*   const verification = await client.verify.v2
     .services(verifySid)

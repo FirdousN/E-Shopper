@@ -10,8 +10,8 @@ const invoiceModel = require("../models/invoice-model")
 //Razorpay//
 const Razorpay = require('razorpay')
 const instance = new Razorpay({
-  key_id: process.env.KEY_ID,
-  key_secret: process.env.KEY_SECRET,
+  key_id: process.env.RAZORPAY_KEY_ID,
+  key_secret: process.env.RAZORPAY_KEY_SECRET,
 });
 
 
@@ -248,8 +248,8 @@ module.exports = {
       return new Promise((resolve, reject) => {
         const crypto = require('crypto');
 
-        let hmac = crypto.createHmac('sha256', 'M8TOqqPjxqfp5ZiAF3qZaM13');
-        // let hmac = crypto.createHmac('sha256', process.env.KEY_SECRET);
+        // let hmac = crypto.createHmac('sha256', 'M8TOqqPjxqfp5ZiAF3qZaM13');
+        let hmac = crypto.createHmac('sha256', process.env.RAZORPAY_KEY_SECRET);
         console.log(hmac, '------------------------------------->');
         hmac.update(details.payment.razorpay_order_id + '|' + details.payment.razorpay_payment_id);
         hmac = hmac.digest('hex');

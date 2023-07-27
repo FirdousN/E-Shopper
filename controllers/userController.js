@@ -5,20 +5,17 @@ const cartHelper = require('../helpers/cart-helper');
 const userModel = require('../models/userModel');
 const productModel = require("../models/product-model")
 const session = require('express-session');
-// require twilio
-const twilioFunctions = require("../config/twilio");
-const accountSid = "ACa69eeeb875a9c5d2437af10c2302a19f";
-const authToken = "570c296f42954c018df0e025f4a42427";
-const verifySid = "VAa9e8cbd885f5c057ff4a1e44efbc3c41";
-const client = require("twilio")(accountSid, authToken);
 const slugify = require('slugify');
 const categoryModel = require("../models/category-model");
 const bannerModel = require('../models/banner-model');
 const productHelpers = require("../helpers/product-helpers");
-const cartModel = require ("../models/cart-model")
-// const accountSid = process.env.TWILIO_ACCOUNT_SID;
-// const authToken = process.env.TWILIO_AUTH_TOKEN;
-// const client = require("twilio")(accountSid, authToken);
+const cartModel = require("../models/cart-model")
+// require twilio
+const twilioFunctions = require("../config/twilio");
+const accountSid = process.env.TWILIO_ACCOUNT_SID;
+const authToken = process.env.TWILIO_AUTH_TOKEN;
+const verifySid = process.env.TWILIO_VERIFY_SID;
+const client = require("twilio")(accountSid, authToken);
 
 module.exports = {
 
@@ -55,10 +52,10 @@ module.exports = {
         }
     },
 
-    postSignup: (req, res) => {
+    postSignup:async(req, res) => {
         try {
             console.log(req.body);
-            userHelper.doSignup(req.body)
+            await userHelper.doSignup(req.body)
                 .then((response) => {
 
                     // req.session.user = response.user
@@ -219,22 +216,29 @@ module.exports = {
 
     // otp
     getShop: async (req, res) => {
-        const products = await productModel.find({ deleted: false });
-        // const categories = await categoryModel.find();
+        try {
+            const products = await productModel.find({ deleted: false }).exec();;
+            console.log(products, "Shopping ❤️❤️");
 
-        console.log(products, "Shopping ❤️❤️");
+            let categories = await categoryModel.find();
+            console.log(categories,'🧛🏻🧛🏻');
+            console.log('Number of categories:', categories.length);
 
-        let user = req.session.user;
-        let cartCount = 0;
-
-        if (user) {
-            cartCount = await cartHelper.getCartCount({ _id: user._id });
-        }
-
-        if (!user || !cartCount || !products) {
-            res.render('users/shop', { cartCount: [], products });
-        } else {
-            res.render('users/shop', { user, cartCount, products });
+            let user = req.session.user;
+            let cartCount = 0;
+    
+            if (user) {
+                cartCount = await cartHelper.getCartCount({ _id: user._id });
+            }
+    
+            if (!user || !cartCount || !products || !categories) {
+                res.render('users/shop', { cartCount: [], products ,categories:[]});
+            } else {
+            res.render('users/shop', { user, cartCount, products, categories });
+            }
+        } catch (error) {
+            console.log(error.message);
+            return res.status(500).json({ error: 'Internal Server Error' });
         }
     },
 
@@ -262,7 +266,7 @@ module.exports = {
 
             let cartCount = await cartHelper.getCartCount(req.session.user._id)
 
-            res.render('users/detail', { cart,user, cartCount, products })
+            res.render('users/detail', { cart, user, cartCount, products })
         } catch (error) {
             res.status(500).send('Internal Server Error');
 
@@ -295,31 +299,62 @@ module.exports = {
             let products = await productHelpers.categoryOfProduct(categoryName)
 
             console.log(products, '👻👻👻👻');
+            let categories = await categoryModel.find();
+            console.log(categories,'🧛🏻🧛🏻');
 
-            res.render('users/shop', { products });
+            res.render('users/shop', {categories, products });
         } catch (error) {
             console.log(error.message);
         }
 
     },
-    getFilteredProducts:async(req,res)=>{
+    getFilteredProducts: async (req, res) => {
         try {
-            const { priceFilters, categoryFilters } = req.body
-            // Sample code:
-            const products = await productModel.find({
-                deleted: false,
-                productPrice: { $in: priceFilters },
-                category: { $in: categoryFilters }
-            });
+            const priceFilters = req.body.priceFilters || [];
+            const categoryFilters = req.body.categoryFilters || [];
+    
+            // Debugging statements
+            console.log('Price Filters:', priceFilters);
+            console.log('Category Filters:', categoryFilters);
+    
+            let query = productModel.find({});
+            console.log('❤️Original Query:', query ,'❤️');
+    
+            let products = []; // Change from "const" to "let"
+    
+            if (priceFilters.length > 0) {
+                const priceRanges = await productHelpers.getPriceRanges(priceFilters);
+                console.log('Price Ranges:', priceRanges);
+    
+                let pipeline = [
+                    {
+                        $match: {
+                            productPrice: { $gte: priceRanges[0], $lte: priceRanges[1] }
+                        }
+                    }
+                ];
+                products = await productModel.aggregate(pipeline);
 
-            // After getting filtered products, render the products template and send it back to the client
-            res.render('users/products', { products });
-            // Note: You may need to create a separate products.ejs file to display filtered products.
-
-
+            }
+            if (categoryFilters.length > 0) {
+                console.log('❤️categoryFilter',categoryFilters,'❤️');
+                    let pipeline = [
+                        {
+                        $match: {
+                            category: { $in: categoryFilters }
+                        }
+                    }
+                ];          
+                products = await productModel.aggregate(pipeline);
+            }
+            
+            console.log('🧛🏻', { products }, '🧛🏻');
+            return res.json({ products });
         } catch (error) {
             console.log(error.message);
+            return res.status(500).json({ error: 'Internal Server Error' });
         }
-    }
-
+    },
+    
+    
 }
