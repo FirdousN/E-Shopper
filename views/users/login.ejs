@@ -6,11 +6,11 @@
             <div class="card-body p-4 p-sm-5">
 
                 <h1 class="text-center">User Login</h1>
-                <% if (typeof invalid !== 'undefined') { %>
-                <div class="alert alert-danger">
-                    <%= invalid %>
-                </div>
-                <% } %>
+                <% if (typeof error !== 'undefined' && error !== null) { %>
+                    <div class="alert alert-danger" role="alert">
+                      <%= error %>
+                    </div>
+                  <% } %>
                 <form method="post" action="/login">
                     <!-- <div class="form-group">
                         <label for="name">Name:</label>

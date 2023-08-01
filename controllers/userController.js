@@ -54,21 +54,35 @@ module.exports = {
         } catch (error) {
             error.message
         }
-        
+
     },
 
-    postSignup:async (req,res)=>{
+    postSignup: async (req, res) => {
         try {
             let userData = req.body;
-            console.log(userData,'userData');
+            console.log(userData, 'userData');
 
             let result = await userHelper.userSignup(userData)
-            console.log(result,'result');
+            console.log(result, 'result');
 
             res.redirect('/login')
         } catch (error) {
             console.log(error.message);
-            res.redirect('/signup?error=' + encodeURIComponent(error.message));
+            if (error.message == 'Email and mobile number already exist') {
+
+                const exist = 'User already registered';
+                const phoneError = error.message
+                console.log(phoneError, 'phoneError');
+                // res.render('user/signup', { exist: exist,phoneError, noShow: true })
+                res.redirect('/signup?error=' + encodeURIComponent(phoneError));
+            } else if (error.message === 'Password must contain at least 8 characters, including uppercase and lowercase letters, numbers, and special characters') {
+                const passwordError = 'Password must contain at least 8 characters, including uppercase and lowercase letters, numbers, and special characters';
+                res.redirect('/signup?error=' + encodeURIComponent(passwordError));
+            }
+            else {
+
+                res.redirect('/signup?error=' + encodeURIComponent(error.message));
+            }
 
         }
     },
@@ -77,10 +91,10 @@ module.exports = {
     //         console.log(req.body);
     //         let userData = req.body;
     //         await userHelper.userSignup(userData); // Call the doSignup function with the correct parameter
-               
+
     //             // req.session.user = response.user
     //             res.redirect('/login')
-                
+
     //     } catch (error) {
     //         console.log('❤️|', error.message, '|', typeof error.message, 'postSignup error message❤️');
 
@@ -106,45 +120,43 @@ module.exports = {
 
     getLogin: (req, res) => {
         try {
-            if (req.session.user) {
-                res.redirect('/')
-            }
-            else {
-                res.render('users/login', { noShow: true })
-            }
+          if (req.session.user) {
+            res.redirect('/');
+          } else {
+            const error = req.session.error; // Get the error message from the session
+            res.render('users/login', { noShow: true, error }); // Pass the error variable to the login page
+            req.session.error = null; // Clear the error message from the session after rendering the page
+          }
         } catch (error) {
-            console.log(error.message);
+          console.log(error.message);
         }
-        
-    },
+    },      
 
     postLogin: async (req, res) => {
         try {
           const userData = req.body;
           console.log('postLogin', userData);
-    
-          await userHelper.userLogin(req.body) // Use userLogin function for login
-          .then((response) => {           
-            console.log(response,'response');
-    
-            if (response.status && response.user) {
-              console.log("postLogin if-1");
-              req.session.user = response.user
-              res.redirect('/');
-            } else {
-              console.log("postLogin else-1");
-              const invalid = response.message;
-              res.render('users/login', { noShow: true, invalid })
-            }
-          })
+      
+          const response = await userHelper.userLogin(req.body);
+      
+          if (response.status && response.user) {
+            console.log("postLogin if-1");
+            req.session.user = response.user;
+            res.redirect('/');
+          } else {
+            console.log("postLogin else-1");
+            req.session.error = response.message; // Store the error message in session
+            res.redirect('/login');
+          }
         } catch (error) {
           console.log("postLogin catch-1");
           console.log(error.message);
-    
+      
           const invalid = 'An error occurred during login. Please try again later.';
-          res.render('users/login', { invalid: invalid });
+          req.session.error = invalid;
+          res.redirect('/login?error=' + encodeURIComponent(invalid));
         }
-      },
+      },      
 
     getLogout: (req, res) => {
         req.session.destroy(); // Destroy the session
@@ -245,20 +257,20 @@ module.exports = {
             console.log(products, "Shopping ❤️❤️");
 
             let categories = await categoryModel.find();
-            console.log(categories,'🧛🏻🧛🏻');
+            console.log(categories, '🧛🏻🧛🏻');
             console.log('Number of categories:', categories.length);
 
             let user = req.session.user;
             let cartCount = 0;
-    
+
             if (user) {
                 cartCount = await cartHelper.getCartCount({ _id: user._id });
             }
-    
+
             if (!user || !cartCount || !products || !categories) {
-                res.render('users/shop', { cartCount: [], products ,categories:[]});
+                res.render('users/shop', { cartCount: [], products, categories: [] });
             } else {
-            res.render('users/shop', { user, cartCount, products, categories });
+                res.render('users/shop', { user, cartCount, products, categories });
             }
         } catch (error) {
             console.log(error.message);
@@ -324,9 +336,9 @@ module.exports = {
 
             console.log(products, '👻👻👻👻');
             let categories = await categoryModel.find();
-            console.log(categories,'🧛🏻🧛🏻');
+            console.log(categories, '🧛🏻🧛🏻');
 
-            res.render('users/shop', {categories, products });
+            res.render('users/shop', { categories, products });
         } catch (error) {
             console.log(error.message);
         }
@@ -336,20 +348,20 @@ module.exports = {
         try {
             const priceFilters = req.body.priceFilters || [];
             const categoryFilters = req.body.categoryFilters || [];
-    
+
             // Debugging statements
             console.log('Price Filters:', priceFilters);
             console.log('Category Filters:', categoryFilters);
-    
+
             let query = productModel.find({});
-            console.log('❤️Original Query:', query ,'❤️');
-    
+            console.log('❤️Original Query:', query, '❤️');
+
             let products = []; // Change from "const" to "let"
-    
+
             if (priceFilters.length > 0) {
                 const priceRanges = await productHelpers.getPriceRanges(priceFilters);
                 console.log('Price Ranges:', priceRanges);
-    
+
                 let pipeline = [
                     {
                         $match: {
@@ -361,17 +373,17 @@ module.exports = {
 
             }
             if (categoryFilters.length > 0) {
-                console.log('❤️categoryFilter',categoryFilters,'❤️');
-                    let pipeline = [
-                        {
+                console.log('❤️categoryFilter', categoryFilters, '❤️');
+                let pipeline = [
+                    {
                         $match: {
                             category: { $in: categoryFilters }
                         }
                     }
-                ];          
+                ];
                 products = await productModel.aggregate(pipeline);
             }
-            
+
             console.log('🧛🏻', { products }, '🧛🏻');
             return res.json({ products });
         } catch (error) {
@@ -379,6 +391,6 @@ module.exports = {
             return res.status(500).json({ error: 'Internal Server Error' });
         }
     },
-    
-    
+
+
 }
