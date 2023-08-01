@@ -2,9 +2,9 @@ const mongoose = require('mongoose');
 const MONGODB_URL = process.env.MONGODB_URL;
 
 // MongoDB connection URL
-mongoose.connect(MONGODB_URL, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
+mongoose.connect('mongodb+srv://FirdousN:FirdousN@cluster0.ti10wlb.mongodb.net', {
+  dbName:'ecommerce'
+
 })
   .then(() => {
     console.log('Database connected1');

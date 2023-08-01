@@ -222,6 +222,7 @@ module.exports = {
             await user.save()
             return user.status
         } catch (error) {
+            console.log(error.message);
             throw new Error(error)
         }
     },

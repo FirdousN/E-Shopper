@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const userSchema = new mongoose.Schema({
+const userSchema = new Schema({
     name: {
         type: String,
         required: [true, "can't be blank"]
@@ -29,10 +29,10 @@ const userSchema = new mongoose.Schema({
         type:String,
         required:false
     },
-    slug:{
-        type: String,
-        unique: true
-    },
+    // slug:{
+    //     type: String,
+    //     unique: true
+    // },
     addresses: [{
         addresses:{ type:String} ,
         pincode: { type: Number },

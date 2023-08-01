@@ -1,11 +1,11 @@
 const mongoose = require("mongoose");
 // const bcrypt = require("bcrypt");
+const userModel = require('../models/userModel');
 const userHelper = require('../helpers/user-helper');
 const cartHelper = require('../helpers/cart-helper');
-const userModel = require('../models/userModel');
 const productModel = require("../models/product-model")
 const session = require('express-session');
-const slugify = require('slugify');
+// const slugify = require('slugify');
 const categoryModel = require("../models/category-model");
 const bannerModel = require('../models/banner-model');
 const productHelpers = require("../helpers/product-helpers");
@@ -44,83 +44,107 @@ module.exports = {
 
     // ***************************************************LOGIN*************************************************
     getSignup: (req, res) => {
-        if (req.session.user) {
-            res.redirect('/')
-        } else {
-            let error = req.query.error
-            res.render('users/signup', { error, noShow: true })
-        }
-    },
-
-    postSignup:async(req, res) => {
         try {
-            console.log(req.body);
-            await userHelper.doSignup(req.body)
-                .then((response) => {
-
-                    // req.session.user = response.user
-                    res.redirect('/login')
-                })
-        } catch (error) {
-            console.log('|', error.message, '|', typeof error.message, 'postSignup error message');
-
-
-            if (error.message == 'Email and mobile number already exist') {
-
-                const exist = 'User already registered';
-                const phoneError = error.message
-                console.log(phoneError, 'phoneError');
-                // res.render('user/signup', { exist: exist,phoneError, noShow: true })
-                res.redirect('/signup?error=' + encodeURIComponent(phoneError));
-            } else if (error.message === 'Password must contain at least 8 characters, including uppercase and lowercase letters, numbers, and special characters') {
-                const passwordError = 'Password must contain at least 8 characters, including uppercase and lowercase letters, numbers, and special characters';
-                res.redirect('/signup?error=' + encodeURIComponent(passwordError));
-            } else if (error.message === 'No User Found! please create a account') {
-
+            if (req.session.user) {
+                res.redirect('/')
             } else {
-                res.redirect('/login?error=' + encodeURIComponent(error.message));
+                let error = req.query.error
+                res.render('users/signup', { error, noShow: true })
             }
+        } catch (error) {
+            error.message
+        }
+        
+    },
+
+    postSignup:async (req,res)=>{
+        try {
+            let userData = req.body;
+            console.log(userData,'userData');
+
+            let result = await userHelper.userSignup(userData)
+            console.log(result,'result');
+
+            res.redirect('/login')
+        } catch (error) {
+            console.log(error.message);
+            res.redirect('/signup?error=' + encodeURIComponent(error.message));
 
         }
     },
+    // postSignup:async(req, res) => {
+    //     try {
+    //         console.log(req.body);
+    //         let userData = req.body;
+    //         await userHelper.userSignup(userData); // Call the doSignup function with the correct parameter
+               
+    //             // req.session.user = response.user
+    //             res.redirect('/login')
+                
+    //     } catch (error) {
+    //         console.log('❤️|', error.message, '|', typeof error.message, 'postSignup error message❤️');
+
+
+    //         if (error.message == 'Email and mobile number already exist') {
+
+    //             const exist = 'User already registered';
+    //             const phoneError = error.message
+    //             console.log(phoneError, 'phoneError');
+    //             // res.render('user/signup', { exist: exist,phoneError, noShow: true })
+    //             res.redirect('/signup?error=' + encodeURIComponent(phoneError));
+    //         } else if (error.message === 'Password must contain at least 8 characters, including uppercase and lowercase letters, numbers, and special characters') {
+    //             const passwordError = 'Password must contain at least 8 characters, including uppercase and lowercase letters, numbers, and special characters';
+    //             res.redirect('/signup?error=' + encodeURIComponent(passwordError));
+    //         } 
+    //         else {
+
+    //             res.redirect('/signup?error=' + encodeURIComponent(error.message));
+    //         }
+
+    //     }
+    // },
 
     getLogin: (req, res) => {
-
-        if (req.session.user) {
-            res.redirect('/')
+        try {
+            if (req.session.user) {
+                res.redirect('/')
+            }
+            else {
+                res.render('users/login', { noShow: true })
+            }
+        } catch (error) {
+            console.log(error.message);
         }
-        else {
-            res.render('users/login', { noShow: true })
-
-        }
+        
     },
 
     postLogin: async (req, res) => {
         try {
-            const userData = req.body;
-            console.log('postLogin', userData);
-
-            const response = await userHelper.userLogin(userData)
-            // .then((response) => {
+          const userData = req.body;
+          console.log('postLogin', userData);
+    
+          await userHelper.userLogin(req.body) // Use userLogin function for login
+          .then((response) => {           
+            console.log(response,'response');
+    
             if (response.status && response.user) {
-                console.log("postLogin if-1");
-                req.session.user = response.user
-                res.redirect('/');
+              console.log("postLogin if-1");
+              req.session.user = response.user
+              res.redirect('/');
             } else {
-                console.log("postLogin else-1");
-                const invalid = response.message;
-                res.render('users/login', { noShow: true, invalid })
+              console.log("postLogin else-1");
+              const invalid = response.message;
+              res.render('users/login', { noShow: true, invalid })
             }
-            // })
+          })
         } catch (error) {
-            console.log("postLogin catch-1");
-            console.log(error.message);
-
-            const invalid = 'An error occurred during login. Please try again later.';
-            res.render('users/login', { invalid: invalid });
+          console.log("postLogin catch-1");
+          console.log(error.message);
+    
+          const invalid = 'An error occurred during login. Please try again later.';
+          res.render('users/login', { invalid: invalid });
         }
-
-    },
+      },
 
     getLogout: (req, res) => {
         req.session.destroy(); // Destroy the session

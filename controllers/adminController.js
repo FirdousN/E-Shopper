@@ -159,7 +159,7 @@ module.exports = {
                 res.redirect('/admin')
             } else {
                 const errorMessage = req.query.error;
-                res.render('admin/admin-Login', { error: errorMessage, noShow: true, admin: true })
+                res.render('admin/admin-login', { error: errorMessage, noShow: true, admin: true })
             }
         } catch (error) {
             console.log(error.message);

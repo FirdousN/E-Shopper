@@ -25,7 +25,8 @@ let categorySchema= new Schema({
     
     slug: {
         type: String,
-        unique: true },
+        // unique: true 
+    },
 
 })
 

@@ -64,7 +64,7 @@
                         <!-- Action start -->
                         <td>
                             <div class="dropdown">
-                                <% if (products.orderStatus === 'canceled' || products.orderStatus === 'pending') { %>
+                                <% if (products.orderStatus === 'cancel' || products.orderStatus === 'pending') { %>
                                 <span class="btn btn-secondary"><%= products.orderStatus %></span>
                                 <% } else { %>
                                     <button class="btn btn-info dropdown-toggle" type="button"
@@ -78,14 +78,14 @@
                                     <% if (products.orderStatus === 'deliver') { %>
                                       <!-- Handle specific actions if the products orderStatus is 'deliver' -->
                                     <% } else { %>
-                                      <% if (products.orderStatus === 'canceled' || products.orderStatus === 'pending') { %>
+                                      <% if (products.orderStatus === 'cancel' || products.orderStatus === 'pending') { %>
                                         <li>
-                                          <a class="dropdown-item" onclick="statusChange('<%= products.slug %>', '<%= orderData._id %>', 'canceled')" value="canceled">canceled</a>
+                                          <a class="dropdown-item" onclick="statusChange('<%= products.slug %>', '<%= orderData._id %>', 'cancel')" value="cancel">cancel</a>
                                         </li>
                                       <% } else { %>
                                         <% if (products.orderStatus != 'cancel') { %>
                                           <li>
-                                            <a class="dropdown-item" onclick="statusChange('<%= products.slug %>', '<%= orderData._id %>', 'canceled')" value="canceled">canceled</a>
+                                            <a class="dropdown-item" onclick="statusChange('<%= products.slug %>', '<%= orderData._id %>', 'cancel')" value="cancel">cancel</a>
                                           </li>
                                         <% } %>
                                         <% if (products.orderStatus === 'order-placed' && products.orderStatus != 'deliver') { %>
