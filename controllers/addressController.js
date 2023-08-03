@@ -5,30 +5,34 @@ const session = require('express-session');
 const addressModel = require('../models/address-model');
 const addressHelper = require("../helpers/address-helper");
 const userHelper = require("../helpers/user-helper");
+const categoryModel = require("../models/category-model");
+
 // const productModel = require('../models/product-model');
 
 module.exports = {
     getUserProfile:async(req,res)=>{
         console.log('USER PROFILE');
         try {
+            let categories = await categoryModel.find()
+
             let user = req.session.user;
             console.log(user, '😷');
-            res.render('users/user-profile',{user})
+            res.render('users/user-profile',{user ,categories})
         } catch (error) {
             console.log(error.message);
         }
     },
     getUserAddress:async(req,res)=>{
         console.log('USER ADDRESS');
-
         try {
-            
+            let categories = await categoryModel.find()
+
             let user = req.session.user;
             console.log(user , '😁👌');
             
             let userData = await ordersHelper.userAddress({_id:user._id});
             console.log(userData , '👌userData👌');
-            res.render('users/user-address' , {user})
+            res.render('users/user-address' , {user ,categories})
         } catch (error) {
             console.log(error.message);
         }
@@ -37,10 +41,12 @@ module.exports = {
         try {
             let user = req.session.user;
             let addressId = req.params.addressId;
+            let categories = await categoryModel.find()
+
             console.log(addressId,'❤️ address Id ❤️');
             let address = await addressHelper.findAddress(user._id ,addressId)
             console.log(address , 'address showing in address controller');
-            res.render('users/edit-address',{user ,address})
+            res.render('users/edit-address',{user ,address ,categories})
 
         } catch (error) {
             console.log(error.message);
@@ -71,7 +77,9 @@ module.exports = {
     getAddAddress:async(req,res)=>{
         try {
             let user =req.session.user;
-            res.render('users/add-userAddress',{user})
+            let categories = await categoryModel.find()
+
+            res.render('users/add-userAddress',{user , categories})
         } catch (error) {
             console.log(error.message);
         }

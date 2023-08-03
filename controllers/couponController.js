@@ -7,15 +7,14 @@ const categoryModel = require("../models/category-model");
 module.exports = {
     getCoupons: async (req, res) => {
         try {
-            let admin = req.session.admin;
-
-            let coupons = await couponModel.find();
-            console.log(coupons, '💸🌹 coupons 🌹💸');
-            res.render('admin/coupons', { admin ,admin: true, coupons });
+          let admin = req.session.admin;
+          const coupons = await couponHelper.getCoupons();
+          console.log(coupons, '💸🌹 coupons 🌹💸');
+          res.render('admin/coupons', { admin, admin: true, coupons });
         } catch (error) {
-            console.log(error.message);
+          console.log(error.message);
         }
-    },
+      },
 
     getAddCoupon: async (req, res) => {
         try {
@@ -35,23 +34,18 @@ module.exports = {
 
             let couponsData = req.body;
             console.log(couponsData);
-
             let couponName = couponsData.name;
-            let couponDiscount = couponsData.discount;
             let couponExp = couponsData.expiryDate;
 
             console.log('💸couponName💸', couponName, '💸couponName💸');
-            console.log('💸 couponDiscount 💸', couponDiscount, '💸 couponCode💸');
-            console.log('💸couponExp💸', couponExp, '💸couponExp💸');
 
             let couponCode = await couponHelper.generateCouponCode(couponName, new Date(couponExp))
 
             console.log(couponCode, '🌹 coupon code in CONTROLLER🌹');
 
-            await couponHelper.createCoupon(couponCode, couponName, couponDiscount, couponExp, res)
+            await couponHelper.createCoupon(couponsData , couponCode, res)
 
-            let coupons = await couponModel.find()
-            res.redirect('/admin/coupons')
+            res.redirect('/admin/coupons',)
 
         } catch (error) {
             console.log(error.message);
@@ -115,6 +109,31 @@ module.exports = {
             res.status(500).json({ error: "Server error" });
 
         }
+    },
 
-    }
+    getEditCoupon:async(req,res)=>{
+        try {
+            let couponId = req.params.couponId;
+            let coupon = await couponModel.findOne({_id:couponId})
+            console.log('get edit coupon');
+            res.render('admin/edit-coupon',{admin:true ,coupon})
+        } catch (error) {
+            console.log(error.message);
+        }
+    },
+
+    postEditCoupon:async(req,res)=>{
+        try {
+
+            console.log('post edit coupon');
+            let couponData = req.body;
+            let couponId = req.params.couponId;
+            await couponHelper.editCoupon(couponData , couponId )
+            
+            res.redirect('/admin/coupons');
+        } catch (error) {
+            console.log(error.message);
+        }
+    },
+
 }

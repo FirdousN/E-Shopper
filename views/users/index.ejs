@@ -65,11 +65,10 @@
     <div class="row px-xl-5 pb-3">
         <!-- CATEGORY LIST IN HOME PAGE -->
         <% categories.forEach((category) => { %>
-            <a href="/category/<%= category.category %>"></a>
                 <div class="col-lg-4 col-md-6 col-sm-12 pb-4">
                     <div class="cat-item d-flex flex-column border mb-4 p-3" style="height: 100%;">
                         <p class="text-right mb-3">15 Products</p>
-                        <a href="" class="cat-img position-relative overflow-hidden mb-3" style="max-height: 60%;">
+                        <a href="/category/<%= category.category %>" class="cat-img position-relative overflow-hidden mb-3" style="max-height: 60%;">
                             <img class="img-fluid h-100 w-100 object-fit-cover" src="/uploads/images/<%= category.image %>" alt="Image">
                         </a>
                         <h5 class="font-weight-semi-bold m-0">
@@ -77,7 +76,6 @@
                         </h5>
                     </div>
                 </div>
-            </a>
 
         <% }) %>
             

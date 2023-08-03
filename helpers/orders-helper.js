@@ -169,13 +169,16 @@ module.exports = {
 
       ]).exec();
 
+      if(!orders){
+        throw new Error("Oops! Looks like you haven't placed any orders yet.");
+      }
       console.log("😊orders😊", orders[0].products, "😊orders😊");
+
       return orders;
     } catch (error) {
       console.log(error.message);
       throw error;
     }
-
   },
 
   updateOrderStatus: async (orderId, action) => {

@@ -25,6 +25,14 @@ const couponSchema = new Schema({
     type: Date,
     required: true,
   },
+  minPrice:{
+    type: Number,
+    require:true,
+  },
+  maxPrice:{
+    type: Number,
+    require:true,
+  },
   createdAt: {
     type: Date,
     default: Date.now,

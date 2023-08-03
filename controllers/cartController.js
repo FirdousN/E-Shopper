@@ -6,6 +6,7 @@ const cartHelper = require('../helpers/cart-helper')
 const slugify = require('slugify')
 const { ObjectId } = require('mongoose');
 const ordersHelper = require('../helpers/orders-helper');
+const categoryModel = require("../models/category-model");
 
 
 module.exports = {
@@ -24,15 +25,16 @@ module.exports = {
 
             let user = req.session.user;
             let cart = await cartModel.findOne({ userId })
+            let categories = await categoryModel.find()
 
             console.log(cart._id, '💕💕 cartId 💕💕');
             console.log(products, 'Products👍👍');
 
-            if (Array.isArray(products) && products.length > 0) {
-                res.render('users/cart', { cart, total, user, cartCount, products });
+            if (Array.isArray(products) && products.length > 0 || categories) {
+                res.render('users/cart', { cart, total, user, cartCount, products  , categories});
             } else {
                 console.log('/*///////*/*/*/*/*/*//**/ not');
-                res.render('users/cart', { user, total, cartCount, products: [], message: 'Your cart is empty.' });
+                res.render('users/cart', { user, total, cartCount, products: [] , categories:[], message: 'Your cart is empty.' });
             }
         } catch (error) {
             console.log(error.message);

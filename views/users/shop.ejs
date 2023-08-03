@@ -1,3 +1,56 @@
+<style>
+    /* Custom styles for the shop page */
+
+/* Center the filter header */
+.border-bottom.mb-4.pb-4 h5 {
+    text-align: center;
+}
+
+/* Style the price and category filter checkboxes */
+.custom-checkbox {
+    display: block;
+    margin-bottom: 10px;
+}
+
+/* Center the filter and reset buttons */
+#applyFilterBtn,
+#resetFilterBtn {
+    display: block;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+/* Style the product cards */
+.card.product-item {
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+}
+
+/* Style the product image */
+.card-header.product-img img {
+    height: 200px;
+    object-fit: cover;
+}
+
+/* Center product name and price */
+.card-body.text-center {
+    height: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+/* Center product actions */
+.card-footer.d-flex.justify-content-between {
+    height: 50px;
+}
+
+/* Add space between View Detail and Add To Cart buttons */
+.add-to-cart-button {
+    margin-left: auto;
+}
+
+</style>
 <!-- Page Header Start -->
 <div class="container-fluid bg-secondary mb-5">
     <div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 300px">
@@ -73,7 +126,7 @@
                             <input type="checkbox" class="custom-control-input" id="category-<%= category._id %>">
                             <label class="custom-control-label"
                                 for="category-<%= category._id %>"><%= category.category %></label>
-                            <span class="badge border font-weight-normal">150</span>
+                            <span class="badge border font-weight-normal"><%= category.category.length %></span>
                         </div>
                     <% }) %>
                     <!-- Add more categories here as needed -->
@@ -130,7 +183,7 @@
             <div class="row pb-3" id="productRow">
                 <div class="col-12 pb-1">
                     <div class="d-flex align-items-center justify-content-between mb-4">
-                        <form action="">
+                        <!-- <form action="">
                             <div class="input-group">
                                 <input type="text" class="form-control" placeholder="Search by name">
                                 <div class="input-group-append">
@@ -139,7 +192,7 @@
                                     </span>
                                 </div>
                             </div>
-                        </form>
+                        </form> -->
                         <div class="dropdown ml-4">
                             <button class="btn border dropdown-toggle" type="button" id="triggerId"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

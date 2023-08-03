@@ -5,7 +5,7 @@ const{postSignup,getSignup,getLogin, postLogin, getDashboard, getLogout, getUser
 const{ postAddProducts,getAddProducts,getProducts, getEditProducts, postEditProducts, postDeleteProduct }=require('../controllers/productController');
 const{postEditCategory,getEditCategory, getAddCategory, postAddCategory, getCategoryList  }=require('../controllers/categoryController');
 const {getChart,postSalesReport,getSalesReport, getOrders ,postStatus, getProductDetails} = require('../controllers/ordersController');
-const{getCoupons, getAddCoupon , postAddCoupon} = require('../controllers/couponController')
+const{getCoupons, getAddCoupon , postAddCoupon ,getEditCoupon ,postEditCoupon} = require('../controllers/couponController')
 const{postEditBanner,getEditBanner,postAddBanner,getAddBanner,getBanner} = require ('../controllers/bannerController')
 
 const { isValidObjectId } = require('mongoose');
@@ -105,11 +105,15 @@ router.post('/sales-report', postSalesReport);
 
 /***********Coupon Management**************************/
 
-router.get('/coupons',verifyAdmin,getCoupons)
+router.get('/coupons',getCoupons)
 
-router.get('/add-coupon',verifyAdmin,getAddCoupon)
+router.get('/add-coupon',getAddCoupon)
 
-router.post('/add-coupon',verifyAdmin,postAddCoupon)
+router.post('/add-coupon',postAddCoupon)
+
+router.get('/edit-coupon/:couponId',getEditCoupon)
+
+router.post('/edit-coupon/:couponId',postEditCoupon)
 
 router.get('/chart-chartjs',getChart)
 

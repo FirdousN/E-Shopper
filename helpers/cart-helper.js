@@ -229,7 +229,8 @@ module.exports = {
                     //   console.log(cartProducts[0].total,'🌹 total🌹');
                     resolve(total);
                 } else {
-                    resolve(0);
+                    console.log('total is empty');
+                    resolve([])
                 }
             } catch (error) {
                 console.log(error.message);

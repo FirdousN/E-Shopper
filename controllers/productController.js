@@ -12,10 +12,10 @@ module.exports = {
     getProducts: async (req, res) => {
         try {
             let admin = req.session.admin;
-
+            let categories = await categoryModel.find()
             let products = await productModel.find()
             // console.log(image.file);
-            res.render('admin/products-List', {admin, admin: true, products })
+            res.render('admin/products-List', {admin, admin: true, products ,categories })
         } catch (error) {
             console.log(error.message);
         }

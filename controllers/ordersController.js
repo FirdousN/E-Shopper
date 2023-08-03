@@ -3,15 +3,16 @@ const ordersModel = require("../models/order-model")
 const cartHelper = require('../helpers/cart-helper')
 const ordersHelper = require("../helpers/orders-helper");
 const slugify = require('slugify');
-// const ordersModel = require("../models/order-model");
+const categoryModel = require("../models/category-model");
 const walletModel = require("../models/wallet-model");
 const productHelpers = require("../helpers/product-helpers");
 const productModel = require ("../models/product-model")
 const userHelper = require("../helpers/user-helper");
-const userModel = require("../models/userModel");
+const couponModel = require("../models/coupon-model");
 const jsPDF = require('jspdf');
 const PDFDocument = require('pdfkit');
 const html2canvas = require('html2canvas');
+const cartModel = require("../models/cart-model");
 
 module.exports = {
 
@@ -31,13 +32,6 @@ module.exports = {
 
       let product = await ordersHelper.orderProducts(orderId, proSlug);
       console.log(product, '🌹🌹 product 🌹🌹');
-
-      // let orders = await ordersHelper.productDetails( orderId ,);
-      // console.log('🌹🌹 orders DATA 🌹🌹',orders, '🌹🌹 orders DATA 🌹🌹');
-
-      // for(const item of orders){
-      //   const products = await productModel.findOne({ _id:})
-      // }
 
       let c = await ordersHelper.cancelOrder(product, totalAmount, value);
 
@@ -87,6 +81,7 @@ module.exports = {
 
       let orders = await ordersHelper.productDetails(orderId);
       let product = await ordersHelper.orderProducts(orderId, proSlug);
+      let categories = await categoryModel.find()
 
       console.log(orders, '😁😁');
       console.log('🌹🌹🌹', product, '🌹🌹🌹');
@@ -98,7 +93,7 @@ module.exports = {
 
       // console.log(getProductQuantity(product.quantity),'/*/*/*/*/*//*/');
 
-      res.render('users/product-status', { user, product, orders });
+      res.render('users/product-status', { user, product, orders ,categories});
     } catch (error) {
       console.log(error.message);
     }
@@ -109,32 +104,45 @@ module.exports = {
       if (!req.session.user || !req.session.user._id) {
         throw new Error('User not authenticated');
       }
-
+  
       const userId = req.session.user._id;
       const user = req.session.user;
-
+      let categories = await categoryModel.find();
+      let cart = await cartModel.findOne({ userId }); // Corrected here by passing an object
+  
       const userAddress = await ordersHelper.userAddress(userId);
       console.log('🥶 userId in orderController :userAddress 🥶', userAddress.addresses, '🥶 userId in orderController :userAddress 🥶');
       console.log('🥶 userId in orderController :userAddress 🥶', userAddress, '🥶 userId in orderController :userAddress 🥶');
+     
+      // Fetch all active coupons for the user
+      const currentDate = new Date();
+      const coupons = await couponModel.find({ expiryDate: { $gte: currentDate } });
 
       let address = userAddress.addresses;
-      let pro = await productModel.find()
+      let pro = await productModel.find();
       const products = await cartHelper.getCartProduct(userId);
-      const total = await cartHelper.getTotalAmount(pro,products);
+      const total = await cartHelper.getTotalAmount(pro, products);
+      console.log('jkjkjk nononono');
+
       let wallet = await walletModel.findOne({ userId: userId });
-      console.log(wallet.balance, 'wallet');
-
-      if (!address || !wallet) {
-        res.render('users/checkout', { wallet: [], address: [], user, total, products });
+      console.log(cart, 'cart');
+      if (!cart) {
+        console.log('cart is empty');
+        let errorMessage = "Oops! Cart is empty.";
+        if (!address || !wallet || !categories || !coupons) {
+          res.render('users/checkout', { wallet: [], address: [], user, total, products, categories: [], errorMessage ,coupons:[] });
+        }
       } else {
-        res.render('users/checkout', { wallet, address: [address], userAddress, user, total, products });
+        console.log('cart is exist');
+        res.render('users/checkout', { wallet, address: [address], userAddress, user, total, products, categories ,coupons});
       }
-
+  
     } catch (error) {
       console.log(error.message);
       res.status(500).send('Error during checkout/ NO products');
     }
   },
+  
 
 
   postCheckout: async (req, res) => {
@@ -242,24 +250,30 @@ module.exports = {
 
   getOrderStatus: async (req, res) => {
     try {
-      let user = req.session.user
+        let user = req.session.user
 
-      let orderData = await ordersModel.find();
-      console.log('🤣order data in order-helper🤣', orderData, '🤣order data in order-helper🤣');
+        let orderData = await ordersModel.findOne({ _id: user._id });
+        let categories = await categoryModel.find()
 
-      let userId = [...new Set(orderData.map((order) => order.userId))];
-      console.log(userId, "😁 userId in getStatus in ordersController 😁");
+        if (orderData === null) {
+            console.log('NO orders, orders is empty');
+            let errorMessage = "Oops! Looks like you haven't placed any orders yet."
+            res.render('users/order-status', { user, orders: [], errorMessage, categories });
+        } else {
+            console.log('🤣order data in order-helper🤣', orderData, '🤣order data in order-helper🤣');
+            let userId = [...new Set(orderData.map((order) => order.userId))];
+            console.log(userId, "😁 userId in getStatus in ordersController 😁");
 
-      let orders = await ordersHelper.getUserOrders(userId)
-
-      console.log('❤️❤️❤️', orders, '❤️❤️❤️❤️');
-
-      res.render('users/order-status', { user, orders })
+            let orders = await ordersHelper.getUserOrders(userId);
+            console.log('❤️❤️❤️', orders, '❤️❤️❤️❤️');
+            res.render('users/order-status', { user, orders, categories});
+        }
     } catch (error) {
-      console.log(error.message);
+        console.log(error.message, '0001');
     }
+},
 
-  },
+
 
   postVerifyPayment: async (req, res) => {
     try {
@@ -482,7 +496,7 @@ module.exports = {
     }
   },
   getInvoice: async (req, res) => {
-
+    
     let proSlug = req.params.proSlug
     let orderId = req.params.orderId;
     console.log(proSlug, orderId, 'first pro second order')

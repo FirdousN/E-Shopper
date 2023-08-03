@@ -49,7 +49,7 @@ module.exports = {
                 res.redirect('/')
             } else {
                 let error = req.query.error
-                res.render('users/signup', { error, noShow: true })
+                res.render('users/signup', { error, })
             }
         } catch (error) {
             error.message
@@ -86,45 +86,17 @@ module.exports = {
 
         }
     },
-    // postSignup:async(req, res) => {
-    //     try {
-    //         console.log(req.body);
-    //         let userData = req.body;
-    //         await userHelper.userSignup(userData); // Call the doSignup function with the correct parameter
+    
 
-    //             // req.session.user = response.user
-    //             res.redirect('/login')
-
-    //     } catch (error) {
-    //         console.log('❤️|', error.message, '|', typeof error.message, 'postSignup error message❤️');
-
-
-    //         if (error.message == 'Email and mobile number already exist') {
-
-    //             const exist = 'User already registered';
-    //             const phoneError = error.message
-    //             console.log(phoneError, 'phoneError');
-    //             // res.render('user/signup', { exist: exist,phoneError, noShow: true })
-    //             res.redirect('/signup?error=' + encodeURIComponent(phoneError));
-    //         } else if (error.message === 'Password must contain at least 8 characters, including uppercase and lowercase letters, numbers, and special characters') {
-    //             const passwordError = 'Password must contain at least 8 characters, including uppercase and lowercase letters, numbers, and special characters';
-    //             res.redirect('/signup?error=' + encodeURIComponent(passwordError));
-    //         } 
-    //         else {
-
-    //             res.redirect('/signup?error=' + encodeURIComponent(error.message));
-    //         }
-
-    //     }
-    // },
-
-    getLogin: (req, res) => {
+    getLogin: async(req, res) => {
         try {
           if (req.session.user) {
             res.redirect('/');
           } else {
+            let categories = await categoryModel.find()
+
             const error = req.session.error; // Get the error message from the session
-            res.render('users/login', { noShow: true, error }); // Pass the error variable to the login page
+            res.render('users/login', { error ,noShow: true}); // Pass the error variable to the login page
             req.session.error = null; // Clear the error message from the session after rendering the page
           }
         } catch (error) {
@@ -136,17 +108,18 @@ module.exports = {
         try {
           const userData = req.body;
           console.log('postLogin', userData);
-      
+          let categories = await categoryModel.find()
+
           const response = await userHelper.userLogin(req.body);
       
           if (response.status && response.user) {
             console.log("postLogin if-1");
             req.session.user = response.user;
-            res.redirect('/');
+            res.redirect('/',{categories});
           } else {
             console.log("postLogin else-1");
             req.session.error = response.message; // Store the error message in session
-            res.redirect('/login');
+            res.redirect('/login',);
           }
         } catch (error) {
           console.log("postLogin catch-1");
@@ -158,21 +131,26 @@ module.exports = {
         }
       },      
 
-    getLogout: (req, res) => {
+    getLogout:async(req, res) => {
+
         req.session.destroy(); // Destroy the session
-        res.redirect('/login',)
+        res.redirect('/login',{noShow:true})
     },
 
     // otp
-    getOtpLogin: (req, res) => {
-        res.render("users/otp-login", { noShow: true });
+    getOtpLogin:async(req, res) => {
+        try {
+            res.render("users/otp-login", { noShow: true });
+        } catch (error) {
+            console.log(error.message);
+        }
     },
 
-    getOtpSend: (req, res) => {
+    getOtpSend: async(req, res) => {
         res.render("users/verify-otp", { noShow: true });
     },
 
-    generateOtp: (req, res) => {
+    generateOtp:async (req, res)=> {
         try {
             console.log(req.body, '/////////////////phonenumber');
             userHelper.generateOtp(req.body.phonenumber).then((response) => {
@@ -244,11 +222,16 @@ module.exports = {
         }
     },
 
-    resendOtp: (req, res) => {
-        let phonenumber = req.query.mobile;
-        console.log(phone);
-        twilioFunctions.generateOTP(phonenumber);
-    },
+    resendOtp:async (req, res) => {
+        try {
+            let phonenumber = req.query.mobile;
+            console.log(phone);
+            twilioFunctions.generateOTP(phonenumber);
+        
+        } catch (error) {
+            console.log(error.message);
+        }
+    },    
 
     // otp
     getShop: async (req, res) => {
@@ -310,14 +293,20 @@ module.exports = {
         }
     },
 
-    getCartSample: (req, res) => {
-
-        res.render('users/cart-sample',)
+    getCartSample:async (req, res)=> {
+        try {
+            res.render('users/cart-sample',)
+        } catch (error) {
+            console.log(error.message);
+        }
     },
 
-    getError: (req, res) => {
-
-        res.render('users/errorPage', { layout: false })
+    getError:async (req, res) => {
+        try {
+            res.render('/error', { layout: false })
+        } catch (error) {
+            console.log(error.message);
+        }
     },
 
     getProductsByCategory: async (req, res) => {

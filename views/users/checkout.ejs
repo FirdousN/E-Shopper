@@ -1,3 +1,60 @@
+<style>
+    /* ... Your existing styles ... */
+    
+    .couponCard {
+        width: 250px; /* Reduce the width to make the card smaller */
+        height: 200px; /* Reduce the height to make the card smaller */
+        padding: 20px; /* Increase padding for better appearance */
+        background: orange;
+        border: none;
+        color: #fff;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        position: relative;
+    }
+    .container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        flex-direction: row;
+        align-content: space-between;
+        align-items: center;
+        height: 20vh;
+    }
+    .couponCard h1 {
+        font-size: 28px; /* Reduce the font size of the heading */
+        margin-bottom: 10px;
+    }
+
+    .couponCard span {
+        font-size: 16px; /* Reduce the font size of the subtext */
+    }
+    
+
+    .image {
+        position: absolute;
+        opacity: 0.1;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    .image2 {
+        position: absolute;
+        opacity: 0.1;
+        bottom: 0;
+        right: 0;
+        width: 100%;
+        height: 100%;
+    }
+</style>
+
+
 <!-- Page Header Start -->
 <div class="container-fluid bg-secondary mb-5">
     <div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 300px">
@@ -10,7 +67,16 @@
     </div>
 </div>
 <!-- Page Header End -->
-
+<% if (products.length<0) { %>
+<div class="alert alert-danger">
+    <%= errorMessage %>
+</div>
+<div class="d-flex justify-content-center">
+    <div class="mx-auto" style="width: 200px;">
+        <a href="/shop" class="btn btn-secondary btn-lg active" role="button" aria-pressed="true">Go to Shop</a>
+    </div>
+</div>
+<% } else { %>
 <div class="container-fluid ">
     <form method="post" action="#" id="checkout-form">
         <div class="row px-xl-5">
@@ -53,7 +119,7 @@
                     <div class="col-md-12 form-group">
                         <!-- <div class="custom-control custom-checkbox"> -->
                         <!-- <input type="checkbox" class="custom-control-input" id="shipto" name="shipto"
-                                data-toggle="collapse" data-target="#shipping-userAddress"> -->
+                                    data-toggle="collapse" data-target="#shipping-userAddress"> -->
                         <label for="new-address">Add userAddress</label>
                         <input type="radio" name="addressRadio" value="newAddress" id="new-address"
                             class="address-radio" data-toggle="collapse" data-target="#shipping-userAddress">
@@ -137,17 +203,17 @@
 
                                 <!-- TICK CREATE ACCOUNT -->
                                 <!-- <div class="col-md-12 form-group">
-                                    <div class="custom-control custom-checkbox">
-                                       <button class="btn btn-primary" type=>Add Address</button>
-                                    </div>
-                                </div> -->
+                                        <div class="custom-control custom-checkbox">
+                                           <button class="btn btn-primary" type=>Add Address</button>
+                                        </div>
+                                    </div> -->
                             </div>
 
                             <input type="text" name="userId" id="" value="<%= user._id %>" hidden>
 
                             <!-- <div class="card-footer border-secondary bg-transparent">
-                        <button type="submit" class="btn btn-lg btn-block btn-primary font-weight-bold my-3 py-3">Place Order</button>
-                         </div> -->
+                            <button type="submit" class="btn btn-lg btn-block btn-primary font-weight-bold my-3 py-3">Place Order</button>
+                             </div> -->
                         </div>
                     </div>
 
@@ -158,7 +224,8 @@
 
             <div class="col-lg-4">
 
-                <!-- Apply Coupon -->
+
+
                 <div class="card border-secondary mb-5">
                     <div class="card-header bg-secondary border-0">
                         <h4 class="font-weight-semi-bold m-0">APPLY COUPON</h4>
@@ -177,6 +244,8 @@
                         <!-- <div id="message"></div> Added this element -->
                     </div>
                 </div>
+                <!-- Apply Coupon -->
+
                 <!-- Order Total -->
                 <div class="card border-secondary mb-5">
                     <div class="card-header bg-secondary border-0">
@@ -238,24 +307,24 @@
                             </div>
                         </div>
                         <% if (wallet) { %>
-                            <div class="form-group">
-                                <div class="custom-control custom-radio">
-                                    <input type="radio" class="custom-control-input" name="paymentMethod" id="wallet"
-                                        value="WALLET">
-                                    <label class="custom-control-label" for="wallet" id="apply-wallet"
+                        <div class="form-group">
+                            <div class="custom-control custom-radio">
+                                <input type="radio" class="custom-control-input" name="paymentMethod" id="wallet"
+                                    value="WALLET">
+                                <label class="custom-control-label" for="wallet" id="apply-wallet"
                                     onclick="applyWallet()">Wallet ($ <%= wallet.balance %>) </label>
-                                </div>
                             </div>
+                        </div>
                         <% } else { %>
-                            <div class="form-group">
-                                <div class="custom-control custom-radio">
-                                    <input type="radio" class="custom-control-input" name="paymentMethod" id="wallet"
-                                        value="WALLET">
-                                    <label class="custom-control-label" for="wallet">Wallet ($ 0) </label>
-                                </div>
+                        <div class="form-group">
+                            <div class="custom-control custom-radio">
+                                <input type="radio" class="custom-control-input" name="paymentMethod" id="wallet"
+                                    value="WALLET">
+                                <label class="custom-control-label" for="wallet">Wallet ($ 0) </label>
                             </div>
+                        </div>
                         <% } %>
-                        
+
                     </div>
                     <div class="card-footer border-secondary bg-transparent">
                         <button type="submit" class="btn btn-lg btn-block btn-primary font-weight-bold my-3 py-3">
@@ -264,9 +333,46 @@
                 </div>
             </div>
             <!-- Order Total -->
-
+             <!-- Apply Coupon -->
+             <% if (coupons && coupons.length > 0) { %>
+                <div class="container mt-4">
+                    <% if (coupons && coupons.length > 0) { %>
+                    <% coupons.forEach(coupon => { %>
+                    <div class="d-flex justify-content-center align-items-center">
+                        <div class="d-flex couponCard text-center">
+                            <div class="image"><img src="https://i.imgur.com/DC94rZe.png" width="150"></div>
+                            <div class="image2"><img src="https://i.imgur.com/DC94rZe.png" width="150"></div>
+                            <h1><%= coupon.discount %>% OFF</h1>
+                            <span class="d-block">On Everything</span>
+                            <span class="d-block">Today</span>
+                            <div class="mt-4"><small>With Code: <%= coupon.code %></small></div>
+                        </div>
+                    </div>
+                    <% }) %>
+                    <% } else { %>
+                    <div class="d-flex justify-content-center align-items-center container">
+                        <div class="d-flex couponCard text-center">
+                            <div class="image"><img src="https://i.imgur.com/DC94rZe.png" width="150"></div>
+                            <div class="image2"><img src="https://i.imgur.com/DC94rZe.png" width="150"></div>
+                            <h1>No Coupons Available</h1>
+                        </div>
+                    </div>
+                    <% } %>
+                </div>
+                <% } else { %>
+                <div class="d-flex justify-content-center align-items-center container">
+                    <div class="d-flex couponCard text-center">
+                        <div class="image"><img src="https://i.imgur.com/DC94rZe.png" width="150"></div>
+                        <div class="image2"><img src="https://i.imgur.com/DC94rZe.png" width="150"></div>
+                        <h1>No Coupons Available</h1>
+                    </div>
+                </div>
+                <% } %>
+                <!-- Apply Coupon -->
     </form>
 </div>
+<% } %>
+
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -301,10 +407,10 @@
     //     });
     // });
     // AJAX function to apply the coupon code
-    
-    function applyWallet(){
+
+    function applyWallet() {
         let walletInput = $("#wallet");
-        
+
     }
 
     function applyCoupon() {

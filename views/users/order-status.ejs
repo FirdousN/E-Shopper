@@ -16,83 +16,94 @@
         <div class="card-header">
             <h5 class="card-title mb-0">Order status</h5>
         </div>
-
-        <table class="table table-hover my-0" id="orderStatusTable">
-            <thead>
-                <tr>
-                    <th scope="col">Item</th>
-                    
-                    <th scope="col">Date</th>
-                    <th scope="col">Address</th>
-                    <th scope="col">Pincode</th>
-                    <th scope="col">Mobile</th>
-                    <th scope="col">Amount</th>
-                    <th scope="col">Payment</th>
-                    <th scope="col">Order Status</th>     
-                    <th scope="col">Action</th>
-                </tr>
-            </thead>
-
-            <% orders.forEach((order) => { %>
-                <% order.products.forEach((product) => { %>
-
-                <tbody>
+        <% if (errorMessage) { %>
+            <div class="alert alert-danger">
+                <%= errorMessage %>
+            </div>
+            <div class="d-flex justify-content-center">
+                <div class="mx-auto" style="width: 200px;">
+                  <a href="/shop" class="btn btn-secondary btn-lg active" role="button" aria-pressed="true">Go to Shop</a>
+                </div>
+            </div>
+        <% } else { %>
+            <table class="table table-hover my-0" id="orderStatusTable">
+                <thead>
                     <tr>
-                        <td class="image-container">
-                            <div class="d-flex flex-column align-items-center">
-                                <img src="/uploads/images/<%= product.image[0] %>" alt="Image" style="max-width: 100px; max-height: 100px;">
-                                <div class="mt-2">
-                                    <%= product.slug %>
-                                </div>
-                            </div>
-                        </td>
+                        <th scope="col">Item</th>
                         
-                        <td class="align-middle"><%= order.createdAt.toLocaleDateString() %></td>
-                        <td class="align-middle"><%= order.deliveryDetails[0].addresses %></td>
-                        <td class="align-middle"><%= order.deliveryDetails[0].pinCode %></td>
-                        <td class="align-middle"><%= order.user.mobile %></td>
-                        <td class="align-middle">$<%= order.totalAmount %>/Qty:<%= product.quantity %></td>
-                        <td class="align-middle">
-                            <% if (order.paymentMethod === 'COD') { %>
-                            <span class="text-success">COD</span>
-                            <% } else { %>
-                            <span class="text-success">Online</span>
-                            <% } %>
-                        </td>
-                        <td class="align-middle">
-                            <% if (product.orderStatus === 'cancel') { %>
-                            <span class="btn btn-danger"><%= product.orderStatus %></span>
-                            <% } else if (product.orderStatus === 'shipped') { %>
-                            <span class="btn btn-primary"><%= product.orderStatus %></span>
-                            <% } else if (product.orderStatus === 'deliver') { %>
-                            <span class="btn btn-success"><%= product.orderStatus %></span>
-                            <% } else if (product.orderStatus === 'processing') { %>
-                            <span class="btn btn-warning"><%= product.orderStatus %></span>
-                            <% } else if (product.orderStatus === 'order-placed') { %>
-                            <span class="btn btn-info"><%= product.orderStatus %></span>
-                            <% } else if (product.orderStatus === 'pending') { %>
-                            <span class="btn btn-secondary"><%= product.orderStatus %></span>
-                            <% } else if (product.orderStatus === 'returned') { %>
-                                <span class="btn btn-secondary"><%= product.orderStatus %></span>
-                            <% } else if (product.orderStatus === 'out-of-deliver') { %>
-                                <span class="btn btn-info"><%= product.orderStatus %></span>
-                            <% } else if (product.orderStatus === 'return') { %>
-                                <span class="btn btn-success"><%= 'Return Success' %></span>
-                            <% } %>
-                        </td>
-                        <td class="align-middle">
-                            <a href='/product-status/<%= order._id %>/<%= product.slug %>'>
-                                <button type="button" class="btn btn-sm btn-primary">View details</button>
-                            </a>
-                        </td>
-                       
+                        <th scope="col">Date</th>
+                        <th scope="col">Address</th>
+                        <th scope="col">Pincode</th>
+                        <th scope="col">Mobile</th>
+                        <th scope="col">Amount</th>
+                        <th scope="col">Payment</th>
+                        <th scope="col">Order Status</th>     
+                        <th scope="col">Action</th>
                     </tr>
-                </tbody>
+                </thead>
+    
+                <% orders.forEach((order) => { %>
+                    <% order.products.forEach((product) => { %>
+    
+                    <tbody>
+                        <tr>
+                            <td class="image-container">
+                                <div class="d-flex flex-column align-items-center">
+                                    <img src="/uploads/images/<%= product.image[0] %>" alt="Image" style="max-width: 100px; max-height: 100px;">
+                                    <div class="mt-2">
+                                        <%= product.slug %>
+                                    </div>
+                                </div>
+                            </td>
+                            
+                            <td class="align-middle"><%= order.createdAt.toLocaleDateString() %></td>
+                            <td class="align-middle"><%= order.deliveryDetails[0].addresses %></td>
+                            <td class="align-middle"><%= order.deliveryDetails[0].pinCode %></td>
+                            <td class="align-middle"><%= order.user.mobile %></td>
+                            <td class="align-middle">$<%= order.totalAmount %>/Qty:<%= product.quantity %></td>
+                            <td class="align-middle">
+                                <% if (order.paymentMethod === 'COD') { %>
+                                <span class="text-success">COD</span>
+                                <% } else { %>
+                                <span class="text-success">Online</span>
+                                <% } %>
+                            </td>
+                            <td class="align-middle">
+                                <% if (product.orderStatus === 'cancel') { %>
+                                <span class="btn btn-danger"><%= product.orderStatus %></span>
+                                <% } else if (product.orderStatus === 'shipped') { %>
+                                <span class="btn btn-primary"><%= product.orderStatus %></span>
+                                <% } else if (product.orderStatus === 'deliver') { %>
+                                <span class="btn btn-success"><%= product.orderStatus %></span>
+                                <% } else if (product.orderStatus === 'processing') { %>
+                                <span class="btn btn-warning"><%= product.orderStatus %></span>
+                                <% } else if (product.orderStatus === 'order-placed') { %>
+                                <span class="btn btn-info"><%= product.orderStatus %></span>
+                                <% } else if (product.orderStatus === 'pending') { %>
+                                <span class="btn btn-secondary"><%= product.orderStatus %></span>
+                                <% } else if (product.orderStatus === 'returned') { %>
+                                    <span class="btn btn-secondary"><%= product.orderStatus %></span>
+                                <% } else if (product.orderStatus === 'out-of-deliver') { %>
+                                    <span class="btn btn-info"><%= product.orderStatus %></span>
+                                <% } else if (product.orderStatus === 'return') { %>
+                                    <span class="btn btn-success"><%= 'Return Success' %></span>
+                                <% } %>
+                            </td>
+                            <td class="align-middle">
+                                <a href='/product-status/<%= order._id %>/<%= product.slug %>'>
+                                    <button type="button" class="btn btn-sm btn-primary">View details</button>
+                                </a>
+                            </td>
+                           
+                        </tr>
+                    </tbody>
+                    <% }) %>
+    
                 <% }) %>
-
-            <% }) %>
-
-        </table>
+    
+            </table>
+        <% } %>
+       
     </div>
 
 </div>

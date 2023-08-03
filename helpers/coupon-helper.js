@@ -5,6 +5,14 @@ const { ObjectId } = require('mongodb');
 
 
 module.exports = {
+    getCoupons: async () => {
+        try {
+          const coupons = await couponModel.find();
+          return coupons;
+        } catch (error) {
+          throw new Error(error.message);
+        }
+      },
 
     generateCouponCode: async (couponName, couponExp) => {
         try {
@@ -23,18 +31,16 @@ module.exports = {
 
     },
 
-    createCoupon: async (couponCode, couponName, couponDiscount, couponExp, res) => {
+    createCoupon: async ( couponsData,couponCode, res) => {
         try {
-            console.log('🥶🥶 couponCode 🥶🥶', couponCode, '🥶🥶 couponCode 🥶🥶');
-            console.log('🥶🥶 couponName 🥶🥶', couponName, '🥶🥶 couponName 🥶🥶');
-            console.log('🥶🥶 couponDiscount 🥶🥶', couponDiscount, '🥶🥶 couponDiscount 🥶🥶');
-            console.log('🥶🥶 couponExp 🥶🥶', couponExp, '🥶🥶 couponExp 🥶🥶');
+            
+            let couponName = couponsData.name;
+            let couponDiscount = couponsData.discount;
+            let couponExp = couponsData.expiryDate;
+            let couponMinPrice = couponsData.minPrice;
+            let couponMaxPrice = couponsData.maxPrice;
 
-            // const parsedDiscount = parseFloat(couponDiscount);
-            // if (isNaN(parsedDiscount)) {
-            //     console.log('Invalid coupon discount');
-            //     return res.status(400).json({ error: 'Invalid coupon discount' });
-            //   }
+
             const existingCoupon = await couponModel.findOne({ name: { $regex: new RegExp(couponName, 'i') } });
             console.log('👻👻 create coupon in coupon helper.js 👻', existingCoupon ,'👻👻 create coupon in coupon helper.js 👻');
 
@@ -47,6 +53,8 @@ module.exports = {
                 const newCoupon = new couponModel({
                     code:couponCode,
                     name:couponName,
+                    minPrice:couponMinPrice,
+                    maxPrice:couponMaxPrice,
                     discount:couponDiscount,
                     expiryDate:couponExp,
                 })
@@ -60,5 +68,40 @@ module.exports = {
             console.log(error.message);
             res.status(500).json({ error: 'Server error' });
         }
-    }
+    },
+    
+    editCoupon: async (couponData, couponId) => {
+        try {
+          console.log(couponData, couponId, 'edit coupon helper');
+      
+          const existingCoupon = await couponModel.findOne({ _id: couponId });
+         console.log( existingCoupon,'existingCoupon');
+          let couponName = couponData.name;
+          let couponDiscount = couponData.discount;
+          let couponExp = couponData.expiryDate;
+          let couponMinPrice = couponData.minPrice;
+          let couponMaxPrice = couponData.maxPrice;
+      
+          let couponCode = existingCoupon.code; // Preserve the existing code if the name is not updated
+          if (existingCoupon.name !== couponName) {
+            couponCode = await couponHelper.generateCouponCode(couponName, new Date(couponExp));
+          }
+      
+        let newCoupon = await couponModel.updateOne({ _id: couponId }, {
+            $set: {
+              code: couponCode,
+              name: couponName,
+              minPrice: couponMinPrice,
+              maxPrice: couponMaxPrice,
+              discount: couponDiscount,
+              expiryDate: couponExp,
+            }
+          });
+          await newCoupon.save();
+
+          console.log('edit coupon success');
+        } catch (error) {
+          console.log(error.message);
+        }
+      }
 }

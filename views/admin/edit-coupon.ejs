@@ -3,50 +3,55 @@
     <div class="card">
       <div class="m-sm-4">
         <div class="card-header">
-          <h5 class="card-title text-primary">Add Coupon</h5>
+          <h5 class="card-title text-primary">Edit Coupon</h5>
         </div>
         <% if (locals.Error) { %>
           <div class="error-message" style="color: red; text-align: center;">
             <%= locals.Error %>
           </div>
         <% } %>
-        <form action="/admin/add-coupon" method="post" onsubmit="return validateCouponForm()">
+        <form action="/admin/edit-coupon/<%= coupon._id %>" method="post" onsubmit="return validateCouponForm()">
           <div class="mb-3">
             <label for="name" class="form-label">Coupon Name (Max 10 Characters):</label>
-            <input type="text" class="form-control" id="name" name="name" required maxlength="10" placeholder="Coupon Name">
+            <input type="text" class="form-control" id="name" name="name" required maxlength="10" placeholder="Coupon Name" value="<%= coupon.name %>">
+          </div>
+
+          <div class="mb-3">
+            <label for="couponCode" class="form-label">Coupon Code:</label>
+            <input type="text" class="form-control" id="couponCode" name="couponCode" readonly value="<%= coupon.code %>">
           </div>
 
           <div class="mb-3">
             <label for="discount" class="form-label">Discount Value:</label>
-            <input type="number" class="form-control" id="discount" name="discount" placeholder="Enter discount price" min="0" max="1000" required>
+            <input type="number" class="form-control" id="discount" name="discount" placeholder="Enter discount price" min="0" max="1000" required value="<%= coupon.discount %>">
           </div>
 
           <div class="mb-3">
             <label for="expiryDate" class="form-label">Expiry Date:</label>
-            <input type="date" class="form-control" id="expiryDate" name="expiryDate" required>
+            <input type="date" class="form-control" id="expiryDate" name="expiryDate" required value="<%= coupon.expiryDate.toISOString().slice(0, 10) %>">
           </div>
 
           <div class="mb-3">
             <label for="minPrice" class="form-label">Minimum Order Price to Apply Coupon:</label>
-            <input type="text" class="form-control" id="minPrice" name="minPrice" placeholder="Enter Min Value" inputmode="numeric" required>
+            <input type="number" class="form-control" id="minPrice" name="minPrice" placeholder="Enter Min Value" inputmode="numeric" required value="<%= coupon.minPrice %>">
           </div>
 
           <div class="mb-3">
             <label for="maxPrice" class="form-label">Maximum Amount to Apply Coupon:</label>
-            <input type="text" class="form-control" id="maxPrice" name="maxPrice" placeholder="Enter Max Value" inputmode="numeric" required>
+            <input type="number" class="form-control" id="maxPrice" name="maxPrice" placeholder="Enter Max Value" inputmode="numeric" required value="<%= coupon.maxPrice %>">
           </div>
 
-          <button type="submit" class="btn btn-primary">Create Coupon</button>
+          <button type="submit" class="btn btn-primary">Update Coupon</button>
         </form>
       </div>
     </div>
   </div>
-  
+
   <script>
     function validateCouponForm() {
       const discountValue = parseFloat(document.getElementById("discount").value);
       const maxAmount = 1000;
-      
+
       if (isNaN(discountValue) || discountValue > maxAmount) {
         const errorMessage = "Discount value must be a number and cannot be more than 1000 rupees.";
         const errorDiv = document.createElement("div");
@@ -54,13 +59,13 @@
         errorDiv.style.color = "red";
         errorDiv.style.textAlign = "center";
         errorDiv.textContent = errorMessage;
-        
+
         const form = document.querySelector("form");
         form.appendChild(errorDiv);
-        
+
         return false;
       }
-      
+
       return true;
     }
   </script>
