@@ -240,7 +240,7 @@ module.exports = {
               console.log('total is empty');
               resolve([]);
             }
-          } catch (error) {tlhan
+          } catch (error) {
             
             console.log(error.message);
             reject(error);
