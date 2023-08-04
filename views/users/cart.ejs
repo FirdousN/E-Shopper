@@ -15,13 +15,11 @@
     <% if (products.length > 0) { %>
 
     <div class="row">
-        <div class=" col-md-8">
+        <div class="col-md-8">
             <div class="cart-table">
                 <table class="table ">
                     <thead>
                         <tr>
-
-                            <!-- <th scope="col">#</th> -->
                             <th>Product</th>
                             <th>Name</th>
                             <th>Quantity</th>
@@ -29,52 +27,45 @@
                             <th>Action</th>
                         </tr>
                     </thead>
-
-                    <% products.forEach((product ) => { %>
                     <tbody>
-                        <div>
-                            <tr id="<%= product.slug %>">
-                                <td class="image-container">
-                                    <img src="/uploads/images/<%= product.image[0] %>" alt="Image"
-                                        style="max-width: 100px; max-height: 100px;">
-                                </td>
-                                <td class="product-name"><%= product.slug%></td>
+                        <% products.forEach((product) => { %>
+                        <tr id="<%= product.slug %>">
+                            <td class="image-container">
+                                <img src="/uploads/images/<%= product.image[0] %>" alt="Image"
+                                    style="max-width: 100px; max-height: 100px;">
+                            </td>
+                            <td class="product-name"><%= product.slug %></td>
 
-                                <td class="product-quantity">
-                                    <div class="input-group quantity mr-3" style="width: 130px;">
-                                        <div class="input-group-btn">
-                                            <button
-                                                onclick="changeQuantity('<%= product.slug %>', '<%= product.slug %>', -1)"
-                                                class="btn btn-primary btn-minus">
-                                                <i class="fa fa-minus"></i>
-                                            </button>
-                                        </div>
-                                        <input type="text" class="form-control bg-secondary text-center"
-                                            value="<%= product.quantity %>">
-                                        <div class="input-group-btn">
-                                            <button
-                                                onclick="changeQuantity('<%= product.slug %>', '<%= product.slug %>', 1)"
-                                                class="btn btn-primary btn-plus">
-                                                <i class="fa fa-plus"></i>
-                                            </button>
-                                        </div>
+                            <td class="product-quantity">
+                                <div class="input-group quantity mr-3" style="width: 130px;">
+                                    <div class="input-group-btn">
+                                        <button
+                                            onclick="changeQuantity('<%= product.slug %>', '<%= product.slug %>', -1)"
+                                            class="btn btn-primary btn-minus">
+                                            <i class="fa fa-minus"></i>
+                                        </button>
                                     </div>
-                                </td>
+                                    <input type="text" class="form-control bg-secondary text-center"
+                                        value="<%= product.quantity %>">
+                                    <div class="input-group-btn">
+                                        <button
+                                            onclick="changeQuantity('<%= product.slug %>', '<%= product.slug %>', 1)"
+                                            class="btn btn-primary btn-plus">
+                                            <i class="fa fa-plus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </td>
 
-                                <td class="product-price">$<%= product.price  %></td>
+                            <td class="product-price">$<%= product.price %></td>
 
-                                <td class="product-action">
-                                    <!-- <button class="btn btn-danger" >Remove</button> -->
-
-                                    <button onclick="removeProduct('<%= product.slug %>')" class="btn btn-danger"><i
-                                            class=" text-primary mr-1"></i>Remove</button>
-                                </td>
-                            </tr>
-                        </div>
+                            <td class="product-action">
+                                <button onclick="removeProduct('<%= product.slug %>')" class="btn btn-danger"><i
+                                        class="text-primary mr-1"></i>Remove</button>
+                            </td>
+                        </tr>
+                        <% }) %>
                     </tbody>
-                    <% }) %>
-
-
                     <tfoot>
                         <tr>
                             <td colspan="4" class="text-right"><strong>Total:</strong></td>
@@ -95,29 +86,24 @@
                                 <td>Subtotal:</td>
                                 <td id="subTotalId">$<%= total %></td>
                             </tr>
-                            <!-- <tr>
-                                <td>Tax:</td>
-                                <td>$3.00</td>
-                            </tr> -->
-
                         </tbody>
                     </table>
                     <div class="text-right">
                         <a href="/checkout" class="btn btn-primary">Checkout</a>
                     </div>
-
                 </div>
             </div>
         </div>
+        
     </div>
     <% } else { %>
-    <div id="emptyCart" class="row">
-        <div class="col-md-12">
-            <div class="alert alert-info" role="alert">
-                Your cart is empty.
+        <div id="emptyCart" class="row">
+            <div class="col-md-12">
+                <div class="alert alert-info" role="alert">
+                    Your cart is empty.
+                </div>
             </div>
         </div>
-    </div>
     <% } %>
 
 </div>
@@ -156,7 +142,6 @@
                 document.getElementById('totalAmountId').innerHTML = response.total
                 document.getElementById('subTotalId').innerHTML = response.total
                 if (response.removeProduct) {
-
                     removeProduct(proSlug)
                 }                // Refresh the page or update the cart UI as needed
             },

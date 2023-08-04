@@ -16,27 +16,27 @@ module.exports = {
                 // User is not logged in, handle this case accordingly
                 return res.render('users/cart', { user: null, total: 0, cartCount: 0, products: [], categories: [], message: 'Please log in to view your cart.' });
             }
-    
             const userId = req.session.user._id;
+            let cart = await cartModel.findOne({ userId });
+
             let categories = await categoryModel.find();
+
             let products = await cartHelper.getCartProduct(userId);
-            let pro = await productModel.find();
-            let total = 0;
+            let pro = await cartHelper.cartProduct(cart)
+            // let total = 0;
     
             if (products.length > 0) {
-                total = await cartHelper.getTotalAmount(pro, products);
-            }
-    
-            let cartCount = await cartHelper.getCartCount(userId);
-            let user = req.session.user;
-            let cart = await cartModel.findOne({ userId });
-    
-            console.log(cartCount, '💕💕 cartId 💕💕');
-            console.log(products, 'Products👍👍');
-    
-            if (Array.isArray(products) && products.length > 0 || categories.length > 0) {
-                res.render('users/cart', { cart, total, user, cartCount, products, categories });
-            } else {
+                const total = await cartHelper.getTotalAmount(pro, products);
+                let cartCount = await cartHelper.getCartCount(userId);
+                let user = req.session.user;
+        
+                console.log(cartCount, '💕💕 cartId 💕💕');
+                console.log(products, 'Products👍👍');
+        
+                if (Array.isArray(products) && products.length > 0 || categories.length > 0) {
+                    res.render('users/cart', { cart, total, user, cartCount, products, categories });
+                }
+            }else {
                 console.log('/*///////*/*/*/*/*/*//**/ not');
                 res.render('users/cart', { user, total: 0, cartCount, products: [], categories: [], message: 'Your cart is empty.' });
             }
@@ -108,7 +108,8 @@ module.exports = {
         try {
             const proSlug = req.params.slug;
             const userId = req.session.user._id
-
+            let cart = await cartModel.findOne({ userId });
+            
             console.log(userId, 'testing ajax in user id 💕💕');
             console.log(proSlug, '❤️testing ajax in product id ❤️');
 
@@ -118,9 +119,11 @@ module.exports = {
 
             let response = await cartHelper.changeProductQuantity(proSlug, userId, count);
             let products = await cartHelper.getCartProduct(userId) // to find products in userCart
+            let pro = await cartHelper.cartProduct(cart)
+
             let total = 0;
             if (products.length > 0) {
-                total = await cartHelper.getTotalAmount(products)// to get total products amount & price
+                 total = await cartHelper.getTotalAmount(pro, products);
             }
             console.log(response, "responseeeeeeee");
 
@@ -137,14 +140,17 @@ module.exports = {
             const proSlug = req.params.slug;
             console.log(proSlug, '👍proSlug in remove cart product👍');
             const userId = req.session.user._id;
+            let cart = await cartModel.findOne({ userId });
+            let pro = await cartHelper.cartProduct(cart)
+
             await cartHelper.removeProduct(proSlug, userId)
                 .then(async (response) => {
 
                     console.log(response, "👻👻");
                     let products = await cartHelper.getCartProduct(userId) // to find products in userCart
-                    let total = 0;
+                    // let total = 0;
                     if (products.length > 0) {
-                        total = await cartHelper.getTotalAmount(products)// to get total products amount & price
+                        const total = await cartHelper.getTotalAmount(pro, products);
                     }
                     const cartCount = await cartHelper.getCartCount(userId)
                     res.json({ cartCount: cartCount, removeProduct: response.removeProduct, total })
