@@ -5,6 +5,7 @@ const orderModel = require('../models/order-model');
 const { ObjectId } = require('mongodb');
 const slugify = require('slugify');
 const userModel = require('../models/userModel');
+const { writeFileAsync } = require('xlsx');
 
 
 
@@ -207,36 +208,46 @@ module.exports = {
         return Promise.resolve({ removeProduct: true })
 
     },
-    getTotalAmount: (pro,product) => {
+    getTotalAmount: (pro, product) => {
         return new Promise(async (resolve, reject) => {
-            try {
-                let total = 0;
-                console.log(pro,'🌹pro🌹');
-                
-                for (let i = 0; i < product.length; i++) {
-                    total += product[i].price * product[i].quantity -pro[i].offerPrice ;
-
-                }
-
-                console.log("lllllllll");
-                console.log(product);
-                console.log(total);
-                console.log("lllllllll");
-
-                if (product.length > 0) {
-                    //   console.log(cartProducts[0].products,'🌹product🌹');
-                    //   console.log(cartProducts[0].total,'🌹 total🌹');
-                    resolve(total);
-                } else {
-                    console.log('total is empty');
-                    resolve([])
-                }
-            } catch (error) {
-                console.log(error.message);
-                reject(error);
+          try {
+            let total = 0;
+            console.log('🌹pro🌹', pro, '🌹pro🌹');
+      
+            product.forEach((productItem, index) => {
+              console.log(
+                productItem.price,
+                '*',
+                productItem.quantity,
+                '-',
+                pro[index].result.offerPrice
+              );
+              const priceAfterOffer =
+                productItem.price * productItem.quantity - pro[index].result.offerPrice;
+              total += priceAfterOffer;
+            });
+      
+            console.log("lllllllll");
+            console.log(product);
+            console.log(total, 'after looping total value');
+            console.log("lllllllll");
+      
+            if (product.length > 0) {
+              //   console.log(cartProducts[0].products,'🌹product🌹');
+              //   console.log(cartProducts[0].total,'🌹 total🌹');
+              resolve(total);
+            } else {
+              console.log('total is empty');
+              resolve([]);
             }
+          } catch (error) {tlhan
+            
+            console.log(error.message);
+            reject(error);
+          }
         });
-    },
+      },
+      
 
     placeOrder: async (order, paymentMethod, userId, products, total) => {
         try {
@@ -397,6 +408,41 @@ module.exports = {
         }
     },
 
+    cartProduct:async(req,res)=>{
+        try {
+            let products =await cartModel.aggregate(
+                [
+                  {
+                    $unwind: {
+                      path: '$products',
+                      includeArrayIndex: 'string'
+                    }
+                  },
+                  { $project: { 'products.item': 1 } },
+                  {
+                    $lookup: {
+                      from: 'products',
+                      localField: 'products.item',
+                      foreignField: '_id',
+                      as: 'result'
+                    }
+                  },
+                  {
+                    $unwind: {
+                      path: '$result',
+                      includeArrayIndex: 'string'
+                    }
+                  },
+                  { $project: { result: 1 } }
+                ],
+                { maxTimeMS: 60000, allowDiskUse: true }
+              );
+              console.log(products);
+              return products;
 
+        } catch (error) {
+            console.log(error.message);
+        }
+    }
 
 };

@@ -119,13 +119,17 @@ module.exports = {
       const coupons = await couponModel.find({ expiryDate: { $gte: currentDate } });
 
       let address = userAddress.addresses;
-      let pro = await productModel.find();
       const products = await cartHelper.getCartProduct(userId);
+      // let pro = await productModel.find();
+      console.log('cart📜', cart, 'cart📜');
+
+      let pro = await cartHelper.cartProduct(cart)
+      console.log('cartProd🧛🏻',pro,'cartProd🧛🏻');
+
       const total = await cartHelper.getTotalAmount(pro, products);
       console.log('jkjkjk nononono');
 
       let wallet = await walletModel.findOne({ userId: userId });
-      console.log(cart, 'cart');
       if (!cart) {
         console.log('cart is empty');
         let errorMessage = "Oops! Cart is empty.";
