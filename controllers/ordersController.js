@@ -252,7 +252,7 @@ module.exports = {
     try {
         let user = req.session.user
 
-        let orderData = await ordersModel.findOne({ _id: user._id });
+        let orderData = await ordersModel.find();
         let categories = await categoryModel.find()
 
         if (orderData === null) {
@@ -272,6 +272,7 @@ module.exports = {
         console.log(error.message, '0001');
     }
 },
+
 
 
 

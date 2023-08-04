@@ -87,10 +87,12 @@
                             <a href="" class="dropdown-item">Baby's Dresses</a>
                         </div>
                     </div> -->
-                    <% categories.forEach((category) => { %>
-                        <a href="/category/<%= category.category %>" class="nav-item nav-link"><%= category.category %></a>
-                    <% }) %>
-                   
+                    <% if (categories && categories.length > 0) { %>
+                        <% categories.forEach((category) => { %>
+                            <a href="/category/<%= category.category %>" class="nav-item nav-link"><%= category.category %></a>
+                        <% }) %>
+                       
+                    <% } %>
                 </div>
             </nav>
         </div>

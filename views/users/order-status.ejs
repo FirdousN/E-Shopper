@@ -16,7 +16,7 @@
         <div class="card-header">
             <h5 class="card-title mb-0">Order status</h5>
         </div>
-        <% if (errorMessage) { %>
+        <% if (orders.length<0) { %>
             <div class="alert alert-danger">
                 <%= errorMessage %>
             </div>

@@ -99,7 +99,8 @@ module.exports = {
       console.log(error);
       reject(error);
     }
-  },userLogin: (userData) => {
+  },
+  userLogin: (userData) => {
     console.log('11111111110');
     return new Promise(async (resolve, reject) => {
       try {

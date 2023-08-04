@@ -93,7 +93,6 @@ module.exports = {
           if (req.session.user) {
             res.redirect('/');
           } else {
-            let categories = await categoryModel.find()
 
             const error = req.session.error; // Get the error message from the session
             res.render('users/login', { error ,noShow: true}); // Pass the error variable to the login page
@@ -106,35 +105,41 @@ module.exports = {
 
     postLogin: async (req, res) => {
         try {
-          const userData = req.body;
-          console.log('postLogin', userData);
-          let categories = await categoryModel.find()
-
-          const response = await userHelper.userLogin(req.body);
-      
-          if (response.status && response.user) {
-            console.log("postLogin if-1");
-            req.session.user = response.user;
-            res.redirect('/',{categories});
-          } else {
-            console.log("postLogin else-1");
-            req.session.error = response.message; // Store the error message in session
-            res.redirect('/login',);
-          }
+            const userData = req.body;
+            console.log('postLogin', userData);
+            let categories = await categoryModel.find();
+    
+            const response = await userHelper.userLogin(req.body);
+    
+            if (response.status && response.user) {
+                console.log("postLogin if-1");
+                req.session.user = response.user;
+                req.session.categories = categories; // Store categories in the session
+                res.redirect('/');
+            } else {
+                console.log("postLogin else-1");
+                req.session.error = response.message; // Store the error message in session
+                res.redirect('/login');
+            }
         } catch (error) {
-          console.log("postLogin catch-1");
-          console.log(error.message);
-      
-          const invalid = 'An error occurred during login. Please try again later.';
-          req.session.error = invalid;
-          res.redirect('/login?error=' + encodeURIComponent(invalid));
+            console.log("postLogin catch-1");
+            console.log(error.message);
+    
+            const invalid = 'An error occurred during login. Please try again later.';
+            req.session.error = invalid;
+            res.redirect('/login?error=' + encodeURIComponent(invalid));
         }
-      },      
+    },
+        
 
-    getLogout:async(req, res) => {
+    getLogout: async (req, res) => {
+        try {
+            req.session.destroy(); // Destroy the session
+            res.redirect('/login');
+        } catch (error) {
+            console.log(error.message);
+        }
 
-        req.session.destroy(); // Destroy the session
-        res.redirect('/login',{noShow:true})
     },
 
     // otp

@@ -135,7 +135,6 @@ module.exports = {
                 }else{
                     count += 1
                 }
-
                 resolve(count)
             })
         } catch (error) {
