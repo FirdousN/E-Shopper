@@ -307,14 +307,12 @@
                             </div>
                         </div>
                         <% if (wallet) { %>
-                        <div class="form-group">
-                            <div class="custom-control custom-radio">
-                                <input type="radio" class="custom-control-input" name="paymentMethod" id="wallet"
-                                    value="WALLET">
-                                <label class="custom-control-label" for="wallet" id="apply-wallet"
-                                    onclick="applyWallet()">Wallet ($ <%= wallet.balance %>) </label>
+                            <div class="form-group">
+                                <div class="custom-control custom-radio">
+                                    <input type="radio" class="custom-control-input" name="paymentMethod" id="wallet" value="WALLET">
+                                    <label class="custom-control-label" for="wallet">Wallet ($<%= wallet ? wallet.balance : 0 %>) </label>
+                                </div>
                             </div>
-                        </div>
                         <% } else { %>
                         <div class="form-group">
                             <div class="custom-control custom-radio">
@@ -338,16 +336,20 @@
                 <div class="container mt-4">
                     <% if (coupons && coupons.length > 0) { %>
                     <% coupons.forEach(coupon => { %>
-                    <div class="d-flex justify-content-center align-items-center">
-                        <div class="d-flex couponCard text-center">
-                            <div class="image"><img src="https://i.imgur.com/DC94rZe.png" width="150"></div>
-                            <div class="image2"><img src="https://i.imgur.com/DC94rZe.png" width="150"></div>
-                            <h1><%= coupon.discount %>$ OFF</h1>
-                            <span class="d-block">On Everything</span>
-                            <span class="d-block">Today</span>
-                            <div class="mt-4"><small>With Code: <%= coupon.code %></small></div>
+                        <div class="d-flex justify-content-center align-items-center">
+                            <div class="d-flex couponCard text-center">
+                                <div class="image"><img src="https://i.imgur.com/DC94rZe.png" width="150"></div>
+                                <div class="image2"><img src="https://i.imgur.com/DC94rZe.png" width="150"></div>
+                                <h1><%= coupon.discount %>$ OFF</h1>
+                                <span class="d-block"><%= coupon.name %></span>
+                                <span class="d-block">Today</span>
+                                <div class="mt-4">
+                                    <small>With Code: <span id="couponCode"><%= coupon.code %></span></small>
+                                    <!-- Add the copy button -->
+                                    <button class="btn btn-primary btn-sm" onclick="copyCouponCode()">Copy</button>
+                                </div>
+                            </div>
                         </div>
-                    </div>
                     <% }) %>
                     <% } else { %>
                     <div class="d-flex justify-content-center align-items-center container">
@@ -378,34 +380,60 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
 
+<!-- Include the Clipboard.js library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.10/clipboard.min.js"></script>
+
 <script>
-    // $(document).ready(function () {
-    //     console.log('💸💸💸== first case in ajax')
+    function copyCouponCode() {
+        // Get the coupon code element
+        var couponCodeElement = document.getElementById("couponCode");
 
-    //     // Attach event listener to the Apply button
-    //     $("#apply-coupon-btn").click(applyCoupon);
+        // Create a temporary input element to hold the coupon code
+        var tempInput = document.createElement("input");
+        tempInput.value = couponCodeElement.textContent;
 
-    //     $("#checkout-form").submit(function (e) {
-    //         e.preventDefault();
-    //         $.ajax({
-    //             url: '/checkout',
-    //             method: 'post',
-    //             data: $('#checkout-form').serialize(),
-    //             success: function (response) {
-    //                 if (response.codSuccess) {
-    //                     console.log(response);
-    //                     location.href = '/success-page';
-    //                 } else {
-    //                     razorpayPayment(response.order);
-    //                 }
-    //             },
-    //             error: function (err) {
-    //                 console.log(err);
-    //                 alert('An error occurred during checkout. Please try again');
-    //             }
-    //         });
-    //     });
-    // });
+        // Append the input element to the body
+        document.body.appendChild(tempInput);
+
+        // Select the text inside the input element
+        tempInput.select();
+
+        // Copy the selected text to the clipboard
+        document.execCommand("copy");
+
+        // Remove the temporary input element
+        document.body.removeChild(tempInput);
+
+        // Show a tooltip to indicate the copy action
+        var copyButton = document.querySelector(".btn-primary");
+        copyButton.setAttribute("data-original-title", "Copied!");
+        copyButton.setAttribute("data-bs-original-title", "Copied!"); // For Bootstrap 5
+        copyButton.classList.add("show-tooltip");
+
+        // Hide the tooltip after a short delay
+        setTimeout(function () {
+            copyButton.removeAttribute("data-original-title");
+            copyButton.removeAttribute("data-bs-original-title"); // For Bootstrap 5
+            copyButton.classList.remove("show-tooltip");
+        }, 1000);
+    }
+</script>
+
+
+<script>
+    // AJax function in APPLY WALLET 
+    function applyWallet() {
+    const walletInput = $("#wallet");
+    const totalAmount = parseFloat($("#totalAmount").text().replace('$', ''));
+    const walletBalance = <%= wallet ? parseFloat(wallet.balance) : 0 %>;
+
+    if (walletInput.prop("checked") && walletBalance >= totalAmount) {
+        $("#totalAmount").text(`$${(totalAmount - walletBalance).toFixed(2)}`);
+    } else {
+        $("#totalAmount").text(`$${totalAmount.toFixed(2)}`);
+    }
+}
+
     // AJAX function to apply the coupon code
 
     function applyWallet() {
@@ -472,8 +500,8 @@
 
                         // Update the content of the #couponDiscount element with the discounted amount
                         if (response.discountAmount) {
-                            $("#couponDiscount").html(`₹${response.discountAmount}`);
-                            $("#totalAmount").html(`₹${response.cartTotal - response.discountAmount}`);
+                            $("#couponDiscount").html(`₹${response.discountPrice}`);
+                            $("#totalAmount").html(`₹${response.discountAmount}`);
                         } else {
                             $("#discountAmount").html = ("$0");
                         }

@@ -260,7 +260,24 @@ module.exports = {
                 // let userId = order.userId;
                 let status = paymentMethod === 'COD' ? 'placed' : 'pending'
                  // Assign products directly, as it is already an array
-                if (paymentMethod === 'ONLINE' || paymentMethod === 'WALLET' || paymentMethod === 'COD') {
+                 
+                if (paymentMethod === 'WALLET') {
+                    const walletAmountToDeduct = parseFloat(total);
+        
+                    // Check if user's wallet balance is sufficient
+                    const user = await userModel.findById(userId);
+                    const walletBalance = user.wallet;
+        
+                    if (walletBalance < walletAmountToDeduct) {
+                        throw new Error('Insufficient Wallet Balance');
+                    }
+        
+                    // Deduct wallet amount
+                    user.wallet = walletBalance - walletAmountToDeduct;
+                    await user.save();
+                }
+
+                if (paymentMethod === 'ONLINE' || paymentMethod === 'COD') {
                     for (let i = 0; i < products.length; i++) {
                         products[i].deliveryStatus = 'pending';
                     }

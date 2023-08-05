@@ -256,7 +256,7 @@ module.exports = {
             }
 
             if (!user || !cartCount || !products || !categories) {
-                res.render('users/shop', { cartCount: [], products, categories: [] });
+                res.render('users/shop', { cartCount: [], products:[], categories: [] });
             } else {
                 res.render('users/shop', { user, cartCount, products, categories });
             }

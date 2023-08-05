@@ -156,6 +156,7 @@ module.exports = {
       let user = req.session.user
       let userAddress = req.body
       let userId = user._id
+      let cart = await cartModel.findOne({ userId }); // Corrected here by passing an object
 
       let address = await cartHelper.getUserAddress(userAddress, userId)
 
@@ -166,9 +167,9 @@ module.exports = {
 
       let products = await cartHelper.getCartProductList(userId);
       // let deliveryStatus = "placed";
-      let pro = await productModel.find()
+      let pro = await cartHelper.cartProduct(cart)      
       console.log(pro,'000001');
-      let totalPrice = await cartHelper.getTotalAmount(pro,products)
+      const totalPrice = await cartHelper.getTotalAmount(pro, products);
 
       let orderData = req.body;
       console.log(orderData, '🌹🌹🌹🌹🌹🌹🌹🌹🌹🌹👻👻');

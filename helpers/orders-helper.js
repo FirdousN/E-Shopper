@@ -165,11 +165,11 @@ module.exports = {
             as: "user",
           },
         },
-        { $unwind: "$user"},
+        { $unwind: "$user" },
 
       ]).exec();
 
-      if(!orders){
+      if (!orders) {
         throw new Error("Oops! Looks like you haven't placed any orders yet.");
       }
       console.log("😊orders😊", orders[0].products, "😊orders😊");
@@ -299,6 +299,21 @@ module.exports = {
 
         console.log(proSlug, 'proSlug in order-helper : changeStatus😷');
         let orders = await orderModel.findOne({ _id: orderId })
+
+        // For wallet orders, directly set the delivery status to 'delivered'
+        // For wallet orders, directly set the delivery status to 'delivered'
+        if (orders.paymentMethod === 'WALLET' && orderStatus === 'deliver') {
+          await orderModel.updateOne(
+            { _id: orderId, "products.slug": proSlug },
+            {
+              $set: {
+                "products.$.deliveryStatus": 'delivered',
+                "products.$.orderStatus": orderStatus
+              }
+            }
+          );
+          return;
+        }
         if (orders.paymentMethod != 'COD') {
           if (orderStatus === 'order-placed' || orderStatus === 'shipped' || orderStatus === 'out-of-delver' || orderStatus === 'deliver') {
             console.log(' if in order placed 💸💸💸💸💸💸💸💸💸💸💸💸💸💸');
@@ -414,18 +429,18 @@ module.exports = {
       console.log(product, 'product showing in ordersHelper❤️');
 
       // Create and save an invoice document
-      
-      const sampleInvoiceData = await invoiceModel.create() ;
+
+      const sampleInvoiceData = await invoiceModel.create();
       const newInvoice = new invoiceModel(sampleInvoiceData);
       newInvoice.save()
         .then((savedInvoice) => {
           console.log('Invoice saved successfully:', savedInvoice);
         })
-        
+
     } catch (error) {
       console.log(error.message);
     }
   },
-  
+
 
 }

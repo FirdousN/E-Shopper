@@ -93,14 +93,17 @@ module.exports = {
             //     });
             } else {
                 // let discountPercentage = (matchCouponId.discount / cartTotal) * 100;
-                let discountPercentage = matchCouponId.discount;
+                let discountPrice = matchCouponId.discount;
 
-                let discountAmount = Math.floor(cartTotal * (parseInt(matchCouponId.discount) / 100)) ;
+                // let discountAmount = Math.floor(cartTotal * (parseInt(matchCouponId.discount) / 100)) ;
+                let discountAmount = cartTotal - discountPrice ;
+
                 res.json({
-                    message: `Coupon applied! You received a discount of Rs. ${discountAmount} (${discountPercentage}% of the total ${cartTotal})`,
+                    // message: `Coupon applied! You received a discount of Rs. ${discountAmount} (${discountPercentage}% of the total ${cartTotal})`,
+                    message: `Coupon applied! You received a discount of Rs. ${discountAmount} (${discountPrice}$ of the total ${cartTotal})`,
                     success: true,
                     discountAmount,
-                    // discountPercentage,
+                    discountPrice,
                     cartTotal,
                 })
             }
