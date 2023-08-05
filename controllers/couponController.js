@@ -88,7 +88,7 @@ module.exports = {
             //     })
             // } else if (cartTotal < matchCouponId.discount) {
             //     return  res.json({
-            //         message: `Coupon amount exceeds total amount`,
+            //         message: `Coupon amount exceeds total amount`,,
             //         excess: true
             //     });
             } else {
