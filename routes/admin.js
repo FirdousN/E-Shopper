@@ -99,35 +99,35 @@ router.post('/statusChange/:proSlug/:orderId',verifyAdmin,postStatus)
 
 router.get('/product-details/:orderId',verifyAdmin,getProductDetails)
 
-router.get('/sales-report',getSalesReport)
+router.get('/sales-report',verifyAdmin,getSalesReport)
 
-router.post('/sales-report', postSalesReport);
+router.post('/sales-report',verifyAdmin, postSalesReport);
 
 /***********Coupon Management**************************/
 
-router.get('/coupons',getCoupons)
+router.get('/coupons',verifyAdmin,getCoupons)
 
-router.get('/add-coupon',getAddCoupon)
+router.get('/add-coupon',verifyAdmin,getAddCoupon)
 
-router.post('/add-coupon',postAddCoupon)
+router.post('/add-coupon',verifyAdmin,postAddCoupon)
 
-router.get('/edit-coupon/:couponId',getEditCoupon)
+router.get('/edit-coupon/:couponId',verifyAdmin,getEditCoupon)
 
-router.post('/edit-coupon/:couponId',postEditCoupon)
+router.post('/edit-coupon/:couponId',verifyAdmin,postEditCoupon)
 
 router.get('/chart-chartjs',getChart)
 
 /******************** Banner **********************/
 
-router.get('/banner',getBanner);
+router.get('/banner',verifyAdmin,getBanner);
 
-router.get('/add-banner',getAddBanner)
+router.get('/add-banner',verifyAdmin,getAddBanner)
 
-router.post('/add-banner', upload.array('bannerImage', 1), postAddBanner);
+router.post('/add-banner', upload.array('bannerImage', 1),verifyAdmin, postAddBanner);
 
-router.get('/edit-banner/:id',getEditBanner)
+router.get('/edit-banner/:id',verifyAdmin,getEditBanner)
 
-router.post('/edit-banner/:id', upload.array('bannerImage', 1), postEditBanner);
+router.post('/edit-banner/:id', upload.array('bannerImage', 1),verifyAdmin, postEditBanner);
 
 /******************************* */
 module.exports = router;
