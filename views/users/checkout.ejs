@@ -78,7 +78,7 @@
 </div>
 <% } else { %>
 <div class="container-fluid ">
-    <form method="post" action="#" id="checkout-form">
+    <form method="post" action="#" id="checkout-form" onsubmit="return validateForm();">
         <div class="row px-xl-5">
             <div class="col-lg-8">
 
@@ -384,6 +384,32 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.10/clipboard.min.js"></script>
 
 <script>
+    // Function to validate the form before submitting
+    function validateForm() {
+        // Check if any address radio is selected
+        const addressRadios = document.querySelectorAll('input[name="addressRadio"]');
+        let selectedAddress = false;
+
+        for (const radio of addressRadios) {
+            if (radio.checked) {
+                selectedAddress = true;
+                break;
+            }
+        }
+
+        // Show error if no address is selected
+        if (!selectedAddress) {
+            const errorElement = document.getElementById('error-message');
+            errorElement.innerHTML = 'Please select an address to proceed.';
+            return false; // Prevent form submission
+        }
+
+        // If everything is fine, continue with form submission
+        return true;
+    }
+</script>
+
+<script>
     function copyCouponCode() {
         // Get the coupon code element
         var couponCodeElement = document.getElementById("couponCode");
@@ -412,7 +438,7 @@
 
         // Hide the tooltip after a short delay
         setTimeout(function () {
-            copyButton.removeAttribute("data-original-title");
+            copyButton.removeAttribute("data-original-title");q
             copyButton.removeAttribute("data-bs-original-title"); // For Bootstrap 5
             copyButton.classList.remove("show-tooltip");
         }, 1000);

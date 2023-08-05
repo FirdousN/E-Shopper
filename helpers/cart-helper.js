@@ -249,33 +249,34 @@ module.exports = {
       },
       
 
-      placeOrder: async (order, paymentMethod, userId, products, total) => {
+    placeOrder: async (order, paymentMethod, userId, products, total) => {
         try {
             return new Promise(async (resolve, reject) => {
+                
                 console.log(order, '😶‍🌫️order');
                 console.log(products, '😶‍🌫️ products');
                 console.log(total, '😶‍🌫️ total');
-    
+
                 // let userId = order.userId;
-                let status = paymentMethod === 'COD' ? 'placed' : 'pending';
-                // Assign products directly, as it is already an array
-    
+                let status = paymentMethod === 'COD' ? 'placed' : 'pending'
+                 // Assign products directly, as it is already an array
+                 
                 if (paymentMethod === 'WALLET') {
                     const walletAmountToDeduct = parseFloat(total);
-    
+        
                     // Check if user's wallet balance is sufficient
                     const user = await userModel.findById(userId);
                     const walletBalance = user.wallet;
-    
+        
                     if (walletBalance < walletAmountToDeduct) {
                         throw new Error('Insufficient Wallet Balance');
                     }
-    
+        
                     // Deduct wallet amount
                     user.wallet = walletBalance - walletAmountToDeduct;
                     await user.save();
                 }
-    
+
                 if (paymentMethod === 'ONLINE' || paymentMethod === 'COD') {
                     for (let i = 0; i < products.length; i++) {
                         products[i].deliveryStatus = 'pending';
@@ -285,14 +286,14 @@ module.exports = {
                         products[i].deliveryStatus = 'pending';
                     }
                 }
-    
-                // Check if order object contains addresses property
-                const orderObj = {
+                // console.log(order.paymentMethod);
+                // if (order.paymentMethod === 'COD'){
+                let orderObj = {
                     deliveryDetails: {
-                        addresses: order.addresses || '', // Provide a default value if addresses is not defined
-                        country: order.country || '',
-                        state: order.state || '',
-                        pinCode: order.pincode || '',
+                        addresses: order.addresses,
+                        country: order.country,
+                        state: order.state,
+                        pinCode: order.pincode,
                         // district:order.district
                     },
                     userId: userId,
@@ -300,24 +301,37 @@ module.exports = {
                     products: products,
                     status: status,
                     totalAmount: total,
-                };
-    
-                console.log(orderObj, 'after add order details');
+                }
+                console.log(orderObj,'after add order details');
                 await orderModel.create(orderObj).then(async (response) => {
-                    await cartModel.deleteOne({ userId });
-                    console.log('💸💸💸', response, '💸💸💸');
+                    await cartModel.deleteOne({ userId })
+                    console.log('💸💸💸', response,'💸💸💸');
                     if (response) {
                         resolve(response._id);
                     } else {
                         reject(new Error('Failed to create order.'));
                     }
-                });
-            });
+                })
+                // }
+
+                // const createdOrder = await orderModel.findOneAndUpdate({ userId },orderObj,
+                //     { upsert: true, new: true }
+                //   );
+
+                //   if (createdOrder) {
+                //     await cartModel.deleteOne({ userId });
+                //     console.log(createdOrder,'🌹cart-helper.js => 🌹');
+                //     resolve(createdOrder);
+                //   } else {
+                //     reject(new Error('Failed to create order.'));
+                //   }
+
+            })
         } catch (error) {
+
             console.log(error.message);
         }
     },
-    
 
     getCartProductList: async (userId) => {
         try {

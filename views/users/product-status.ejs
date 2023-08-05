@@ -66,15 +66,18 @@
                         <a onclick="returnOrder('<%= orders._id %>','<%= product[0].products.slug %>', '<%= product[0].products.price * product[0].products.quantity %>', 'returned')"
                             class="btn btn-danger">Returned Order</a>
                         <% } %>
+                        
                         <% if (product[0].products.orderStatus === 'returned') { %>
                         <a class="btn btn-primary">Processing</a>
                         <% } %>
                         <% if (product[0].products.orderStatus === 'return') { %>
                         <a class="btn btn-success">Return Success</a>
                         <% } %>
+
                         <% if (product[0].products.orderStatus === 'cancel') { %>
                         <a class="btn btn-primary">Cancel Success</a>
                         <% } %>
+
 
                         <% } %>
                         <!-- Add the download button in the product details section -->

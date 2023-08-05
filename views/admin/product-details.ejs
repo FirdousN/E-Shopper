@@ -1,183 +1,188 @@
 <div class="row">
-    <div class="container-fluid h-100">
-        <div class="card flex-fill">
-            <div class="card-header">
-                <h class="card-title">Order Products</h4>
-            </div>
+  <div class="container-fluid h-100">
+    <div class="card flex-fill">
+      <div class="card-header">
+        <h class="card-title">Order Products</h4>
+      </div>
 
-            <table class="table" id="orderTable">
-                <thead>
-                    <tr>
-                        <th>Order ID</th>
-                        <th scope="col" >Images</th >
-                        <th>Product Name</th>
-                        <th>Order Status</th>
-                        <th>Total Amount</th>
-                        <th>Payment Status</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% orderData.products.forEach((products) => { %>
-                    <tr>
-                        <td><%= products._id %></td>
-                        <td class="image-container">
-                            <img src=/uploads/images/<%= products.image[0] %> alt="Image" style="max-width: 100px; max-height: 100px;">
-                        </td>
-                        <td><%= products.slug %>/<%= products.quantity %></td>
-                        <!-- Order Status -->
-                        <td>
+      <table class="table" id="orderTable">
+        <thead>
+          <tr>
+            <th>Order ID</th>
+            <th scope="col">Images</th>
+            <th>Product Name</th>
+            <th>Order Status</th>
+            <th>Total Amount</th>
+            <th>Payment Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% orderData.products.forEach((products) => { %>
+          <tr>
+            <td><%= products._id %></td>
+            <td class="image-container">
+              <img src=/uploads/images/<%= products.image[0] %> alt="Image"
+                style="max-width: 100px; max-height: 100px;">
+            </td>
+            <td><%= products.slug %>/<%= products.quantity %></td>
+            <!-- Order Status -->
+            <td>
+              <% if (products.orderStatus === 'cancel') { %>
+              <span class="btn btn-danger"><%= products.orderStatus %></span>
+              <% } else if (products.orderStatus === 'shipped') { %>
+              <span class="btn btn-primary"><%= products.orderStatus %></span>
+              <% } else if (products.orderStatus === 'deliver') { %>
+              <span class="btn btn-success"><%= products.orderStatus %></span>
+              <% } else if (products.orderStatus === 'processing') { %>
+              <span class="btn btn-warning"><%= products.orderStatus %></span>
+              <% } else if (products.orderStatus === 'Order placed') { %>
+              <span class="btn btn-info"><%= products.orderStatus %></span>
+              <% } else if (products.orderStatus === 'pending') { %>
+              <span class="btn btn-secondary"><%= products.orderStatus %></span>
+              <% } else if (products.orderStatus === 'return-request') { %>
+              <span class="btn btn-secondary"><%= products.orderStatus %></span>
+              <% } else if (products.orderStatus === 'out-of-deliver') { %>
+              <span class="btn btn-primary"><%= products.orderStatus %></span>
+              <% } else if (products.orderStatus === 'returned') { %>
+              <span class="btn btn-primary"><%= 'return-request' %></span>
+              <% } else if (products.orderStatus === 'return') { %>
+              <span class="btn btn-primary"><%= products.orderStatus %></span>
+              <% } %>
+            </td>
 
-                            <% if (products.orderStatus === 'cancel') { %>
-                            <span class="btn btn-danger"><%= products.orderStatus %></span>
-                            <% } else if (products.orderStatus === 'shipped' ) { %>
-                            <span class="btn btn-primary"><%= products.orderStatus %></span>
-                            <% } else if (products.orderStatus === 'deliver') { %>
-                            <span class="btn btn-success"><%= products.orderStatus %></span>
-                            <% } else if (products.orderStatus === 'processing') { %>
-                            <span class="btn btn-warning"><%= products.orderStatus %></span>
-                            <% } else if (products.orderStatus === 'Order placed') { %>
-                            <span class="btn btn-info"><%= products.orderStatus %></span>
-                            <% } else if (products.orderStatus === 'pending') { %>
-                            <span class="btn btn-secondary"><%= products.orderStatus %></span>
-                            <% } else if (products.orderStatus === 'return-request') { %>
-                                <span class="btn btn-secondary"><%= products.orderStatus %></span>
-                            <% } else if (products.orderStatus === 'out-of-deliver') { %>
-                                <span class="btn btn-primary"><%= products.orderStatus %></span>
-                            <% } else if (products.orderStatus === 'order-placed') { %>
-                                <span class="btn btn-primary"><%= products.orderStatus %></span>
-                            <% }  else if (products.orderStatus === 'returned') { %>
-                              <span class="btn btn-primary"><%= 'return-request' %></span>
-                          <% } else if (products.orderStatus === 'return') { %>
-                            <span class="btn btn-primary"><%= products.orderStatus %></span>
-                        <% } %>
-                        </td>
-                        <td>$<%= products.price * products.quantity %></td>
-                        <!-- Payment method -->
-                        <td>
-                            <% if (orderData.paymentMethod === 'COD') { %>
-                            <span class="text-success">COD</span>
-                            <% } else { %>
-                            <span class="text-success">Online</span>
-                            <% } %>
-                        </td>
-                        <!-- Action start -->
-                        <td>
-                            <div class="dropdown">
-                                <% if (products.orderStatus === 'cancel' || products.orderStatus === 'pending') { %>
-                                <span class="btn btn-secondary"><%= products.orderStatus %></span>
-                                <% } else { %>
-                                    <button class="btn btn-info dropdown-toggle" type="button"
-                                        id="orderActionsDropdown<%= products.slug %>" data-bs-toggle="dropdown"
-                                        aria-expanded="false">
-                                        Actions
-                                    </button>
-                                <% } %>
+            <td>$<%= products.price * products.quantity %></td>
+            <!-- Payment method -->
+            <td>
+              <% if (orderData.paymentMethod === 'COD') { %>
+              <span class="text-success">COD</span>
+              <% } else { %>
+              <span class="text-success">Online</span>
+              <% } %>
+            </td>
+            <!-- Action start -->
+            <td>
+              <div class="dropdown">
+                <% if (products.orderStatus === 'cancel' || products.orderStatus === 'pending') { %>
+                <span class="btn btn-secondary"><%= products.orderStatus %></span>
+                <% } else { %>
+                <button class="btn btn-info dropdown-toggle" type="button" id="orderActionsDropdown<%= products.slug %>"
+                  data-bs-toggle="dropdown" aria-expanded="false">
+                  Actions
+                </button>
 
-                                <ul class="dropdown-menu" aria-labelledby="orderActionsDropdown<%= products.slug %>">
-                                    <% if (products.orderStatus === 'deliver') { %>
-                                      <!-- Handle specific actions if the products orderStatus is 'deliver' -->
-                                    <% } else { %>
-                                      <% if (products.orderStatus === 'cancel' || products.orderStatus === 'pending') { %>
-                                        <li>
-                                          <a class="dropdown-item" onclick="statusChange('<%= products.slug %>', '<%= orderData._id %>', 'cancel')" value="cancel">cancel</a>
-                                        </li>
-                                      <% } else { %>
-                                        <% if (products.orderStatus != 'cancel') { %>
-                                          <li>
-                                            <a class="dropdown-item" onclick="statusChange('<%= products.slug %>', '<%= orderData._id %>', 'cancel')" value="cancel">cancel</a>
-                                          </li>
-                                        <% } %>
-                                        <% if (products.orderStatus === 'order-placed' && products.orderStatus != 'deliver') { %>
-                                          <li>
-                                            <a class="dropdown-item" onclick="statusChange('<%= products.slug %>', '<%= orderData._id %>', 'order-placed')" value="order-placed">Order Placed</a>
-                                          </li>
-                                        <% } %>
-                                        <% if (products.orderStatus !== 'shipped' && products.orderStatus != 'deliver') { %>
-                                          <li>
-                                            <a class="dropdown-item" onclick="statusChange('<%= products.slug %>', '<%= orderData._id %>', 'shipped')" value="shipped">shipped</a>
-                                          </li>
-                                        <% } %>
-                                        <% if (products.orderStatus !== 'out-of-deliver' && products.orderStatus != 'deliver') { %>
-                                          <li>
-                                            <a class="dropdown-item" onclick="statusChange('<%= products.slug %>', '<%= orderData._id %>', 'out-of-deliver')" value="out-of-deliver">Out Of Deliver</a>
-                                          </li>
-                                        <% } %>
-                                        <% if (products.orderStatus !== 'deliver' && products.orderStatus != 'shipped') { %>
-                                          <li>
-                                            <a class="dropdown-item" onclick="statusChange('<%= products.slug %>', '<%= orderData._id %>', 'deliver')" value="deliver">Deliver</a>
-                                          </li>
-                                        <% } %>
-                                        
-                                        <% if (products.orderStatus === 'returned') { %>
-                                          <li>
-                                            <a class="dropdown-item" onclick="returnOrder('<%= orderData._id %>','<%= products.slug %>', '<%= products.price * products.quantity %>', 'return')" value="return">Return</a>
-                                          </li>
-                                        <% } %>
-                                        <% if (products.orderStatus !== 'refunded' && products.orderStatus === 'deliver') { %>
-                                          <li>
-                                            <a class="dropdown-item" onclick="statusChange('<%= products.slug %>', '<%= orderData._id %>', 'refunded')" value="refunded">Refunded</a>
-                                          </li>
-                                        <% } %>
-                                      <% } %>
-                                    <% } %>
-                                  </ul>
-                                  
-                            </div>
-                        </td>
-                         <!-- Action end -->
-                    </tr>
-                    <% }) %>
+                <ul class="dropdown-menu" aria-labelledby="orderActionsDropdown<%= products.slug %>">
+                  <% if (products.orderStatus === 'deliver') { %>
+                  <!-- Handle specific actions if the products orderStatus is 'deliver' -->
+                  <% } else { %>
+                  <% if (products.orderStatus !== 'cancel') { %>
+                  <li>
+                    <a class="dropdown-item"
+                      onclick="statusChange('<%= products.slug %>', '<%= orderData._id %>', 'cancel')"
+                      value="cancel">cancel</a>
+                  </li>
+                  <% } %>
+                  <% if (products.orderStatus === 'order-placed' ) { %>
+                  <li>
+                    <a class="dropdown-item"
+                      onclick="statusChange('<%= products.slug %>', '<%= orderData._id %>', 'order-placed')"
+                      value="order-placed">Order Placed</a>
+                  </li>
+                  <% } %>
+                  <% if (products.orderStatus !== 'shipped' ) { %>
+                  <li>
+                    <a class="dropdown-item"
+                      onclick="statusChange('<%= products.slug %>', '<%= orderData._id %>', 'shipped')"
+                      value="shipped">shipped</a>
+                  </li>
+                  <% } %>
+                  <% if (products.orderStatus !== 'out-of-deliver' ) { %>
+                  <li>
+                    <a class="dropdown-item"
+                      onclick="statusChange('<%= products.slug %>', '<%= orderData._id %>', 'out-of-deliver')"
+                      value="out-of-deliver">Out Of Deliver</a>
+                  </li>
+                  <% } %>
+                  <% if (products.orderStatus !== 'deliver' ) { %>
+                  <li>
+                    <a class="dropdown-item"
+                      onclick="statusChange('<%= products.slug %>', '<%= orderData._id %>', 'deliver')"
+                      value="deliver">Deliver</a>
+                  </li>
+                  <% } %>
+                  <% if (products.orderStatus === 'returned') { %>
+                  <li>
+                    <a class="dropdown-item"
+                      onclick="returnOrder('<%= orderData._id %>','<%= products.slug %>', '<%= products.price * products.quantity %>', 'return')"
+                      value="return">Return</a>
+                  </li>
+                  <% } %>
+                  <% if (products.orderStatus !== 'refunded' && products.orderStatus === 'deliver') { %>
+                  <li>
+                    <a class="dropdown-item"
+                      onclick="statusChange('<%= products.slug %>', '<%= orderData._id %>', 'refunded')"
+                      value="refunded">Refunded</a>
+                  </li>
+                  <% } %>
+                  <% } %>
+                </ul>
+                <% } %>
+              </div>
+            </td>
 
-                   
-                </tbody>
-            </table>
-        </div>
+            <!-- Action end -->
+          </tr>
+          <% }) %>
+
+
+        </tbody>
+      </table>
     </div>
+  </div>
 </div>
 
 <!-- DataTables JavaScript -->
 <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
 
 <script>
-    // JQuery table
-    $(document).ready(function () {
-        $('#orderTable').DataTable();
+  // JQuery table
+  $(document).ready(function () {
+    $('#orderTable').DataTable();
+  });
+
+
+  function statusChange(proSlug, orderId, value) {
+    console.log(proSlug),
+
+      $.ajax({
+        url: '/admin/statusChange/' + proSlug + '/' + orderId,
+        type: 'post',
+        data: { status: value },
+        success: (response) => {
+          alert(response);
+          location.reload(); // Reload the page after successful update
+        },
+        // error: function (error) {
+        //     alert('Error updating order Status');
+        // }
+      })
+  }
+  // ORDER RETURNed
+
+  function returnOrder(orderId, proSlug, totalAmount, value) {
+    console.log(orderId, '❤️', totalAmount, '❤️', value);
+
+    $.ajax({
+      url: '/order-return/' + orderId + '/' + proSlug + '/' + totalAmount + '/' + value,
+      type: 'post',
+      data: { orderId: orderId, proSlug: proSlug, totalAmount: totalAmount, status: value },
+      success: function (response) {
+        alert(response.message);
+        location.reload(); // Reload the page after successful update
+      },
+      error: function (error) {
+        alert('Error updating order status');
+      }
     });
-
-
-    function statusChange(proSlug,orderId, value) {
-        console.log(proSlug),
-
-            $.ajax({
-                url: '/admin/statusChange/' + proSlug + '/' + orderId,
-                type: 'post',
-                data: { status: value },
-                success: (response) => {
-                    alert(response);
-                    location.reload(); // Reload the page after successful update
-                },
-                // error: function (error) {
-                //     alert('Error updating order Status');
-                // }
-            })
-    }
-    // ORDER RETURNed
-
-function returnOrder(orderId , proSlug, totalAmount, value) {
-        console.log(orderId, '❤️', totalAmount, '❤️', value);
-
-        $.ajax({
-            url: '/order-return/' + orderId + '/' + proSlug + '/' + totalAmount + '/' + value,
-            type: 'post',
-            data: { orderId: orderId, proSlug: proSlug, totalAmount: totalAmount, status: value },
-            success: function (response) {
-                alert(response.message);
-                location.reload(); // Reload the page after successful update
-            },
-            error: function (error) {
-                alert('Error updating order status');
-            }
-        });
-    }
+  }
 </script>
