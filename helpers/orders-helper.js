@@ -292,15 +292,13 @@ module.exports = {
 
   statusChange: async (orderStatus, proSlug, orderId, product) => {
     try {
-      return new Promise(async (resolve, response) => {
-
+      return new Promise(async (resolve, reject) => {
         console.log(orderStatus, '😷orderStatus in order-helper : statusChange😷');
         console.log(orderId, '😷orderId in order-helper : statusChange😷');
-
         console.log(proSlug, 'proSlug in order-helper : changeStatus😷');
-        let orders = await orderModel.findOne({ _id: orderId })
-
-        // For wallet orders, directly set the delivery status to 'delivered'
+  
+        let orders = await orderModel.findOne({ _id: orderId });
+  
         // For wallet orders, directly set the delivery status to 'delivered'
         if (orders.paymentMethod === 'WALLET' && orderStatus === 'deliver') {
           await orderModel.updateOne(
@@ -312,27 +310,24 @@ module.exports = {
               }
             }
           );
+          resolve();
           return;
         }
-        if (orders.paymentMethod != 'COD') {
-          if (orderStatus === 'order-placed' || orderStatus === 'shipped' || orderStatus === 'out-of-delver' || orderStatus === 'deliver') {
+  
+        if (orders.paymentMethod !== 'COD') {
+          if (orderStatus === 'order-placed' || orderStatus === 'shipped' || orderStatus === 'out-of-deliver' || orderStatus === 'deliver') {
             console.log(' if in order placed 💸💸💸💸💸💸💸💸💸💸💸💸💸💸');
             await orderModel.updateOne(
               { _id: orderId, "products.slug": proSlug },
-
               {
                 $set: {
-                  "products.$.deliveryStatus": 'payed',
+                  "products.$.deliveryStatus": 'paid', // Fixed the typo 'payed' to 'paid'
                   "products.$.orderStatus": orderStatus
                 }
-              },
-
-            ).then(() => {
-              resolve()
-            })
-          } else if (orderStatus === 'cannel' || orderStatus === 'return') {
+              }
+            );
+          } else if (orderStatus === 'cancel' || orderStatus === 'return') { // Fixed the typo 'cannel' to 'cancel'
             console.log(' else in order placed 💸💸💸💸💸💸💸💸💸💸💸💸💸💸');
-
             await orderModel.updateOne(
               { _id: orderId, "products.slug": proSlug },
               {
@@ -340,31 +335,23 @@ module.exports = {
                   "products.$.deliveryStatus": 'refunded',
                   "products.$.orderStatus": orderStatus
                 }
-              },
-
-            ).then(() => {
-              resolve()
-            })
+              }
+            );
           }
-        } else {
-          if (orderStatus === 'order-placed' || orderStatus === 'shipped' || orderStatus === 'out-of-delver') {
+        } else { // COD payment method
+          if (orderStatus === 'order-placed' || orderStatus === 'shipped' || orderStatus === 'out-of-deliver') {
             console.log(' if in order placed 💸💸💸💸💸💸💸💸💸💸💸💸💸💸');
             await orderModel.updateOne(
               { _id: orderId, "products.slug": proSlug },
-
               {
                 $set: {
                   "products.$.deliveryStatus": 'pending',
                   "products.$.orderStatus": orderStatus
                 }
-              },
-
-            ).then(() => {
-              resolve()
-            })
-          } else if (orderStatus === 'cannel' || orderStatus === 'return') {
+              }
+            );
+          } else if (orderStatus === 'cancel' || orderStatus === 'return') { // Fixed the typo 'cannel' to 'cancel'
             console.log(' else if in COD order placed 💸💸💸💸💸💸💸💸💸💸💸💸💸💸');
-
             await orderModel.updateOne(
               { _id: orderId, "products.slug": proSlug },
               {
@@ -372,35 +359,29 @@ module.exports = {
                   "products.$.deliveryStatus": 'refunded',
                   "products.$.orderStatus": orderStatus
                 }
-              },
-
-            ).then(() => {
-              resolve()
-            })
+              }
+            );
           } else if (orderStatus === 'deliver') {
-            console.log(' else if  in   COD deliver 💸💸💸💸💸💸💸💸💸💸💸💸💸💸');
+            console.log(' else if in COD deliver 💸💸💸💸💸💸💸💸💸💸💸💸💸💸');
             await orderModel.updateOne(
               { _id: orderId, "products.slug": proSlug },
-
               {
                 $set: {
                   "products.$.deliveryStatus": 'pending',
                   "products.$.orderStatus": orderStatus
                 }
-              },
-
-            ).then(() => {
-              resolve()
-            })
+              }
+            );
           }
         }
-
-      })
-
+  
+        resolve();
+      });
     } catch (error) {
       console.log(error.message);
     }
   },
+  
 
   userAddress: async (userId) => {
     try {
