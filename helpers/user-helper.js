@@ -14,6 +14,8 @@ module.exports = {
   userSignup: async (userData) => {
     try {
       console.log('///////////////////////////////');
+      // Sanitize email by converting it to lowercase and trimming spaces
+      userData.email = await userData.email.toLowerCase().trim();
       // Check if phone number has a minimum and maximum length of 10 digits
       if (userData.mobile.length !== 10) {
         throw new Error('Phone number must be 10 digits long');
@@ -63,8 +65,22 @@ module.exports = {
       console.log('11111111110');
       return new Promise(async (resolve, reject) => {
 
-        if (!userData || !userData.email) {
+        if (!userData || !userData.email || !userData.password) {
           reject('Invalid user data');
+          return;
+        }
+
+        // Validate and sanitize email input
+        const validEmailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}$/;
+        if (!validEmailRegex.test(userData.email)) {
+          reject('Invalid email format');
+          return;
+        }
+
+        // Validate and sanitize password input
+        const validPasswordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/;
+        if (!validPasswordRegex.test(userData.password)) {
+          reject('Invalid password format');
           return;
         }
 
@@ -108,10 +124,10 @@ module.exports = {
           resolve('Invalid user data'); // Resolve with the error message
           return;
         }
-  
+
         let user = await userModel.findOne({ email: userData.email });
         console.log(user, 'user');
-  
+
         if (user) {
           bcrypt.compare(userData.password, user.password).then((status) => {
             if (status) {
@@ -138,7 +154,7 @@ module.exports = {
         resolve('An error occurred during login. Please try again later.'); // Resolve with the error message
       }
     });
-  }, 
+  },
 
   // otp
   generateOtp: (body) => {

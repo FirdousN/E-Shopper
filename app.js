@@ -12,7 +12,7 @@ const bcrypt = require('bcrypt');
 const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });
 const flash = require('connect-flash');
-
+const validator = require('validator'); // Import validator here
 const adminRouter = require('./routes/admin');
 const usersRouter = require('./routes/users');
 

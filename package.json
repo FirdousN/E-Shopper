@@ -38,6 +38,7 @@
     "slugify-url": "^1.2.0",
     "sweetalert2": "^11.6.13",
     "twilio": "^4.11.1",
+    "validator": "^13.11.0",
     "xlsx": "^0.18.5"
   }
 }
