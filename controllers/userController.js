@@ -272,7 +272,6 @@ module.exports = {
             let orderId = req.query.orderId;
             let categories = await categoryModel.find();
 
-            console.log(orderId, '💸💸💸💸💸');
             console.log(slug, 'slug sample 🍁');
 
             const products = await productModel.findOne({ slug })
