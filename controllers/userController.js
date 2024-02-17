@@ -245,7 +245,7 @@ module.exports = {
             console.log(products, "Shopping ❤️❤️");
 
             let categories = await categoryModel.find();
-            console.log(categories, '🧛🏻🧛🏻');
+            console.log('🧛🏻🧛🏻' ,categories, '🧛🏻🧛🏻');
             console.log('Number of categories:', categories.length);
 
             let user = req.session.user;
@@ -256,7 +256,7 @@ module.exports = {
             }
 
             if (!user || !cartCount || !products || !categories) {
-                res.render('users/shop', { cartCount: [], products:[], categories: [] });
+                res.render('users/shop', { cartCount: [], products, categories: [] });
             } else {
                 res.render('users/shop', { user, cartCount, products, categories });
             }
@@ -270,18 +270,19 @@ module.exports = {
         try {
             let slug = req.query.id;
             let orderId = req.query.orderId;
+            let categories = await categoryModel.find();
 
             console.log(orderId, '💸💸💸💸💸');
-            console.log(slug, 'slug sample');
+            console.log(slug, 'slug sample 🍁');
 
             const products = await productModel.findOne({ slug })
             console.log(slug);
-            console.log(products, '46565646465[******]');
+            console.log(products, '😥😥😥😥[******]');
 
             if (!products) {
                 return res.status(404).send('Product not found');
             }
-            console.log(products);
+            console.log("🍁🍁🍁🍁🍁", products ,"🍁🍁🍁🍁🍁");
 
             let user = req.session.user;
 
@@ -290,7 +291,7 @@ module.exports = {
 
             let cartCount = await cartHelper.getCartCount(req.session.user._id)
 
-            res.render('users/detail', { cart, user, cartCount, products })
+            res.render('users/detail', { cart, user, cartCount, products ,categories})
         } catch (error) {
             res.status(500).send('Internal Server Error');
 
