@@ -239,26 +239,27 @@ module.exports = {
     },    
 
     // otp
+    
     getShop: async (req, res) => {
         try {
             const products = await productModel.find({ deleted: false }).exec();;
             console.log(products, "Shopping ❤️❤️");
 
             let categories = await categoryModel.find();
-            console.log('🧛🏻🧛🏻' ,categories, '🧛🏻🧛🏻');
+            console.log(categories,'🧛🏻🧛🏻');
             console.log('Number of categories:', categories.length);
 
             let user = req.session.user;
             let cartCount = 0;
-
+    
             if (user) {
                 cartCount = await cartHelper.getCartCount({ _id: user._id });
             }
-
+    
             if (!user || !cartCount || !products || !categories) {
-                res.render('users/shop', { cartCount: [], products, categories: [] });
+                res.render('users/shop', { cartCount: [], products ,categories:[]});
             } else {
-                res.render('users/shop', { user, cartCount, products, categories });
+            res.render('users/shop', { user, cartCount, products, categories });
             }
         } catch (error) {
             console.log(error.message);

@@ -79,7 +79,7 @@ router.get('/detail',verifyLogin, shopDetail)
 // user cart
 router.get('/cart',verifyLogin,getCart)
 
-router.get('/add-to-cart/:slug',verifyLogin,getAddCart)
+router.get('/add-to-cart/:slug/:page',verifyLogin,getAddCart)
 
 router.post('/change-product-quantity/:slug/:cartId',postProductQuantity)
 

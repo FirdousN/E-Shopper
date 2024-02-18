@@ -57,14 +57,19 @@ module.exports = {
         console.log("api calling");
         try {
             slug = req.params.slug;
-            console.log(slug, 'getAddCart slug value testing');
-            userId = req.session.user._id
-            console.log(userId, 'testing userId❤️❤️❤️❤️❤️❤️');
+            page = req.params.page;
 
-            await cartHelper.addToCart(slug, userId).then(async () => {
+            console.log('👑page:' , page , '👑page');
+            console.log(slug, 'getAddCart slug value testing');
+
+            userId = req.session.user._id
+            // console.log(userId, 'testing userId❤️❤️❤️❤️❤️❤️');
+
+            await cartHelper.addToCart(slug, userId,page)
+            .then(async () => {
                 const cartCount = await cartHelper.getCartCount(userId)
-                console.log(cartCount, '💸💸');
-                res.json({ cartCount: cartCount })
+                // console.log(cartCount, '💸💸');
+                res.json({ cartCount: cartCount , message :'Product added to cart '})
                 // res.redirect('/shop')
             })
 
@@ -108,6 +113,7 @@ module.exports = {
         try {
             const proSlug = req.params.slug;
             const userId = req.session.user._id
+            
             let cart = await cartModel.findOne({ userId });
             
             console.log(userId, 'testing ajax in user id 💕💕');

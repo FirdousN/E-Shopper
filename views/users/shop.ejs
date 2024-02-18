@@ -65,6 +65,7 @@
     </div>
 </div>
 <!-- Page Header End -->
+
 <!-- Shop Start -->
 <div class="container-fluid pt-5">
     <div class="row px-xl-5">
@@ -243,7 +244,7 @@
                                         <a href='/detail?id=<%= product.slug %>' class="btn btn-sm text-dark p-0">
                                             <i class="fas fa-eye text-primary mr-1"></i> View Detail
                                         </a>
-                                        <button onclick="addToCart('<%= product.slug %>')"
+                                        <button onclick="addToCart('<%= product.slug %>','shop_page')"
                                             class="btn btn-sm text-dark p-0 add-to-cart-button">
                                             <i class="fas fa-shopping-cart text-primary mr-1"></i> Add To Cart
                                         </button>
@@ -284,9 +285,10 @@
 <!-- Shop End -->
 
 <script>
-    function addToCart(slug) {
+    function  addToCart(slug,page) {
+        console.log('👑 addToCart Button',slug , page);
         $.ajax({
-            url: '/add-to-cart/' + slug,
+            url: '/add-to-cart/'+ slug +'/'+ page,
             method: 'get',
             success: (response) => {
                 // alert(response)

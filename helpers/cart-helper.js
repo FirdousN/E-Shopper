@@ -10,9 +10,11 @@ const { writeFileAsync } = require('xlsx');
 
 
 module.exports = {
-    addToCart: async (slug, userId) => {
+    addToCart: async (slug, userId ,page) => {
         try {
-            console.log(slug, 'slug in add to cart *******');
+            console.log('👑slug in add to cart :',slug ,
+            '👑Page Name:' , page
+            );
 
             const product = await productModel.findOne({ slug }); // Convert string to ObjectId
             console.log(product, '👌👌product');
@@ -21,7 +23,7 @@ module.exports = {
                 throw new Error('Product not found');
             }
             const proId = product._id; // Use the product's ObjectId
-            console.log(proId, '😊😊😊😊');
+            // console.log(proId, '😊😊😊😊');
 
             let proObj = {
                 image: product.image,
@@ -38,22 +40,23 @@ module.exports = {
 
                 if (userCart) {
 
-                    console.log(userCart, 'user cart testing in if-1 😂😂😂😂');
-                    console.log(userCart.products, '😍😍😍');
+                    // console.log(userCart, 'user cart testing in if-1 😂😂😂😂');
+                    // console.log(userCart.products, '😍😍😍');
                     // console.log(products.item);
                     let proExist = userCart.products.findIndex(products => products.item.toString() === proId.toString())
 
-                    console.log(proExist, '🌹🌹🌹');
-                    if (proExist !== -1) {
-                        console.log('if-2 product existing');
+                    // console.log(proExist, '🌹🌹🌹');
+                    if (proExist !== -1 ) {
+                        console.log('if-2: product existing');
                         const cart = await cartModel.findOne({ 'products.item': proId })
-                        console.log(cart, '❤️CART❤️');
-
-                        await cartModel.updateOne(
-                            { _id: cart._id, 'products.item': proId },
-                            { $inc: { 'products.$.quantity': 1 } }
-                        );
-
+                        // console.log(cart, '❤️CART❤️');
+                        if(page === 'shop_page'){
+                            console.log('👑Shop Page');
+                            await cartModel.updateOne(
+                                { _id: cart._id, 'products.item': proId },
+                                { $inc: { 'products.$.quantity': 1 } }
+                            );
+                        }
 
                     } else {
                         await cartModel.updateOne({ userId },
