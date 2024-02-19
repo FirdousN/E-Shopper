@@ -27,7 +27,6 @@ module.exports = {
                         path: 'products.item',
                         model: 'Product'
                     }).exec();
-                console.log(orders, '👻👻👻👻👻');
 
                 // Total Sales of each orders.
                 const totalSales = orders.reduce((accumulator, order) => {
@@ -38,7 +37,6 @@ module.exports = {
                     })
                     return accumulator;
                 }, 0);
-                console.log(totalSales, '👻👻');
 
                 // Total ordered products of each order 
                 const totalOrders = orders.reduce((accumulator, order) => {
@@ -49,7 +47,6 @@ module.exports = {
                     })
                     return accumulator;
                 }, 0);
-                console.log(totalOrders, '👻👻');
 
                 //Total payed  in total orders of products
                 const totalPayed = orders.reduce((accumulator, order) => {
@@ -61,7 +58,6 @@ module.exports = {
                     return accumulator;
                 }, 0);
 
-                console.log(totalPayed, '👻totalPayed👻');
 
                 // const totalCancelled = orders.reduce((accumulator, order) => {
                 //     order.products.forEach((product) => {
@@ -71,21 +67,16 @@ module.exports = {
                 //     });
                 //     return accumulator;
                 // }, 0);
-                // console.log(totalCancelled, '👻👻');
                 const monthlyRevenue = await adminHelper.calculateMonthlyRevenue(orders);
                 const AnnualRevenues = await adminHelper.calculateAnnualRevenue(orders);
 
 
                 let categories = await categoryModel.find()
                 let deliverCategory = await categoryHelper.deliverCategory()
-                console.log(deliverCategory, '👻👻deliverCategory👻👻');
                 // const categoryData = await adminHelper.categoryOrderData(orders, categories);
 
                 const startOfYear = new Date(new Date().getFullYear(), 0, 1); // start of the year
                 const endOfYear = new Date(new Date().getFullYear(), 11, 31); // end of the year
-
-                console.log('❤️❤️', monthlyRevenue, '❤️❤️', AnnualRevenues, '❤️❤️');
-                console.log('❤️❤️', categories, '❤️❤️');
 
                 console.log(admin, 'admin');
                 res.render('admin/dashboard', {
