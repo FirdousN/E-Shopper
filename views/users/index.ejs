@@ -1,3 +1,4 @@
+<!-- Offer  Banner start -->
 <div id="header-carousel" class="carousel slide" data-ride="carousel">
     <div class="carousel-inner">
         <% banners.forEach((banner, index) => { %>
@@ -25,10 +26,11 @@
         </div>
     </a>
 </div>
+<!-- Offer  Banner start -->
 
-
-</div>
+<!-- </div> -->
 <!-- Navbar End -->
+
 <!-- Featured Start -->
 <div class="container-fluid pt-5">
     <div class="row px-xl-5 pb-3">
@@ -87,20 +89,33 @@
 <!-- Categories End -->
 
 
-<!-- Offer Start -->
+<!-- Second Offer banner Start -->
 <div class="container offer pt-5">
     <div class="row px-xl-5">
-        <div class="col-md-6 pb-4">
-            <div class="position-relative bg-secondary text-center text-md-right text-white mb-2 py-5 px-5">
-                <img src="/images/offer-1.png" alt="">
-                <div class="position-relative" style="z-index: 1;">
-                    <h5 class="text-uppercase text-primary mb-3">20% off the all order</h5>
-                    <h1 class="mb-4 font-weight-semi-bold">Spring Collection</h1>
-                    <a href="" class="btn btn-outline-primary py-md-2 px-md-3">Shop Now</a>
+        <!--  -->
+        <% banners.forEach((banner, index) => { %> 
+            
+            <div class="col-md-6 pb-4" >
+                <div class="col-md-6 pb-4" style="background-image: url('/uploads/images/<%= banner.image[0] %>'); background-size: cover; max-height: 400px; max-width: 500px;">
+
+                <!-- <div class="position-relative bg-secondary text-center text-md-right text-white mb-2 py-5 px-5"> -->
+                    <!-- <img src="/images/offer-1.png" alt=""> -->
+                    
+                    <!-- <div class="position-relative text-center text-md-right text-white py-3 px-4" style="z-index: 1; height: 100%;">
+                        <h5 class="text-uppercase text-primary mb-3" style="font-size: 1.5rem;"><%= banner.offer %></h5>
+                        <h1 class="mb-3 font-weight-semi-bold" style="font-size: 2rem;"><%= banner.description %></h1>
+                        <a href="<%= banner.link %>" class="btn btn-outline-primary py-md-2 px-md-3">Shop Now</a>
+                    </div> -->
+                    <div class="p-3" style="max-width: 700px;">
+                        <h4 class="text-light text-uppercase font-weight-medium mb-3" style="z-index: 1; height: 100%;" ><%= banner.offer %></h4>
+                        <h3 class="display-4 text-white font-weight-semi-bold mb-4" style="font-size: 1.5rem;"><%= banner.description %></h3>
+                        <a href="<%= banner.link %>" class="btn btn-light py-2 px-3">Shop Now</a>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-md-6 pb-4">
+        
+            <% }) %>
+        <!-- <div class="col-md-6 pb-4">
             <div class="position-relative bg-secondary text-center text-md-left text-white mb-2 py-5 px-5">
                 <img src="/images/offer-2.png" alt="">
                 <div class="position-relative" style="z-index: 1;">
@@ -109,10 +124,11 @@
                     <a href="" class="btn btn-outline-primary py-md-2 px-md-3">Shop Now</a>
                 </div>
             </div>
-        </div>
+        </div> -->
+        <!--  -->
     </div>
 </div>
-<!-- Offer End -->
+<!-- Second Offer banner End -->
 
 
 <!-- Products Start -->
@@ -310,7 +326,7 @@
 
 
 <!-- Products Start -->
-<div class="container pt-5">
+<!-- <div class="container pt-5">
     <div class="text-center mb-4">
         <h2 class="section-title px-5"><span class="px-2">Just Arrived</span></h2>
     </div>
@@ -476,7 +492,7 @@
             </div>
         </div>
     </div>
-</div>
+</div> -->
 <!-- Products End -->
 
 

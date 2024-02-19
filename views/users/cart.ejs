@@ -30,12 +30,15 @@
                     <tbody>
                         <% products.forEach((product) => { %>
                         <tr id="<%= product.slug %>">
+                            <!--  -->
                             <td class="image-container">
-                                <img src="/uploads/images/<%= product.image[0] %>" alt="Image"
-                                    style="max-width: 100px; max-height: 100px;">
+                                <a href='/detail?id=<%= product.slug %>' class="btn btn-sm text-dark p-0">
+                                    <img src="/uploads/images/<%= product.image[0] %>" alt="Image"
+                                        style="max-width: 100px; max-height: 100px;">
+                                </a>
                             </td>
                             <td class="product-name"><%= product.slug %></td>
-
+                            <!--  -->
                             <td class="product-quantity">
                                 <div class="input-group quantity mr-3" style="width: 130px;">
                                     <div class="input-group-btn">
