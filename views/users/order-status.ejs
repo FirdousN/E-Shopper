@@ -1,3 +1,12 @@
+<!-- Add responsive styles for the table -->
+<style>
+@media (max-width: 767px) {
+    .table-responsive {
+        overflow-x: auto;
+    }
+}
+</style>
+
 <!-- Page Header Start -->
 <div class="container-fluid bg-secondary mb-5">
     <div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 300px">
@@ -26,8 +35,8 @@
                 </div>
             </div>
         <% } else { %>
-            <table class="table table-hover my-0" id="orderStatusTable">
-                <thead>
+            <div class="table-responsive">
+                <table class="table table-hover" id="orderStatusTable">                <thead>
                     <tr>
                         <th scope="col">Item</th>    
                         
@@ -69,25 +78,37 @@
                                 <% } %>
                             </td>
                             <td class="align-middle">
-                                <% if (product.orderStatus === 'cancel') { %>
-                                <span class="btn btn-danger"><%= product.orderStatus %></span>
-                                <% } else if (product.orderStatus === 'shipped') { %>
-                                <span class="btn btn-primary"><%= product.orderStatus %></span>
-                                <% } else if (product.orderStatus === 'deliver') { %>
-                                <span class="btn btn-success"><%= product.orderStatus %></span>
-                                <% } else if (product.orderStatus === 'processing') { %>
-                                <span class="btn btn-warning"><%= product.orderStatus %></span>
-                                <% } else if (product.orderStatus === 'order-placed') { %>
-                                <span class="btn btn-info"><%= product.orderStatus %></span>
-                                <% } else if (product.orderStatus === 'pending') { %>
-                                <span class="btn btn-secondary"><%= product.orderStatus %></span>
-                                <% } else if (product.orderStatus === 'returned') { %>
-                                    <span class="btn btn-secondary"><%= product.orderStatus %></span>
-                                <% } else if (product.orderStatus === 'out-of-deliver') { %>
-                                    <span class="btn btn-info"><%= product.orderStatus %></span>
-                                <% } else if (product.orderStatus === 'return') { %>
-                                    <span class="btn btn-success"><%= 'Return Success' %></span>
-                                <% } %>
+                                <% switch (product.orderStatus) {
+                                    case 'cancel':
+                                        %><span class="btn btn-danger"><%= product.orderStatus %></span><%
+                                        break;
+                                    case 'shipped':
+                                        %><span class="btn btn-primary"><%= product.orderStatus %></span><%
+                                        break;
+                                    case 'deliver':
+                                        %><span class="btn btn-success"><%= product.orderStatus %></span><%
+                                        break;
+                                    case 'processing':
+                                        %><span class="btn btn-warning"><%= product.orderStatus %></span><%
+                                        break;
+                                    case 'order-placed':
+                                        %><span class="btn btn-info"><%= product.orderStatus %></span><%
+                                        break;
+                                    case 'pending':
+                                        %><span class="btn btn-secondary"><%= product.orderStatus %></span><%
+                                        break;
+                                    case 'returned':
+                                        %><span class="btn btn-secondary"><%= product.orderStatus %></span><%
+                                        break;
+                                    case 'out-of-deliver':
+                                        %><span class="btn btn-info"><%= product.orderStatus %></span><%
+                                        break;
+                                    case 'return':
+                                        %><span class="btn btn-success"><%= 'Return Success' %></span><%
+                                        break;
+                                    default:
+                                        %><span class="btn btn-secondary">Unknown</span><%
+                                } %>
                             </td>
                             <td class="align-middle">
                                 <a href='/product-status/<%= order._id %>/<%= product.slug %>'>
@@ -102,6 +123,7 @@
                 <% }) %>
     
             </table>
+            </div>
         <% } %>
        
     </div>

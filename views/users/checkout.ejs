@@ -260,7 +260,7 @@
 
                             <div class="d-flex justify-content-between">
                                 <p><%= product.slug%> (<%= product.quantity %>)</p>
-                                <p>$<%= product.price %></p>
+                                <p>₹<%= product.price %></p>
                             </div>
 
                             <% }) %>
@@ -268,18 +268,18 @@
                             <hr class="mt-0">
                             <div class="d-flex justify-content-between mb-3 pt-1">
                                 <h6 class="font-weight-medium">Subtotal</h6>
-                                <h5 class="font-weight-bold" id="subTotal">$<%= total %></h5>
+                                <h5 class="font-weight-bold" id="subTotal">₹<%= total %></h5>
                             </div>
                             <!-- Display the discount amount -->
                             <div class="d-flex justify-content-between mb-3 pt-1">
                                 <h6 class="font-weight-medium">Discount</h6>
-                                <h6 class="font-weight-medium" id="couponDiscount">$0</h6>
+                                <h6 class="font-weight-medium" id="couponDiscount">₹0</h6>
                             </div>
                     </div>
                     <div class="card-footer border-secondary bg-transparent">
                         <div class="d-flex justify-content-between mt-2">
                             <h5 class="font-weight-bold">Total</h5>
-                            <h5 class="font-weight-bold" id="totalAmount">$<%=total %></h5>
+                            <h5 class="font-weight-bold" id="totalAmount">₹<%=total %></h5>
                         </div>
                     </div>
 
@@ -310,7 +310,7 @@
                             <div class="form-group">
                                 <div class="custom-control custom-radio">
                                     <input type="radio" class="custom-control-input" name="paymentMethod" id="wallet" value="WALLET">
-                                    <label class="custom-control-label" for="wallet">Wallet ($<%= wallet ? wallet.balance : 0 %>) </label>
+                                    <label class="custom-control-label" for="wallet">Wallet (₹<%= wallet ? wallet.balance : 0 %>) </label>
                                 </div>
                             </div>
                         <% } else { %>
@@ -318,7 +318,7 @@
                             <div class="custom-control custom-radio">
                                 <input type="radio" class="custom-control-input" name="paymentMethod" id="wallet"
                                     value="WALLET">
-                                <label class="custom-control-label" for="wallet">Wallet ($ 0) </label>
+                                <label class="custom-control-label" for="wallet">Wallet (₹ 0) </label>
                             </div>
                         </div>
                         <% } %>
